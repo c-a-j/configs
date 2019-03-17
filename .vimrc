@@ -289,6 +289,9 @@ let g:airline#extensions#whitespace#enabled = 0
 " ============================================================================
 " Settings {{{
 
+" Necessary for some reason
+set nocompatible
+
 " allow plugins by file type (required for plugins!)
 filetype plugin on
 filetype indent on
@@ -408,5 +411,15 @@ vmap \i :ggVG= <bar> :noh
 
 " Turn off annoying shit
 map Q <Nop>
+
+" Arrow keys
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+inoremap <C-h> <Left>
+inoremap <C-l> <Right>
+cnoremap <C-j> <Down>
+cnoremap <C-k> <Up>
+cnoremap <C-h> <Left>
+cnoremap <C-l> <Right>
 " }}}
 " ============================================================================
