@@ -16,6 +16,8 @@ set -o noclobber
 
 # USER DEFINED ALIASES
 alias vi='vim'
+alias ls='ls --color=auto'
 
 # USER DEFINED EXPORT VARIABLES
 export HISTCONTROL="erasedups:ignorespace"
+export TERMINAL='alacritty'
