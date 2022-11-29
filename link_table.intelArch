@@ -1,0 +1,10 @@
+bash_logout              -->   /home/cjordan/.bash_logout
+bash_profile             -->   /home/cjordan/.bash_profile
+bashrc                   -->   /home/cjordan/.bashrc
+gitconfig                -->   /home/cjordan/.gitconfig
+i3.conf.intelArch        -->   /home/cjordan/.config/i3/config
+i3status.conf.intelArch  -->   /home/cjordan/.config/i3status/config
+inputrc                  -->   /home/cjordan/.inputrc
+tmux.conf                -->   /home/cjordan/.tmux.conf
+vimrc                    -->   /home/cjordan/.vimrc
+xinitrc.intelArch        -->   /home/cjordan/.xinitrc

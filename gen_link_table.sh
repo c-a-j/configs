@@ -34,7 +34,7 @@ maxChar=$(( $maxChar+1 ))
 for i in $(seq 0 $n); do
     if [ ${linkCounts[i]} -gt 1 ]; then
         str=$(find $homeDir /etc  -inum ${indexNums[i]} | grep -v $homeDir'/configs')
-        printf "%-${maxChar}s %s   %s\n" ${fns[i]} '-->' $str >> $homeDir/configs/link_table
+        printf "%-${maxChar}s %s   %s\n" ${fns[i]} '-->' $str 
     fi
 done
 
