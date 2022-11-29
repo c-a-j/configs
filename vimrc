@@ -7,6 +7,9 @@ filetype off
 " Turn on syntax highlighting
 syntax on
 
+" Fold Method
+set foldmethod=marker
+
 " Security
 set modelines=0
 
@@ -106,5 +109,10 @@ vmap \tf :s/\%Vtrue/false/g <bar> :noh
 vmap \ft :s/\%Vfalse/true/g <bar> :noh
 " Auto indent
 vmap \i :ggVG= <bar> :noh
+
+
 " Turn off annoyance
 map Q <Nop>
+
+
+

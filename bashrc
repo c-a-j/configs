@@ -17,10 +17,14 @@ PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; h
 ### USER DEFINED ALIASES
 alias vi='vim'
 alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
 function bw-unlock() {
     $(bw unlock | grep 'export BW_SESSION' | awk '{print $2 " " $3}')
 }
 PS1='[\u@\h \W]\$ ' # no idea what this is, it was included in the default bashrc
+
 
 ### USER DEFINED EXPORT VARIABLES
 export HISTCONTROL="erasedups:ignorespace"
