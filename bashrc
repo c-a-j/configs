@@ -1,32 +1,35 @@
-#
-# ~/.bashrc
-#
-
-# If not running interactively, don't do anything
+### If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-# AUTO CD
+### Colorize prompt
+# Red user@host, red relative path, prompt on same line
+# export PS1="\e[0;31m[\u@\h \W]$ \e[m"
+#
+# Red user@host, green absolute path, prompt on next line
+export PS1="\e[0;31m[\u@\h\e[m\e[0;32m \$PWD\e[m\e[0;31m]\n$ \e[m"
+
+### Auto CD
 shopt -s autocd
 
-### NO CLOBBER - DISSALOWS EXISTING USER TO OVERWRITE EXISTING FILES BY REDIRECTION OF SHELL OUTPUT - MUST USE >| TO MANUALLY OVERWRITE
+### No Clobber - Dissalows user to overwrite existing files by redirection of shell output - must use >| to manually overwrite
 set -o noclobber
 
-# APPEND TO HISTORY FILE AFER EACH COMMAND
+### Append to history after each command
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
-### USER DEFINED ALIASES
+### User defined aliases
 alias vi='vim'
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
+
+### User defined functions
 function bw-unlock() {
     $(bw unlock | grep 'export BW_SESSION' | awk '{print $2 " " $3}')
 }
-PS1='[\u@\h \W]\$ ' # no idea what this is, it was included in the default bashrc
 
-
-### USER DEFINED EXPORT VARIABLES
+### User defined export variables
 export HISTCONTROL="erasedups:ignorespace"
 export HISTSIZE=10000
 export HISTFILESIZE=10000
