@@ -5,8 +5,46 @@
 # Red user@host, red relative path, prompt on same line
 # export PS1="\e[0;31m[\u@\h \W]$ \e[m"
 #
-# Red user@host, green absolute path, prompt on next line
+# Red user@host, green absolute path, prompt on next line (errors here)
 export PS1="\e[0;31m[\u@\h\e[m\e[0;32m \$PWD\e[m\e[0;31m]\n$ \e[m"
+
+# user@host relativePath gitBranch (generated at https://bashrcgenerator.com/)
+export PS1="[\u@\h \w \$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/')]\n\\$ \[$(tput sgr0)\]"
+
+# # user@host relativePath gitBranch
+# export PS1="\e[0;31m[\u@\h\e[m\e[0;32m \w\e[m\e[0;31m\$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/')]\n\\$\e[m \[$(tput sgr0)\]"
+
+# function color_my_prompt {
+#     local __user_and_host="\[\033[01;32m\]\u@\h"
+#     local __cur_location="\[\033[01;34m\]\w"
+#     local __git_branch_color="\[\033[31m\]"
+#     #local __git_branch="\`ruby -e \"print (%x{git branch 2> /dev/null}.grep(/^\*/).first || '').gsub(/^\* (.+)$/, '(\1) ')\"\`"
+#     local __git_branch='`git branch 2> /dev/null | grep -e ^* | sed -E  s/^\\\\\*\ \(.+\)$/\(\\\\\1\)\ /`'
+#     local __prompt_tail="\[\033[35m\]$"
+#     local __last_color="\[\033[00m\]"
+#     export PS1="$__user_and_host $__cur_location $__git_branch_color$__git_branch$__prompt_tail$__last_color "
+# }
+
+function color_my_prompt {
+    local white_="\[\033[00m\]"
+    local yellow_="\[\033[01;33m\]"
+    local red_="\[\033[01;31m\]"
+    local green_="\[\033[01;32m\]"
+    local blue_="\[\033[01;34m\]"
+    local purple_="\[\033[01;35m\]"
+    local user_="\u"
+    local at_="@"
+    local host_="\h"
+    local relLocation_="\w"
+    local absLocation_="\$PWD"
+    local gitBranch_='`git branch 2> /dev/null | grep -e ^* | sed "s/^* /\ (/" | sed "s/$/\)/"`'
+    local prompt_="$"
+    local openBracket_="["
+    local closeBracket_="]"
+    local newLine_="\n"
+    export PS1="$blue_$openBracket_$blue_$user_$red_$at_$blue_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_ $blue_$prompt_$white_ "
+}
+color_my_prompt
 
 ### Auto CD
 shopt -s autocd
