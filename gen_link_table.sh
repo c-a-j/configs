@@ -7,33 +7,27 @@ fi
 
 user='cjordan'
 homeDir='/home/'$user
+ignoreFile='.link_table.ignore'
+ignoreRegex=$(cat $homeDir/configs/$HOSTNAME/$ignoreFile)
 
-fns=$(ls -li $homeDir/configs | awk -F ' ' 'NR > 1 {print $10}')
+fns=$(find $homeDir/configs/ -type f | grep -Ev "$ignoreRegex")
 fns=( $fns )
 
-indexNums=$(ls -li $homeDir/configs | awk -F ' ' 'NR > 1 {print $1}')
-indexNums=( $indexNums )
-
-linkCounts=$(ls -li $homeDir/configs | awk -F ' ' 'NR > 1 {print $3}')
-linkCounts=( $linkCounts )
-
-n=$(( ${#indexNums[@]}-1 ))
 maxChar=0
 
 # Find maximum number of characters in filenames
-for i in $(seq 0 $n); do
-    charCount=$(echo ${fns[i]} | wc -L)
-    if [ $charCount -gt $maxChar ] && [ ${linkCounts[i]} -gt 1 ]; then
+for fn in ${fns[@]}; do
+    charCount=$(echo $fn | wc -L)
+    if [ $charCount -gt $maxChar ]; then
         maxChar=$charCount
     fi
 done
 
 # Print link table to $homeDir/configs/link_table
->| $homeDir/configs/link_table
+>| $homeDir/configs/$HOSTNAME/link_table
 maxChar=$(( $maxChar+1 ))
-for i in $(seq 0 $n); do
-    if [ ${linkCounts[i]} -gt 1 ]; then
-        str=$(find $homeDir /etc  -inum ${indexNums[i]} | grep -v $homeDir'/configs')
-        printf "%-${maxChar}s %s   %s\n" ${fns[i]} '-->' $str 
-    fi
+for fn in ${fns[@]}; do
+    inum=$(ls -i $fn | awk '{print $1}')
+    str=$(find $homeDir /etc  -inum $inum | grep -v $homeDir'/configs')
+    printf "%-${maxChar}s %s   %s\n" $fn '-->' $str 
 done
