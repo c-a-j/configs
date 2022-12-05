@@ -1,0 +1,10 @@
+/home/cjordan/configs/vimrc ---------------------> /home/cjordan/.vimrc
+/home/cjordan/configs/inputrc -------------------> /home/cjordan/.inputrc
+/home/cjordan/configs/alacritty.yml -------------> /home/cjordan/.config/alacritty/alacritty.yml
+/home/cjordan/configs/bash_profile --------------> /home/cjordan/.bash_profile
+/home/cjordan/configs/bash_logout ---------------> /home/cjordan/.bash_logout
+/home/cjordan/configs/macinArch/xinitrc ---------> /home/cjordan/.xinitrc
+/home/cjordan/configs/macinArch/i3.conf ---------> /home/cjordan/.config/i3/config
+/home/cjordan/configs/macinArch/i3status.conf ---> /home/cjordan/.config/i3status/config
+/home/cjordan/configs/tmux.conf -----------------> /home/cjordan/.tmux.conf
+/home/cjordan/configs/bashrc --------------------> /home/cjordan/.bashrc
