@@ -43,6 +43,6 @@ feh --bg-scale ~/images/wallpaper/SimpleArch.png
 
 # start i3
 if [ -f /usr/bin/i3 ]; then
-  exec i3
+    exec i3
 fi
 

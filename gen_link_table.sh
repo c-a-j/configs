@@ -37,4 +37,3 @@ for i in $(seq 0 $n); do
         printf "%-${maxChar}s %s   %s\n" ${fns[i]} '-->' $str 
     fi
 done
-

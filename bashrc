@@ -57,7 +57,6 @@ function bw-unlock() {
 export HISTCONTROL="erasedups:ignorespace"
 export HISTSIZE=10000
 export HISTFILESIZE=10000
-export TERMINAL='alacritty'
 
 ### bitwarden
 export BW_CLIENTID='user.2fb87eb4-db3a-45e9-8401-ab7900c9972f'

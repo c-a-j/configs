@@ -1,0 +1,8 @@
+# ~/.alacritty.yml
+#
+shell:
+  program: /bin/bash
+  args:
+      - -l
+      - -c
+      - "tmux a || tmux"
