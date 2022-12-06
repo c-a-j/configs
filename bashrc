@@ -2,7 +2,7 @@
 [[ $- != *i* ]] && return
 
 ### Colorize prompt
-# Red user@host, red relative path, prompt on same line
+# Red user@host, red relative path, prompt on same ine
 # export PS1="\e[0;31m[\u@\h \W]$ \e[m"
 
 # Red user@host, green absolute path, prompt on next line (errors here)
@@ -28,7 +28,12 @@ function fancy_prompt {
     local openBracket_="["
     local closeBracket_="]"
     local newLine_="\n"
-    export PS1="$blue_$openBracket_$blue_$user_$red_$at_$blue_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_ $blue_$prompt_$white_ "
+
+    if [ $(whoami) != 'root' ]; then
+      export PS1="$blue_$openBracket_$blue_$user_$red_$at_$blue_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_ $blue_$prompt_$white_ "
+    else
+      export PS1="$blue_$openBracket_$red_$user_$white_$at_$red_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_ $blue_$prompt_$white_ "
+    fi
 }
 fancy_prompt
 
