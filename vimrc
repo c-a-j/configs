@@ -4,6 +4,9 @@ set nocompatible
 " Helps force plugins to load correctly when it is turned back on below
 filetype on
 
+" Statusbar customization
+set statusline=%f%=%{&filetype}
+
 " Turn on syntax highlighting
 syntax on
 
@@ -99,14 +102,22 @@ vmap \tf :s/\%Vtrue/false/g <bar> :noh
 vmap \ft :s/\%Vfalse/true/g <bar> :noh
 " Auto indent
 vmap \i :ggVG= <bar> :noh
+
 " Line Commenting
-if (&ft=='vim')
-  vmap \c :s/^/" \?/ <bar> :noh
-  vmap \u :s/" // <bar> :noh
-elseif (&ft=='sh' || &ft=='perl' || &ft=='python' || &ft=='yaml')
-  vmap \c :s/^/# / <bar> :noh
-  vmap \u :s/# \?// <bar> :noh
-endif
+autocmd BufNewFile,BufRead *.go set filetype=go
+
+au FileType sh vmap \c :s/^/# / <bar> :noh
+au FileType sh vmap \u :s/# \?// <bar> :noh
+
+au FileType perl vmap \c :s/^/# / <bar> :noh
+au FileType perl vmap \u :s/# \?// <bar> :noh
+
+au FileType vim vmap \c :s/^/" / <bar> :noh
+au FileType vim vmap \u :s/" \?// <bar> :noh
+
+au FileType go vmap \c :s/^/\/\/ / <bar> :noh
+au FileType go vmap \u :s/\/\/ \?// <bar> :noh
+
 
 " Turn off annoyances
 map Q <Nop>
@@ -114,7 +125,7 @@ set visualbell
 set t_vb=
 
 " Machine specific
-" ?if hostname() == "AFS5DE002TJQWD3"
-" ?  set t_u7=   
-" ?endif
+" if hostname() == 'AFS5DE002TJQWD3'
+"   set t_u7=   
+" endif
 
