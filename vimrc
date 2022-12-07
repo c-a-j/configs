@@ -1,7 +1,7 @@
 " Don't try to be vi compatible
 set nocompatible
 
-" Helps force plugins to load correctly when it is turned back on below
+" Helps force plugins to load correctly when it is turned back on
 filetype on
 
 " Statusbar customization
@@ -94,18 +94,22 @@ let g:solarized_termtrans=1
 " in ~/.vim/colors/ and uncomment:
 " colorscheme solarized
 
-" VISUAL MODE MAPPINGS
+" Custom File Types
+" autocmd BufNewFile,BufRead *.EXTENSION set filetype=FT
+autocmd BufRead,BufNewFile *.vimrc.bak set ft vim
+
+" {{{ VISUAL MODE MAPPINGS
 " Search and replace
 vmap \sr :s/\%V{s}/{r}/g <bar> :noh
+
 " ! True/False switch
 vmap \tf :s/\%Vtrue/false/g <bar> :noh
 vmap \ft :s/\%Vfalse/true/g <bar> :noh
+
 " Auto indent
 vmap \i :ggVG= <bar> :noh
 
 " Line Commenting
-autocmd BufNewFile,BufRead *.go set filetype=go
-
 au FileType sh vmap \c :s/^/# / <bar> :noh
 au FileType sh vmap \u :s/# \?// <bar> :noh
 
@@ -118,6 +122,9 @@ au FileType vim vmap \u :s/" \?// <bar> :noh
 au FileType go vmap \c :s/^/\/\/ / <bar> :noh
 au FileType go vmap \u :s/\/\/ \?// <bar> :noh
 
+au FileType tmux vmap \c :s/^/# / <bar> :noh
+au FileType tmux vmap \u :s/# \?// <bar> :noh
+" }}}
 
 " Turn off annoyances
 map Q <Nop>
@@ -125,7 +132,7 @@ set visualbell
 set t_vb=
 
 " Machine specific
-" if hostname() == 'AFS5DE002TJQWD3'
-"   set t_u7=   
-" endif
+if hostname() == "AFS5DE002TJQWD3"
+  set t_u7=   
+endif
 
