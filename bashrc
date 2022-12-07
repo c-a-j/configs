@@ -2,15 +2,6 @@
 [[ $- != *i* ]] && return
 
 ### Colorize prompt
-# Red user@host, red relative path, prompt on same ine
-# export PS1="\e[0;31m[\u@\h \W]$ \e[m"
-
-# Red user@host, green absolute path, prompt on next line (errors here)
-# export PS1="\e[0;31m[\u@\h\e[m\e[0;32m \$PWD\e[m\e[0;31m]\n$ \e[m"
-
-# user@host relativePath gitBranch (generated at https://bashrcgenerator.com/)
-# export PS1="[\u@\h \w \$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/')]\n\\$ \[$(tput sgr0)\]"
-
 function fancy_prompt {
     local white_="\[\033[00m\]"
 #     local yellow_="\[\033[01;33m\]"
