@@ -1,13 +1,20 @@
 #!/usr/bin/bash
 
-if [ -z "$1" ]; then
-    echo 'Error: an input file must be provided'
+if [ ! -z $1 ]; then
+    fp=$1
+else
+    file="link_table"
+    fp="$HOSTNAME/$file"
+fi
+
+if [ ! -f "$fp" ]; then
+    echo "Error: $fp does not exist"
     exit
 fi
 
-git_files=$(cat $1 | awk '{print $1}')
+git_files=$(cat $fp | awk '{print $1}')
 git_files=( $git_files )
-cfg_files=$(cat $1 | awk '{print $3}')
+cfg_files=$(cat $fp | awk '{print $3}')
 cfg_files=( $cfg_files )
 
 n=${#git_files[@]}
