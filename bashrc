@@ -2,15 +2,6 @@
 [[ $- != *i* ]] && return
 
 ### Colorize prompt
-# Red user@host, red relative path, prompt on same line
-# export PS1="\e[0;31m[\u@\h \W]$ \e[m"
-
-# Red user@host, green absolute path, prompt on next line (errors here)
-# export PS1="\e[0;31m[\u@\h\e[m\e[0;32m \$PWD\e[m\e[0;31m]\n$ \e[m"
-
-# user@host relativePath gitBranch (generated at https://bashrcgenerator.com/)
-# export PS1="[\u@\h \w \$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/')]\n\\$ \[$(tput sgr0)\]"
-
 function fancy_prompt {
     local white_="\[\033[00m\]"
 #     local yellow_="\[\033[01;33m\]"
@@ -28,7 +19,12 @@ function fancy_prompt {
     local openBracket_="["
     local closeBracket_="]"
     local newLine_="\n"
-    export PS1="$blue_$openBracket_$blue_$user_$red_$at_$blue_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_ $blue_$prompt_$white_ "
+
+    if [ $(whoami) != 'root' ]; then
+      export PS1="$blue_$openBracket_$blue_$user_$red_$at_$blue_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_ $blue_$prompt_$white_ "
+    else
+      export PS1="$blue_$openBracket_$red_$user_$white_$at_$red_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_ $blue_$prompt_$white_ "
+    fi
 }
 fancy_prompt
 

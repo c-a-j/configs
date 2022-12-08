@@ -1,0 +1,6 @@
+/home/cjordan/configs/bashrc ---------> /home/cjordan/.bashrc
+/home/cjordan/configs/bash_logout ----> /home/cjordan/.bash_logout
+/home/cjordan/configs/bash_profile ---> /home/cjordan/.bash_profile
+/home/cjordan/configs/inputrc --------> /home/cjordan/.inputrc
+/home/cjordan/configs/tmux.conf ------> /home/cjordan/.tmux.conf
+/home/cjordan/configs/vimrc ----------> /home/cjordan/.vimrc
