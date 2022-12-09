@@ -21,8 +21,8 @@ n=${#git_files[@]}
 n=$(( n-1 ))
 
 for i in $(seq 0 $n); do
-    git_inum=$(ls -i ${git_files[i]} | awk '{print $1}')
-    cfg_inum=$(ls -i ${cfg_files[i]} | awk '{print $1}')
+    git_inum=$(ls -i "${git_files[i]}" | awk '{print $1}')
+    cfg_inum=$(ls -i "${cfg_files[i]}" | awk '{print $1}')
     if [ $git_inum -ne $cfg_inum ]; then
         echo "Do you want to force the following link? [yn]"
         echo ${git_files[i]} ' ---> ' ${cfg_files[i]}

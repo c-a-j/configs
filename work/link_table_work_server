@@ -1,0 +1,6 @@
+~/configs/bashrc ---------> ~/.bashrc
+~/configs/bash_logout ----> ~/.bash_logout
+~/configs/bash_profile ---> ~/.bash_profile
+~/configs/inputrc --------> ~/.inputrc
+~/configs/tmux.conf ------> ~/.tmux.conf
+~/configs/vimrc ----------> ~/.vimrc
