@@ -124,6 +124,9 @@ au FileType go vmap \u :s/\/\/ \?// <bar> :noh
 
 au FileType tmux vmap \c :s/^/# / <bar> :noh
 au FileType tmux vmap \u :s/# \?// <bar> :noh
+
+au FileType conf vmap \c :s/^/# / <bar> :noh
+au FileType conf vmap \u :s/# \?// <bar> :noh
 " }}}
 
 " Turn off annoyances

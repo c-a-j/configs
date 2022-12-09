@@ -1,0 +1,7 @@
+/fslink/sysinfra/home/pjordc01/configs/bash_logout ----------> /fslink/sysinfra/home/pjordc01/.bash_logout
+/fslink/sysinfra/home/pjordc01/configs/bash_profile ---------> /fslink/sysinfra/home/pjordc01/.bash_profile
+/fslink/sysinfra/home/pjordc01/configs/bashrc ---------------> /fslink/sysinfra/home/pjordc01/.bashrc
+/fslink/sysinfra/home/pjordc01/configs/inputrc --------------> /fslink/sysinfra/home/pjordc01/.inputrc
+/fslink/sysinfra/home/pjordc01/configs/vimrc ----------------> /fslink/sysinfra/home/pjordc01/.vimrc
+/fslink/sysinfra/home/pjordc01/configs/tmux/tmux3.2a.conf ---> 
+/fslink/sysinfra/home/pjordc01/configs/tmux/tmux2.9a.conf ---> /fslink/sysinfra/home/pjordc01/.tmux.conf
