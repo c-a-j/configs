@@ -39,7 +39,7 @@ setxkbmap -model mac-us -layout us -option caps:swapescape
 xrandr --output eDP-1 --primary --mode 1920x1200
 
 # set bg image
-feh --bg-scale ~/images/wallpaper/SimpleArch.png
+feh --bg-scale /usr/share/backgrounds/simpleArch.png
 
 # start i3
 if [ -f /usr/bin/i3 ]; then
