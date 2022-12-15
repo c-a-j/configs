@@ -3,6 +3,7 @@
 /home/cjordan/configs/alacritty.yml ---------------> /home/cjordan/.config/alacritty/alacritty.yml
 /home/cjordan/configs/lightdm.conf ----------------> /etc/lightdm/lightdm.conf
 /home/cjordan/configs/bash_profile ----------------> /home/cjordan/.bash_profile
+/home/cjordan/configs/user-dirs.dirs --------------> /home/cjordan/.config/user-dirs.dirs
 /home/cjordan/configs/lightdm-mini-greeter.conf ---> /etc/lightdm/lightdm-mini-greeter.conf
 /home/cjordan/configs/bash_logout -----------------> /home/cjordan/.bash_logout
 /home/cjordan/configs/macinArch/xinitrc -----------> /home/cjordan/.xinitrc

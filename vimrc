@@ -127,6 +127,10 @@ au FileType tmux vmap \u :s/# \?// <bar> :noh
 
 au FileType conf vmap \c :s/^/# / <bar> :noh
 au FileType conf vmap \u :s/# \?// <bar> :noh
+
+" default
+au FileType conf vmap \c :s/^/# / <bar> :noh
+au FileType conf vmap \u :s/# \?// <bar> :noh
 " }}}
 
 " Turn off annoyances
