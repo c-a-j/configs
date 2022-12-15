@@ -7,9 +7,10 @@ fi
 
 user='cjordan'
 homeDir='/home/'$user
-ignoreFile='.link_table.ignore'
-ignoreRegex=$(cat $homeDir/cfg/$HOSTNAME/$ignoreFile)
-fns=$(find $homeDir/cfg/ -type f | grep -Ev "$ignoreRegex")
+repoDir='configs'
+ignoreFile='.ignore'
+ignoreRegex=$(cat "$homeDir/$repoDir/$HOSTNAME/$ignoreFile")
+fns=$(find $homeDir/$repoDir/ -type f | grep -Ev "$ignoreRegex")
 fns=( $fns )
 maxChar=0
 
@@ -27,7 +28,7 @@ for fn in ${fns[@]}; do
     inum=$(ls -i $fn | awk '{print $1}')
     charCount=$(echo $fn | wc -L)
     n=$(( maxChar-charCount ))
-    str=$(find $homeDir /etc /usr -inum $inum | grep -v $homeDir'/cfg')
+    str=$(find $homeDir /etc /usr -inum $inum | grep -v "$homeDir/$repoDir")
     printf "%s " $fn 
     printf "%0.s-" $(seq 1 $n)
     printf "%s" '> ' 
