@@ -4,6 +4,9 @@ set nocompatible
 " Helps force plugins to load correctly when it is turned back on
 filetype on
 
+" turn off auto comment insertion
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
 " Statusbar customization
 set statusline=%f%=%{&filetype}
 
@@ -131,6 +134,9 @@ au FileType tmux vmap \u :s/# \?// <bar> :noh
 
 au FileType conf vmap \c :s/^/# / <bar> :noh
 au FileType conf vmap \u :s/# \?// <bar> :noh
+
+au FileType scss vmap \c :s/^/\/\/ / <bar> :noh
+au FileType scss vmap \u :s/\/\/ \?// <bar> :noh
 
 " }}}
 
