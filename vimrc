@@ -109,6 +109,10 @@ vmap \ft :s/\%Vfalse/true/g <bar> :noh
 " Auto indent
 vmap \i :ggVG= <bar> :noh
 
+" default commenting is #
+vmap \c :s/^/# / <bar> :noh
+vmap \u :s/# \?// <bar> :noh
+
 " Line Commenting
 au FileType sh vmap \c :s/^/# / <bar> :noh
 au FileType sh vmap \u :s/# \?// <bar> :noh
@@ -128,9 +132,6 @@ au FileType tmux vmap \u :s/# \?// <bar> :noh
 au FileType conf vmap \c :s/^/# / <bar> :noh
 au FileType conf vmap \u :s/# \?// <bar> :noh
 
-" default
-au FileType conf vmap \c :s/^/# / <bar> :noh
-au FileType conf vmap \u :s/# \?// <bar> :noh
 " }}}
 
 " Turn off annoyances
