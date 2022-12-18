@@ -140,6 +140,12 @@ au FileType scss vmap \u :s/\/\/ \?// <bar> :noh
 
 " }}}
 
+" Templates
+autocmd BufNewFile  *_test.go 0r ~/.vim/templates/skel.test.go
+autocmd BufNewFile *\(test\)\@<!.go 0r ~/.vim/templates/skel.go
+autocmd BufNewFile  *.sh 0r ~/.vim/templates/skel.sh
+autocmd BufNewFile  *.pl 0r ~/.vim/templates/skel.pl
+
 " Turn off annoyances
 map Q <Nop>
 set visualbell
