@@ -138,6 +138,9 @@ au FileType conf vmap \u :s/# \?// <bar> :noh
 au FileType scss vmap \c :s/^/\/\/ / <bar> :noh
 au FileType scss vmap \u :s/\/\/ \?// <bar> :noh
 
+au FileType json vmap \c :s/^/\/\/ / <bar> :noh
+au FileType json vmap \u :s/\/\/ \?// <bar> :noh
+
 " }}}
 
 " Templates
