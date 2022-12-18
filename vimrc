@@ -151,8 +151,20 @@ map Q <Nop>
 set visualbell
 set t_vb=
 
-" Machine specific
-if hostname() == "AFS5DE002TJQWD3"
-  set t_u7=   
-endif
+" Disable Arrow keys in normal mode
+map <up> <nop>
+map <down> <nop>
+map <left> <nop>
+map <right> <nop>
 
+" Disable Arrow keys in insert mode
+imap <up> <nop>
+imap <down> <nop>
+imap <left> <nop>
+imap <right> <nop>
+
+" Disable Arrow keys in visual mode
+vmap <up> <nop>
+vmap <down> <nop>
+vmap <left> <nop>
+vmap <right> <nop>
