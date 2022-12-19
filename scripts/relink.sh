@@ -4,7 +4,7 @@ if [ ! -z $1 ]; then
     fp=$1
 else
     file="link_table"
-    fp="$HOME/configs/scripts/$file"
+    fp="/home/cjordan/configs/scripts/$file"
 fi
 
 if [ ! -f "$fp" ]; then
