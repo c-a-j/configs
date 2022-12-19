@@ -4,7 +4,11 @@ $include /etc/inputrc
 set completion-ignore-case on
 
 # Search history with beginning of command
-"\e[A": history-search-backward
-"\e[B": history-search-forward
+set -o vi
+bind -m vi-insert '"\e[A":history-search-backward'
+bind -m vi-insert '"\e[B":history-search-forward'
+
+# "\e[A": history-search-backward
+# "\e[B": history-search-forward
 
 set bell-style none
