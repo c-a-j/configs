@@ -15,7 +15,6 @@
        {
        "class": "^Alacritty$",
        "instance": "^Alacritty$",
-       "machine": "^macinArch$",
        "title": "^Alacritty$"
        }
     ],

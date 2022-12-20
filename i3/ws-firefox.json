@@ -15,7 +15,6 @@
        {
        "class": "^firefox$",
        "instance": "^Navigator$",
-       "machine": "^macinArch$",
        "window_role": "^browser$"
        }
     ],
