@@ -1,5 +1,9 @@
 #!/usr/bin/bash
 
+# To do:
+# make faster by using link_table to search only where files are expected
+# add options for not running as root, i.e. make it work for work
+
 if [ $USER != 'root' ]; then
     echo 'This script must be executed as root'
     exit

@@ -1,5 +1,10 @@
 #!/usr/bin/bash
 
+# To do:
+# get rid of asking the question - maybe add as an option
+# check for existing directory and make directory if not
+# maybe call gen_link_table at the end to confirm links
+
 if [ ! -z $1 ]; then
     fp=$1
 else
