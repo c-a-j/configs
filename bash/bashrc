@@ -21,9 +21,9 @@ function fancy_prompt {
     local newLine_="\n"
 
     if [ $(whoami) != 'root' ]; then
-      export PS1="$blue_$openBracket_$blue_$user_$red_$at_$blue_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_ $blue_$prompt_$white_ "
+      export PS1="$blue_$openBracket_$blue_$user_$red_$at_$blue_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_$newLine_$blue_$prompt_$white_ "
     else
-      export PS1="$blue_$openBracket_$red_$user_$white_$at_$red_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_ $blue_$prompt_$white_ "
+      export PS1="$blue_$openBracket_$red_$user_$white_$at_$red_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_$newLine$blue_$prompt_$white_ "
     fi
 }
 fancy_prompt
