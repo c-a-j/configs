@@ -38,6 +38,10 @@ set softtabstop=4
 set expandtab
 set noshiftround
 
+" Text Width Color Column
+set colorcolumn=81
+highlight ColorColumn ctermbg=8
+
 " Cursor motion
 set scrolloff=3
 set backspace=indent,eol,start
