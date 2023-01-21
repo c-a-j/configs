@@ -28,6 +28,10 @@ function fancy_prompt {
 }
 fancy_prompt
 
+function pbcopy {
+    xclip -i -selection clipboard
+}
+
 ### Auto CD
 shopt -s autocd
 
@@ -57,3 +61,6 @@ export HISTFILESIZE=10000
 ### bitwarden
 export BW_CLIENTID='user.2fb87eb4-db3a-45e9-8401-ab7900c9972f'
 export BW_CLIENTSECRET='lbP8zSDA7v8WqIgKaLycm17nhjPGR3'
+
+export NVM_DIR="/home/cjordan/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
