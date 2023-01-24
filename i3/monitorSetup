@@ -1,0 +1,12 @@
+set $monitorOne "HDMI-1"
+set $monitorTwo "DP-3"
+workspace "1" output $monitorOne
+workspace "2" output $monitorOne
+workspace "3" output $monitorOne
+workspace "4" output $monitorOne
+workspace "5" output $monitorOne
+workspace "6" output $monitorTwo
+workspace "7" output $monitorTwo
+workspace "8" output $monitorTwo
+workspace "9" output $monitorTwo
+workspace "10" output $monitorTwo
