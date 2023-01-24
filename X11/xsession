@@ -2,7 +2,10 @@
 
 if [ $HOSTNAME == "macinArch" ]; then
     # set i3 configuration file
-    cat ~/configs/i3/i3.conf | sed 's|set \$mod {{KEY}}|set \$mod mod4|g' >| ~/.config/i3/config
+    sed -n '/{{WORKSPACE_SETUP}}/!{p;d;}; r /home/cjordan/configs/i3/macinArch/workspaces' /home/cjordan/configs/i3/i3.conf |\
+    sed 's|{{SET_MOD_KEY}}|set \$mod mod4|g' |\
+    sed 's|{{MONITOR_SETUP}}||g' \
+    >| ~/.config/i3/config
 
     # set keyboard layout
     setxkbmap -model mac-us -layout us -option caps:swapescape
@@ -17,9 +20,9 @@ fi
 
 if [ $HOSTNAME == "intelArch" ]; then
     # set i3 configuration file
-#     cat ~/configs/i3/i3.conf | sed 's|set \$mod {{KEY}}|set \$mod mod1|g' >| ~/.config/i3/config
-#     cat ~/configs/i3/monitorSetup >> ~/.config/i3/config
-    sed -n '/{{MONITOR_SETUP}}/!{p;d;}; r /home/cjordan/configs/i3/monitorSetup' /home/cjordan/configs/i3/i3.conf | sed 's|set \$mod {{KEY}}|set \$mod mod1|g' >| ~/.config/i3/config
+    sed -n '/{{WORKSPACE_SETUP}}/!{p;d;}; r /home/cjordan/configs/i3/intelArch/workspaces' /home/cjordan/configs/i3/i3.conf |\
+    sed 's|{{SET_MOD_KEY}}|set \$mod mod1|g' |\
+    >| ~/.config/i3/config
 
     # set keyboard layout
     setxkbmap -model mac-us -layout us -option caps:swapescape

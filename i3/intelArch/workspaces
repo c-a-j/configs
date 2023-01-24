@@ -1,0 +1,22 @@
+# Monitor Layout
+set $monitorOne "HDMI-1"
+set $monitorTwo "DP-3"
+workspace "1" output $monitorOne
+workspace "2" output $monitorOne
+workspace "3" output $monitorOne
+workspace "4" output $monitorOne
+workspace "5" output $monitorOne
+workspace "6" output $monitorTwo
+workspace "7" output $monitorTwo
+workspace "8" output $monitorTwo
+workspace "9" output $monitorTwo
+workspace "10" output $monitorTwo
+
+# Workspaces
+exec --no-startup-id "i3-msg 'workspace 1; append_layout /home/cjordan/.config/i3/ws-alacritty.json'"
+exec --no-startup-id "i3-msg 'workspace 2; append_layout /home/cjordan/.config/i3/ws-alacritty.json'"
+exec --no-startup-id "i3-msg 'workspace 6; append_layout /home/cjordan/.config/i3/ws-firefox.json'"
+exec --no-startup-id alacritty
+exec --no-startup-id alacritty
+exec --no-startup-id firefox
+for_window [class="Alacritty" workspace=1] focus ; workspace number 1

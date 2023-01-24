@@ -1,0 +1,8 @@
+# Workspaces
+exec --no-startup-id "i3-msg 'workspace 1; append_layout /home/cjordan/.config/i3/ws-alacritty.json'"
+exec --no-startup-id "i3-msg 'workspace 2; append_layout /home/cjordan/.config/i3/ws-alacritty.json'"
+exec --no-startup-id "i3-msg 'workspace 3; append_layout /home/cjordan/.config/i3/ws-firefox.json'"
+exec --no-startup-id alacritty
+exec --no-startup-id alacritty
+exec --no-startup-id firefox
+for_window [class="Alacritty" workspace=1] focus ; workspace number 1
