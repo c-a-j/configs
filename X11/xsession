@@ -21,7 +21,7 @@ fi
 if [ $HOSTNAME == "intelArch" ]; then
     # set i3 configuration file
     sed -n '/{{WORKSPACE_SETUP}}/!{p;d;}; r /home/cjordan/configs/i3/intelArch/workspaces' /home/cjordan/configs/i3/i3.conf |\
-    sed 's|{{SET_MOD_KEY}}|set \$mod mod1|g' |\
+    sed 's|{{SET_MOD_KEY}}|set \$mod mod1|g' \
     >| ~/.config/i3/config
 
     # set keyboard layout

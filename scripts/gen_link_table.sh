@@ -10,8 +10,8 @@ if [ $USER != 'root' ]; then
 fi
 
 user='cjordan'
-homeDir='/home/'$user
 repoDir='configs'
+homeDir="/home/$user"
 ignoreFile='.ignore'
 ignoreRegex=$(cat "$homeDir/$repoDir/scripts/$ignoreFile")
 fns=$(find $homeDir/$repoDir/ -type f | grep -Ev "$ignoreRegex")
@@ -32,7 +32,10 @@ for fn in ${fns[@]}; do
     inum=$(ls -i $fn | awk '{print $1}')
     charCount=$(echo $fn | wc -L)
     n=$(( maxChar-charCount ))
-    str=$(find $homeDir /etc /usr -inum $inum | grep -v "$homeDir/$repoDir")
+    str=$(find $homeDir -inum $inum | grep -v "$homeDir/$repoDir")
+    if [ -z "$str" ]; then
+        str=$(find /etc /usr -inum $inum | grep -v "$homeDir/$repoDir")
+    fi
     printf "%s " $fn 
     printf "%0.s-" $(seq 1 $n)
     printf "%s" '> ' 

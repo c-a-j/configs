@@ -30,16 +30,11 @@ for i in $(seq 0 $n); do
     if [ -f "${cfg_files[i]}" ]; then
         cfg_inum=$(ls -i "${cfg_files[i]}" | awk '{print $1}')
     fi
-    if [ $git_inum -ne $cfg_inum ] && [ -f "${cfg_files[i]}" ]; then
-        echo "Do you want to force the following link? [yn]"
+    if [ "$git_inum" != "$cfg_inum" ] && [ -f "${cfg_files[i]}" ]; then
         echo ${git_files[i]} ' ---> ' ${cfg_files[i]}
-        read answer
-        if [ $answer == 'Y' ] || [ $answer == 'y' ]; then
-            ln -f ${git_files[i]} ${cfg_files[i]}
-            echo 'Link created'
-        else
-            continue
-        fi
+        ln -f ${git_files[i]} ${cfg_files[i]}
+        echo "link created"
+        echo ""
     elif [ ! -f "${cfg_files[i]}" ]; then
         echo "Do you want to establish the following link? [yn]"
         echo ${git_files[i]} ' ---> ' ${cfg_files[i]}
