@@ -102,7 +102,7 @@ set t_Co=256
 " Color scheme - gruvbox
 set background=dark
 let g:gruvbox_termcolors=256
-let g:gruvbox_gruvbox_contrast_dark="medium"
+let g:gruvbox_gruvbox_contrast_dark="soft"
 colorscheme gruvbox
 
 " Custom File Types

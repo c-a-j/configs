@@ -6,3 +6,5 @@ shell:
       - -l
       - -c
       - "tmux a || tmux"
+import:
+  - ~/.config/alacritty/themes/themes/gruvbox_dark.yaml
