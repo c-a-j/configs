@@ -143,15 +143,17 @@ au FileType tmux vmap \u :s/# \?// <bar> :noh
 au FileType conf vmap \c :s/^/# / <bar> :noh
 au FileType conf vmap \u :s/# \?// <bar> :noh
 
-au FileType scss vmap \c :s/^/\/\/ / <bar> :noh
-au FileType scss vmap \u :s/\/\/ \?// <bar> :noh
-
 au FileType json vmap \c :s/^/\/\/ / <bar> :noh
 au FileType json vmap \u :s/\/\/ \?// <bar> :noh
 
-" au FileType scss vmap \c :s/^/# / <bar> :noh
-" au FileType scss vmap \u :s/# \?// <bar> :noh
+au FileType scss vmap \c :s/^\(.*\)$/\/\* \1 \*\// <bar> :noh
+au FileType scss vmap \u :s/\/\* \?\(.*\) \?\*\//\1/ <bar> :noh
 
+au FileType css vmap \c :s/^\(.*\)$/\/\* \1 \*\// <bar> :noh
+au FileType css vmap \u :s/\/\* \?\(.*\) \?\*\//\1/ <bar> :noh
+
+au FileType html vmap \c :s/^\(.*\)$/<!-- \1 -->/ <bar> :noh
+au FileType html vmap \u :s/<!-- \?\(.*\) \?-->/\1/ <bar> :noh
 " }}}
 
 " Templates
