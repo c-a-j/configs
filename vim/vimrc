@@ -4,6 +4,11 @@ set nocompatible
 " Helps force plugins to load correctly when it is turned back on
 filetype on
 
+" auto indent
+filetype indent on
+set ai
+set si
+
 " turn off auto comment insertion
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
@@ -136,6 +141,9 @@ au FileType vim vmap \u :s/" \?// <bar> :noh
 
 au FileType go vmap \c :s/^/\/\/ / <bar> :noh
 au FileType go vmap \u :s/\/\/ \?// <bar> :noh
+
+au FileType rust vmap \c :s/^/\/\/ / <bar> :noh
+au FileType rust vmap \u :s/\/\/ \?// <bar> :noh
 
 au FileType tmux vmap \c :s/^/# / <bar> :noh
 au FileType tmux vmap \u :s/# \?// <bar> :noh
