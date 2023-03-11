@@ -38,6 +38,9 @@ shopt -s autocd
 ### No Clobber - Dissalows user to overwrite existing files by redirection of shell output - must use >| to manually overwrite
 set -o noclobber
 
+### Vi mode
+set -o vi
+
 ### Append to history after each command
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 

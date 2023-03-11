@@ -154,6 +154,9 @@ au FileType css vmap \u :s/\/\* \?\(.*\) \?\*\//\1/ <bar> :noh
 
 au FileType html vmap \c :s/^\(.*\)$/<!-- \1 -->/ <bar> :noh
 au FileType html vmap \u :s/<!-- \?\(.*\) \?-->/\1/ <bar> :noh
+
+au FileType javascript vmap \c :s/^/\/\/ / <bar> :noh
+au FileType javascript vmap \u :s/\/\/ \?// <bar> :noh
 " }}}
 
 " Templates
@@ -161,6 +164,9 @@ autocmd BufNewFile  *_test.go 0r ~/.vim/templates/skel.test.go
 autocmd BufNewFile *\(test\)\@<!.go 0r ~/.vim/templates/skel.go
 autocmd BufNewFile  *.sh 0r ~/.vim/templates/skel.sh
 autocmd BufNewFile  *.pl 0r ~/.vim/templates/skel.pl
+
+" File specific settings
+au FileType markdown set spell
 
 " Turn off annoyances
 map Q <Nop>
