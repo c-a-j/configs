@@ -15,7 +15,9 @@ if [ $HOSTNAME == "macinArch" ]; then
 
     # set bg image
     feh --bg-scale "/usr/share/backgrounds/simpleArch.png"
-
+    
+    # dim the screen 
+    xrandr --output eDP-1 --brightness 0.4
 fi
 
 if [ $HOSTNAME == "intelArch" ]; then
