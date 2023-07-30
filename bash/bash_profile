@@ -5,3 +5,4 @@
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 
 export EDITOR=/usr/bin/vim
+export PATH=$PATH:"/home/cjordan/.cargo/bin"
