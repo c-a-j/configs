@@ -35,9 +35,6 @@ function pbcopy {
 ### Auto CD
 shopt -s autocd
 
-### No Clobber - Dissalows user to overwrite existing files by redirection of shell output - must use >| to manually overwrite
-set -o noclobber
-
 ### Vi mode
 set -o vi
 
