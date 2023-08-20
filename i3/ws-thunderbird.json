@@ -1,0 +1,24 @@
+{
+    "border": "normal",
+    "current_border_width": 2,
+    "floating": "auto_off",
+    "geometry": {
+       "height": 768,
+       "width": 1224,
+       "x": 0,
+       "y": 0
+    },
+    "marks": [],
+    "name": "Inbox - clintaddison@gmail.com - Mozilla Thunderbird",
+    "percent": 1,
+    "swallows": [
+       {
+       "class": "^thunderbird$",
+       "instance": "^Mail$",
+       "machine": "^intelArch$",
+       "window_role": "^3pane$"
+       }
+    ],
+    "type": "con"
+}
+

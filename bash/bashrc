@@ -64,3 +64,4 @@ export BW_CLIENTSECRET='lbP8zSDA7v8WqIgKaLycm17nhjPGR3'
 
 export NVM_DIR="/home/cjordan/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+. "$HOME/.cargo/env"

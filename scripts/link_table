@@ -1,5 +1,6 @@
 /home/cjordan/configs/i3/ws-alacritty.json --------------------> /home/cjordan/.config/i3/ws-alacritty.json
 /home/cjordan/configs/i3/ws-firefox.json ----------------------> /home/cjordan/.config/i3/ws-firefox.json
+/home/cjordan/configs/i3/ws-thunderbird.json ------------------> /home/cjordan/.config/i3/ws-thunderbird.json
 /home/cjordan/configs/i3/i3status.conf ------------------------> /home/cjordan/.config/i3status/config
 /home/cjordan/configs/lightdm/lightdm.conf --------------------> /etc/lightdm/lightdm.conf
 /home/cjordan/configs/lightdm/lightdm-mini-greeter.conf -------> /etc/lightdm/lightdm-mini-greeter.conf

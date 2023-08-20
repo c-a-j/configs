@@ -27,7 +27,7 @@ if [ $HOSTNAME == "intelArch" ]; then
     >| ~/.config/i3/config
 
     # set keyboard layout
-    setxkbmap -model mac-us -layout us -option caps:swapescape
+    setxkbmap -model us -layout us -option caps:swapescape
 
     # set resolution
 #     xrandr --output eDP-1 --primary --mode 1920x1200
