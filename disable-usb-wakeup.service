@@ -1,0 +1,11 @@
+[Unit]
+Description=Disable USB wakeup triggers in /proc/acpi/wakeup
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c "echo XHCI >> /proc/acpi/wakeup"
+ExecStop=/bin/bash -c "echo XHCI >> /proc/acpi/wakeup"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
