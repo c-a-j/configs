@@ -1,0 +1,5 @@
+import = ["/home/cjordan/.config/alacritty/themes/themes/gruvbox_dark.yaml"]
+
+[shell]
+args = ["-l", "-c", "tmux a || tmux"]
+program = "/bin/bash"
