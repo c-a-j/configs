@@ -1,5 +1,9 @@
-import = ["/home/cjordan/.config/alacritty/themes/themes/gruvbox_dark.yaml"]
+[general]
+import = [
+    "~/.config/alacritty/themes/themes/gruvbox_dark.toml"
+]
+live_config_reload = true
 
-[shell]
-args = ["-l", "-c", "tmux a || tmux"]
+[terminal.shell]
 program = "/bin/bash"
+args = ["-l", "-c", "tmux a || tmux"]

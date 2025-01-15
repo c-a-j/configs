@@ -170,6 +170,12 @@ au FileType html vmap \u :s/<!-- \?\(.*\) \?-->/\1/ <bar> :noh
 
 au FileType javascript vmap \c :s/^/\/\/ / <bar> :noh
 au FileType javascript vmap \u :s/\/\/ \?// <bar> :noh
+
+au FileType typescript vmap \c :s/^/\/\/ / <bar> :noh
+au FileType typescript vmap \u :s/\/\/ \?// <bar> :noh
+
+au FileType typescriptreact vmap \c :s/^/\/\/ / <bar> :noh
+au FileType typescriptreact vmap \u :s/\/\/ \?// <bar> :noh
 " }}}
 
 " Templates
