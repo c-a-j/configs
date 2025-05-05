@@ -23,13 +23,19 @@ function fancy_prompt {
     if [ $(whoami) != 'root' ]; then
       export PS1="$blue_$openBracket_$blue_$user_$red_$at_$blue_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_$newLine_$blue_$prompt_$white_ "
     else
-      export PS1="$blue_$openBracket_$red_$user_$white_$at_$red_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_$newLine$blue_$prompt_$white_ "
+      export PS1="$blue_$openBracket_$red_$user_$white_$at_$red_$host_ $green_$relLocation_$red_$gitBranch_$blue_$closeBracket_$newLine_$blue_$prompt_$white_ "
     fi
 }
 fancy_prompt
 
 function pbcopy {
     xclip -i -selection clipboard
+}
+
+pathadd() {
+    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+        PATH="${PATH:+"$PATH:"}$1"
+    fi
 }
 
 ### Auto CD
@@ -58,6 +64,10 @@ function bw-unlock() {
 export HISTCONTROL="erasedups:ignorespace"
 export HISTSIZE=10000
 export HISTFILESIZE=10000
+export tc0='cjordan@10.0.0.70'
+export tc1='cjordan@10.0.0.71'
+export tc2='cjordan@10.0.0.72'
+export tc3='cjordan@10.0.0.73'
 
 ### bitwarden
 export BW_CLIENTID='user.2fb87eb4-db3a-45e9-8401-ab7900c9972f'
@@ -65,12 +75,22 @@ export BW_CLIENTSECRET='lbP8zSDA7v8WqIgKaLycm17nhjPGR3'
 
 export NVM_DIR="/home/cjordan/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+
+if [ -f "$HOME/.cargo/env" ]; then
 . "$HOME/.cargo/env"
+fi
 
 ### dircolors
-eval "$(dircolors ~/.dircolors)"
+if [ -f "$HOME/.dircolors" ]; then
+    eval "$(dircolors ~/.dircolors)"
+fi
 
 ### pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+command -v pyenv >/dev/null && eval "$(pyenv init -)"
+
+### PATH
+pathadd /sbin
+

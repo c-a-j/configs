@@ -176,6 +176,9 @@ au FileType typescript vmap \u :s/\/\/ \?// <bar> :noh
 
 au FileType typescriptreact vmap \c :s/^/\/\/ / <bar> :noh
 au FileType typescriptreact vmap \u :s/\/\/ \?// <bar> :noh
+
+au FileType tex vmap \c :s/^/% / <bar> :noh
+au FileType tex vmap \u :s/% \?// <bar> :noh
 " }}}
 
 " Templates
@@ -185,7 +188,14 @@ autocmd BufNewFile  *.sh 0r ~/.vim/templates/skel.sh
 autocmd BufNewFile  *.pl 0r ~/.vim/templates/skel.pl
 
 " File specific settings
-au FileType yaml setlocal expandtab
+au FileType yaml set expandtab
+au FileType yaml set tabstop=2
+au FileType yaml set softtabstop=2
+au FileType yaml set shiftwidth=2
+au FileType toml set expandtab
+au FileType toml set tabstop=2
+au FileType toml set softtabstop=2
+au FileType toml set shiftwidth=2
 au FileType markdown set spell
 
 " Turn off annoyances

@@ -1,0 +1,12 @@
+[Unit]
+Description=Lock the screen on resume from suspend
+After=sleep.target suspend.target
+
+[Service]
+User=%i
+Type=simple
+Environment=DISPLAY=:0
+ExecStart=/usr/bin/i3lock -n -i /usr/share/backgrounds/leaf-bg.png
+
+[Install]
+WantedBy=sleep.target suspend.target
