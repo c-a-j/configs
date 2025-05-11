@@ -54,6 +54,10 @@ alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias py='python'
+(command -v podman > /dev/null && [ $USER != root ]) && alias podman="sudo podman"
+(command -v podman-compose > /dev/null && [ $USER != root ]) && alias podman-compose="sudo podman-compose"
+(command -v docker > /dev/null && [ $USER != root ]) && alias docker="sudo docker"
+(command -v docker-compose > /dev/null && [ $USER != root ]) && alias docker-compose="sudo docker-compose"
 
 ### User defined functions
 function bw-unlock() {
@@ -64,10 +68,12 @@ function bw-unlock() {
 export HISTCONTROL="erasedups:ignorespace"
 export HISTSIZE=10000
 export HISTFILESIZE=10000
-export tc0='cjordan@10.0.0.70'
-export tc1='cjordan@10.0.0.71'
-export tc2='cjordan@10.0.0.72'
-export tc3='cjordan@10.0.0.73'
+if [ $HOSTNAME == "intelArch" ]; then
+    export tc0='cjordan@10.0.0.70'
+    export tc1='cjordan@10.0.0.71'
+    export tc2='cjordan@10.0.0.72'
+    export tc3='cjordan@10.0.0.73'
+fi
 
 ### bitwarden
 export BW_CLIENTID='user.2fb87eb4-db3a-45e9-8401-ab7900c9972f'
@@ -94,3 +100,8 @@ command -v pyenv >/dev/null && eval "$(pyenv init -)"
 ### PATH
 pathadd /sbin
 
+### Kubernetes
+command -v kubectl > /dev/null && source <(kubectl completion bash)
+command -v kubectl > /dev/null && alias k='kubectl'
+command -v kubectl > /dev/null && complete -o default -F __start_kubectl k
+command -v helm > /dev/null && source <(helm completion bash)

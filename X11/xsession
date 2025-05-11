@@ -33,5 +33,5 @@ if [ $HOSTNAME == "intelArch" ]; then
 #     xrandr --output eDP-1 --primary --mode 1920x1200
 
     # set bg image
-    feh --bg-scale "/usr/share/backgrounds/simpleArch.png"
+    feh --bg-scale "/usr/share/backgrounds/leaf-bg.png"
 fi
