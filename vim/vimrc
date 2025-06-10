@@ -4,7 +4,7 @@ set nocompatible
 " Helps force plugins to load correctly when it is turned back on
 filetype on
 
-" auto indent
+set autoindent
 filetype indent on
 set ai
 set si
@@ -37,13 +37,13 @@ set encoding=utf-8
 hi StatusLine ctermbg=7 ctermfg=8
 
 " Whitespace
-"set wrap
+set nowrap
 set textwidth=80
 " set formatoptions=tcqrn1 "the t option automatically wraps
 set formatoptions=lcqrn1 "the l option does not automatically wrap, use gq
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
 set expandtab
 set noshiftround
 
@@ -186,16 +186,22 @@ autocmd BufNewFile  *_test.go 0r ~/.vim/templates/skel.test.go
 autocmd BufNewFile *\(test\)\@<!.go 0r ~/.vim/templates/skel.go
 autocmd BufNewFile  *.sh 0r ~/.vim/templates/skel.sh
 autocmd BufNewFile  *.pl 0r ~/.vim/templates/skel.pl
+autocmd BufNewFile  *.py 0r ~/.vim/templates/skel.py
 
 " File specific settings
 au FileType yaml set expandtab
 au FileType yaml set tabstop=2
 au FileType yaml set softtabstop=2
 au FileType yaml set shiftwidth=2
+au FileType yaml set noautoindent
+au FileType yaml filetype indent off
 au FileType toml set expandtab
 au FileType toml set tabstop=2
 au FileType toml set softtabstop=2
 au FileType toml set shiftwidth=2
+au FileType python set softtabstop=2
+au FileType python set shiftwidth=2
+au FileType python set tabstop=2
 au FileType markdown set spell
 
 " Turn off annoyances
