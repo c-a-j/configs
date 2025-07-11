@@ -121,7 +121,7 @@ set -o vi
 ### Append to history after each command
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
-### User defined aliases
+### Aliases
 alias vi='vim'
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
@@ -133,46 +133,48 @@ alias py='python'
 (command -v docker > /dev/null && [ $USER != root ]) && alias docker="sudo docker"
 (command -v docker-compose > /dev/null && [ $USER != root ]) && alias docker-compose="sudo docker-compose"
 
-### User defined functions
-function bw-unlock() {
-    $(bw unlock | grep 'export BW_SESSION' | awk '{print $2 " " $3}')
-}
-
 ### User defined export variables
 export HISTCONTROL="erasedups:ignorespace"
 export HISTSIZE=10000
 export HISTFILESIZE=10000
 if [ $HOSTNAME == "intelArch" ]; then
-    export tc0='cjordan@10.0.0.70'
-    export tc1='cjordan@10.0.0.71'
-    export tc2='cjordan@10.0.0.72'
-    export tc3='cjordan@10.0.0.73'
+  export tc0='cjordan@10.0.0.70'
+  export tc1='cjordan@10.0.0.71'
+  export tc2='cjordan@10.0.0.72'
+  export tc3='cjordan@10.0.0.73'
 fi
 
-### bitwarden
-export BW_CLIENTID='user.2fb87eb4-db3a-45e9-8401-ab7900c9972f'
-export BW_CLIENTSECRET='lbP8zSDA7v8WqIgKaLycm17nhjPGR3'
+### PATH
+pathadd /sbin
 
+# FLUTTER
+flutterDir="$HOME/packages/flutter/bin"
+if [ -d $flutterDir ]; then
+  pathadd $flutterDir
+fi
+
+# NVM
 export NVM_DIR="/home/cjordan/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 
 if [ -f "$HOME/.cargo/env" ]; then
-. "$HOME/.cargo/env"
+  . "$HOME/.cargo/env"
 fi
 
 ### dircolors
 if [ -f "$HOME/.dircolors" ]; then
-    eval "$(dircolors ~/.dircolors)"
+  eval "$(dircolors ~/.dircolors)"
 fi
+
+### git
+command -v git >/dev/null && source /usr/share/bash-completion/completions/git
 
 ### pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 command -v pyenv >/dev/null && eval "$(pyenv init -)"
 
-### PATH
-pathadd /sbin
 
 ### Kubernetes
 command -v kubectl > /dev/null && source <(kubectl completion bash)
