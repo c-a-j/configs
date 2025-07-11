@@ -149,14 +149,14 @@ if [ $HOSTNAME == "intelArch" ]; then
     export tc3='cjordan@10.0.0.73'
 fi
 
-### bitwarden
-export BW_CLIENTID='user.2fb87eb4-db3a-45e9-8401-ab7900c9972f'
-export BW_CLIENTSECRET='lbP8zSDA7v8WqIgKaLycm17nhjPGR3'
+# Editor
+export EDITOR=/usr/bin/vim
 
+# NVM
 export NVM_DIR="/home/cjordan/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
-
+# Cargo
 if [ -f "$HOME/.cargo/env" ]; then
 . "$HOME/.cargo/env"
 fi
