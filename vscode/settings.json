@@ -1,0 +1,43 @@
+{
+    "window.commandCenter": 1,
+    "keyboard.dispatch": "keyCode",
+    "vim.foldfix": true,
+    "cursor.cpp.disabledLanguages": [],
+    "explorer.confirmDragAndDrop": false,
+    "terminal.external.linuxExec": "alacritty",
+    "explorer.confirmDelete": false,
+    "editor.rulers": [
+        81
+    ],
+    "editor.tabSize": 2,
+
+    "[javascript]": {
+        "editor.tabSize": 2
+    },
+    "[typescript]": {
+        "editor.tabSize": 2
+    },
+    "[astro]": {
+        "editor.tabSize": 2
+    },
+    "editor.indentSize": "tabSize",
+    "cursor.composer.shouldAutoAcceptDiffs": false,
+    "[dart]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "editor.rulers": [
+            80
+        ],
+        "editor.selectionHighlight": false,
+        "editor.tabCompletion": "onlySnippets",
+        "editor.wordBasedSuggestions": "off"
+    },
+    "editor.suggest.showClasses": false,
+    "editor.suggest.showConstants": false,
+    "editor.suggest.showConstructors": false,
+    "editor.acceptSuggestionOnEnter": "off",
+    "editor.acceptSuggestionOnCommitCharacter": false,
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1
+    }
+}
