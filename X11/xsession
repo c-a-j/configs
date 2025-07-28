@@ -17,7 +17,7 @@ if [ $HOSTNAME == "macinArch" ]; then
     feh --bg-scale "/usr/share/backgrounds/leaf-bg.png"
     
     # dim the screen 
-    xrandr --output eDP-1 --brightness 0.9
+    xrandr --output eDP-1 --brightness 1.0
 fi
 
 if [ $HOSTNAME == "intelArch" ]; then
