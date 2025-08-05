@@ -10,6 +10,7 @@
         81
     ],
     "editor.tabSize": 2,
+    "editor.wordWrapColumn": 80,
 
     "[javascript]": {
         "editor.tabSize": 2
@@ -39,5 +40,7 @@
     "editor.acceptSuggestionOnCommitCharacter": false,
     "extensions.experimental.affinity": {
         "asvetliakov.vscode-neovim": 1
-    }
+    },
+    "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim",
+    "vscode-neovim.neovimInitVimPaths.linux": "/home/cjordan/configs/nvim/init.vim", 
 }
