@@ -4,6 +4,7 @@
 set completion-ignore-case on
 
 set editing-mode vi
+set -o vi
 
 # Search history with beginning of command
 "\e[A": history-search-backward
