@@ -3,15 +3,13 @@
     "current_border_width": 2,
     "floating": "auto_off",
     "marks": [],
-    "name": "Alacritty",
     "percent": 1,
     "swallows": [
        {
-       "class": "^Alacritty$",
-       "instance": "^Alacritty$",
-       "title": "^Alacritty$"
+         "class": "^Alacritty$",
+         "instance": "^Alacritty$",
+         "title": "^Alacritty$"
        }
     ],
     "type": "con"
 }
-

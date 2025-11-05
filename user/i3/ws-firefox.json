@@ -3,15 +3,13 @@
     "current_border_width": 2,
     "floating": "auto_off",
     "marks": [],
-    "name": "firefox",
     "percent": 1,
     "swallows": [
        {
-       "class": "^firefox$",
-       "instance": "^Navigator$",
-       "window_role": "^browser$"
+         "class": "^org\\.mozilla\\.firefox$",
+         "instance": "^Navigator$",
+         "window_role": "^browser$"
        }
     ],
     "type": "con"
 }
-
