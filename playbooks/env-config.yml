@@ -1,0 +1,135 @@
+- name: Clone configs repo
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: no
+  vars_files: 
+    - vars.yml
+  tasks:
+    - name: determine if configs directory exists
+      ansible.builtin.stat:
+        path: "{{ config_src }}"
+      register: configs_present
+    - name: clone repo
+      git:
+        repo: https://github.com/clint-jordan/configs.git
+        dest: "{{ config_src }}"
+        clone: yes
+        update: no
+      when: not configs_present
+
+- name: Shell Configuration
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: no
+  vars_files: 
+    - vars.yml
+  tasks:
+    - name: hard link bashrc
+      ansible.builtin.file:
+        src: "{{ shell_config_src }}/bashrc"
+        dest: "{{ host_user_home }}/.bashrc"
+        state: hard
+        force: true
+    - name: hard link bash_profile
+      ansible.builtin.file:
+        src: "{{ shell_config_src }}/bash_profile"
+        dest: "{{ host_user_home }}/.bash_profile"
+        state: hard
+        force: true
+    - name: hard link inputrc
+      ansible.builtin.file:
+        src: "{{ shell_config_src }}/inputrc"
+        dest: "{{ host_user_home }}/.inputrc"
+        state: hard
+        force: true
+    - name: hard link bash_logout
+      ansible.builtin.file:
+        src: "{{ shell_config_src }}/bash_logout"
+        dest: "{{ host_user_home }}/.bash_logout"
+        state: hard
+        force: true
+
+- name: Vim Configuration
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: no
+  vars_files: 
+    - vars.yml
+  tasks:
+    - name: get color scheme
+      git:
+        repo: https://github.com/morhetz/gruvbox.git
+        dest: "{{ vim_colors_src }}/gruvbox"
+        clone: yes
+        update: yes
+    - name: create colors directory
+      ansible.builtin.file:
+        path: "{{ host_user_home }}/.vim/colors"
+        state: directory
+    - name: hard link colors file
+      ansible.builtin.file:
+        src: "{{ vim_colors_src }}/gruvbox/colors/gruvbox.vim"
+        dest: "{{ host_user_home }}/.vim/colors"
+        state: hard
+        force: true
+    - name: create templates directory
+      ansible.builtin.file:
+        path: "{{ host_user_home }}/.vim/templates"
+        state: directory
+    - name: find template files
+      ansible.builtin.find:
+        paths: "{{ vim_template_src }}"
+        file_type: file
+      register: template_files
+    - name: hard link template files
+      ansible.builtin.file:
+        src: "{{ item.path }}"
+        dest: "{{ host_user_home }}/.vim/templates/{{ item.path | basename }}"
+        state: hard
+        force: true
+      loop: "{{ template_files.files }}"
+    - name: hard link vimrc
+      ansible.builtin.file:
+        src: "{{ vim_config_src }}/vimrc"
+        dest: "{{ host_user_home }}/.vimrc"
+        state: hard
+        force: true
+
+- name: Terminal Configuration
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: no
+  vars_files: 
+    - vars.yml
+  tasks:
+    - name: hard link alacritty config
+      ansible.builtin.file:
+        src: "{{ alacritty_src }}"
+        dest: "{{ alacritty_dest }}"
+        state: hard
+        force: true
+    - name: hard link tmux config
+      ansible.builtin.file:
+        src: "{{ tmux_src }}"
+        dest: "{{ tmux_dest }}"
+        state: hard
+        force: true
+
+- name: Git Configuration
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: no
+  vars_files: 
+    - vars.yml
+  tasks:
+    - name: hard link gitconfig
+      ansible.builtin.file:
+        src: "{{ user_config_src }}/gitconfig"
+        dest: "{{ host_user_home }}/.gitconfig"
+        state: hard
+        force: true

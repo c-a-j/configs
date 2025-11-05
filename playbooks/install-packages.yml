@@ -1,0 +1,19 @@
+- name: Install initial packages
+  hosts: localhost
+  remote_user: cjordan
+  become_user: root
+  become: yes
+  tasks:
+    - name: Upgrade 
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+    - name: Install
+      ansible.builtin.dnf:
+        name:
+          - vim
+          - git
+          - tmux
+          - alacritty
+          - xclip
+
