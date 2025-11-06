@@ -1,0 +1,48 @@
+- name: sudo setup
+  hosts: localhost
+  remote_user: cjordan
+  become_method: sudo
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Find script files
+      ansible.builtin.find:
+        paths: "{{ lightdm_script_src }}"
+        file_type: file
+        pattern: "*.sh"
+      register: files
+
+    - name: Add /usr/local/bin/set-lightdm-gtk-greeter-bg
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ item.path }}"
+        dest: "{{ system_script_dest }}/{{ item.path | basename | regex_replace('\\.sh$', '') }}"
+        owner: root
+        group: root
+        mode: '0744'
+      loop: "{{ files.files }}"
+
+    - name: Run greeter setup script
+      become: yes
+      ansible.builtin.command: "bash {{ system_script_dest }}/lightdm-gtk-greeter-gen-config"
+
+    - name: Set initial background
+      become: yes
+      ansible.builtin.command: "bash {{ system_script_dest }}/lightdm-gtk-greeter-set-bg"
+
+    - name: Find lightdm.conf.d files
+      ansible.builtin.find:
+        paths: "{{ lightdm_config_src }}/lightdm.conf.d"
+        file_type: file
+        pattern: '*.conf'
+      register: files
+# 
+    - name: Add files to /etc/lightdm/lightdm.conf.d
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ item.path }}"
+        dest: "{{ lightdm_config_dest }}/{{ item.path | basename }}"
+        owner: root
+        group: root
+        mode: '0644'
+      loop: "{{ files.files }}"

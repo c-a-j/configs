@@ -2,6 +2,7 @@ host_user_home: "{{ lookup('ansible.builtin.env', 'HOME') }}"
 config_src: "{{ host_user_home }}/configs"
 user_config_src: "{{ config_src }}/user"
 system_config_src: "{{ config_src }}/system"
+system_script_dest: "/usr/local/bin"
 
 shell_config_src: "{{ user_config_src }}/shell"
 user_dirs_src: "{{ user_config_src }}/user-dirs"
@@ -21,3 +22,7 @@ i3_config_dest: "{{ host_user_home }}/.config/i3"
 
 dunst_config_src: "{{ user_config_src }}/dunst"
 dunst_config_dest: "{{ host_user_home }}/.config/dunst"
+
+lightdm_config_src: "{{ system_config_src }}/lightdm"
+lightdm_config_dest: "/etc/lightdm/lightdm.conf.d"
+lightdm_script_src: "{{ lightdm_config_src }}/scripts"

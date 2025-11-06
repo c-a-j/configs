@@ -57,10 +57,6 @@
 #  transition-duration = overrides default value
 #
 [greeter]
-background=/usr/share/backgrounds/karsten-wurth-unsplash.jpg
-theme-name = Adwaita-dark
-icon-theme-name = Adwaita
-hide-user-image = true
 #background=
 #user-background=
 #theme-name=
