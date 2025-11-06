@@ -10,7 +10,7 @@ host=mbp
 wsFile=$configDir/$host/workspaces
 if [ $HOSTNAME == $host ]; then
   sed -n "/{{WORKSPACE_SETUP}}/!{p;d;}; r $wsFile" $i3src |\
-  sed 's|{{SET_MOD_KEY}}|set \$mod mod1|g' > $i3dest
+  sed 's|{{SET_MOD_KEY}}|set \$mod mod4|g' > $i3dest
 fi
 
 host=nuc
