@@ -63,7 +63,7 @@ function fancy_prompt {
 
     export PS1="$bracket_co_$openBracket_$user_co_$user_$at_co_$at_$host_co_$host_ $path_co_$relLocation_$git_co_$gitBranch_$bracket_co_$closeBracket_$newLine_$prompt_co_$prompt_$command_co_ "
 }
-if echo $HOSTNAME | grep -q 'Arch'; then
+if echo $HOSTNAME | grep -qE 'nuc|mbp'; then
     if [ $(whoami) != 'root' ]; then
         bracket_co=blue
         user_co=blue

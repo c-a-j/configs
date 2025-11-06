@@ -4,16 +4,20 @@ user_config_src: "{{ config_src }}/user"
 system_config_src: "{{ config_src }}/system"
 
 shell_config_src: "{{ user_config_src }}/shell"
+user_dirs_src: "{{ user_config_src }}/user-dirs"
 
 vim_config_src: "{{ user_config_src }}/vim"
 vim_template_src: "{{ vim_config_src }}/templates"
 vim_colors_src: "{{ vim_config_src }}/colors"
 
-alacritty_src: "{{ user_config_src }}/alacritty.toml"
+alacritty_src: "{{ user_config_src }}/alacritty/alacritty.toml"
 alacritty_dest: "{{ host_user_home }}/.config/alacritty.toml"
 
-tmux_src: "{{ user_config_src }}/tmux.conf"
+tmux_src: "{{ user_config_src }}/tmux/tmux.conf"
 tmux_dest: "{{ host_user_home }}/.tmux.conf"
 
 i3_config_src: "{{ user_config_src }}/i3"
 i3_config_dest: "{{ host_user_home }}/.config/i3"
+
+dunst_config_src: "{{ user_config_src }}/dunst"
+dunst_config_dest: "{{ host_user_home }}/.config/dunst"

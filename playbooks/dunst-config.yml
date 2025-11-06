@@ -1,0 +1,18 @@
+- name: Configure i3
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: no
+  vars_files: 
+    - vars.yml
+  tasks:
+    - name: ensure destination path exists
+      ansible.builtin.file:
+        path: "{{ dunst_config_dest }}"
+        state: directory
+    - name: hard link config file
+      ansible.builtin.file:
+        src: "{{ dunst_config_src }}/dunstrc"
+        dest: "{{ dunst_config_dest }}/dunstrc"
+        state: hard
+        force: true

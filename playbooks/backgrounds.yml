@@ -1,0 +1,26 @@
+- name: sudo setup
+  hosts: localhost
+  remote_user: cjordan
+  become_method: sudo
+  vars:
+    host_user_home: "{{ lookup('ansible.builtin.env', 'HOME') }}"
+    src: "{{ host_user_home }}/configs/system/backgrounds"
+    dest: "/usr/share/backgrounds"
+  tasks:
+    - name: Find image files
+      ansible.builtin.find:
+        paths: "{{ src }}"
+        patterns: '*.jpg,*.png'
+        file_type: file
+      register: files
+
+    - name: Copy background files into /usr/share/backgrounds
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ item.path }}"
+        dest: "{{ dest }}/{{ item.path | basename }}"
+        owner: root
+        group: root
+        mode: '0644'
+      loop: "{{ files.files }}"
+

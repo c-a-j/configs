@@ -1,0 +1,11 @@
+# /etc/systemd/system/random-lightdm-background.service
+[Unit]
+Description=Set random LightDM background
+Before=lightdm.service
+
+[Service]
+Type=oneshot
+ExecStart=/home/cjordan/configs/system/lightdm/set-bg.sh
+
+[Install]
+WantedBy=graphical.target

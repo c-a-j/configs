@@ -1,0 +1,36 @@
+- name: Shell Configuration
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: no
+  vars_files: 
+    - vars.yml
+  tasks:
+    - name: copy bashrc
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ shell_config_src }}/bashrc"
+        dest: "/root/.bashrc"
+        owner: root
+        group: root
+    - name: copy bash_profile
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ shell_config_src }}/bash_profile"
+        dest: "/root/.bash_profile"
+        owner: root
+        group: root
+    - name: copy inputrc
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ shell_config_src }}/inputrc"
+        dest: "/root/.inputrc"
+        owner: root
+        group: root
+    - name: copy bash_logout
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ shell_config_src }}/bash_logout"
+        dest: "/root/.bash_logout"
+        owner: root
+        group: root
