@@ -370,6 +370,12 @@
 [skip-NetworkManager]
   appname="NetworkManager Applet"
   skip_display = yes
+  history_ignore = yes
+
+[skip-Thunderbird]
+  appname="Thunderbird"
+  skip_display = yes
+  history_ignore = yes
 
 
 # Every section that isn't one of the above is interpreted as a rules to

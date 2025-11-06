@@ -17,4 +17,5 @@
           - alacritty
           - xclip
           - thunderbird
-
+          - npm
+          - pnpm
