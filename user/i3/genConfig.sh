@@ -9,7 +9,7 @@ i3dest=$HOME/.config/i3/config
 
 layoutDir=$configDir/layouts
 
-colorSchemeFile="default"
+colorSchemeFile="custom"
 colorSchemeDir=$configDir/color-schemes
 colorScheme=$colorSchemeDir/$colorSchemeFile
 

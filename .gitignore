@@ -1,2 +1,4 @@
 gen_link_table.pl
 *.swp
+user/i3/i3.config
+/system/lightdm/lightdm-gtk-greeter.conf
