@@ -19,6 +19,7 @@ tmux_dest: "{{ host_user_home }}/.tmux.conf"
 
 i3_config_src: "{{ user_config_src }}/i3"
 i3_config_dest: "{{ host_user_home }}/.config/i3"
+i3_layout_dir: "{{ i3_config_src }}/layouts"
 
 dunst_config_src: "{{ user_config_src }}/dunst"
 dunst_config_dest: "{{ host_user_home }}/.config/dunst"
