@@ -17,8 +17,8 @@ exec --no-startup-id "i3-msg 'workspace 1; append_layout /home/cjordan/.config/i
 exec --no-startup-id "i3-msg 'workspace 2; append_layout /home/cjordan/.config/i3/alacritty.json'"
 exec --no-startup-id "i3-msg 'workspace 7; append_layout /home/cjordan/.config/i3/firefox.json'"
 exec --no-startup-id "i3-msg 'workspace 10; append_layout /home/cjordan/.config/i3/thunderbird.json'"
-exec --no-startup-id alacritty
-exec --no-startup-id alacritty
+exec --no-startup-id "alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml"
+exec --no-startup-id "alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml"
 exec --no-startup-id firefox
 exec --no-startup-id thunderbird
 for_window [class="Alacritty" workspace=1] focus ; workspace number 1

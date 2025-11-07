@@ -1,0 +1,27 @@
+# - name: Configure i3
+#   hosts: localhost
+#   gather_facts: yes
+#   remote_user: cjordan
+#   become: no
+#   vars_files: 
+#     - vars.yml
+#   tasks:
+#     - name: ensure destination path exists
+#       ansible.builtin.file:
+#         path: "{{ i3_config_dest }}"
+#         state: directory
+#     - name: generate config file
+#       ansible.builtin.command: "bash {{ i3_config_src }}/genConfig.sh"
+#     - name: find layout files
+#       ansible.builtin.find:
+#         paths: "{{ i3_layout_dir }}"
+#         patterns: "*.json"
+#         file_type: file
+#       register: files
+#     - name: hard link layout files
+#       ansible.builtin.file:
+#         src: "{{ item.path }}"
+#         dest: "{{ i3_config_dest }}/{{ item.path | basename }}"
+#         state: hard
+#         force: true
+#       loop: "{{ files.files }}"

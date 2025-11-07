@@ -11,8 +11,8 @@ vim_config_src: "{{ user_config_src }}/vim"
 vim_template_src: "{{ vim_config_src }}/templates"
 vim_colors_src: "{{ vim_config_src }}/colors"
 
-alacritty_src: "{{ user_config_src }}/alacritty/alacritty.toml"
-alacritty_dest: "{{ host_user_home }}/.config/alacritty.toml"
+alacritty_src: "{{ user_config_src }}/alacritty"
+alacritty_dest: "{{ host_user_home }}/.config/alacritty"
 
 tmux_src: "{{ user_config_src }}/tmux/tmux.conf"
 tmux_dest: "{{ host_user_home }}/.tmux.conf"

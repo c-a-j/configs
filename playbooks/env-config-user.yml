@@ -101,12 +101,25 @@
   vars_files: 
     - vars.yml
   tasks:
+    - name: find alacritty configs
+      ansible.builtin.find:
+        paths: "{{ alacritty_src }}"
+        pattern: "*.toml"
+        file_type: file
+      register: files
     - name: hard link alacritty config
       ansible.builtin.file:
-        src: "{{ alacritty_src }}"
-        dest: "{{ alacritty_dest }}"
+        src: "{{ item.path }}"
+        dest: "{{ alacritty_dest }}/{{ item.path | basename }}"
         state: hard
         force: true
+      loop: "{{ files.files }}"
+    - name: get alacritty themes
+      git:
+        repo: https://github.com/alacritty/alacritty-theme
+        dest: "{{ alacritty_dest }}/themes"
+        clone: yes
+        update: yes
     - name: hard link tmux config
       ansible.builtin.file:
         src: "{{ tmux_src }}"
