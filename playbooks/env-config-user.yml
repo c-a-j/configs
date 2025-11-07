@@ -101,13 +101,17 @@
   vars_files: 
     - vars.yml
   tasks:
+    - name: create ansible config directory
+      ansible.builtin.file:
+        path: "{{ alacritty_dest }}"
+        state: directory
     - name: find alacritty configs
       ansible.builtin.find:
         paths: "{{ alacritty_src }}"
         pattern: "*.toml"
         file_type: file
       register: files
-    - name: hard link alacritty config
+    - name: hard link alacritty configs
       ansible.builtin.file:
         src: "{{ item.path }}"
         dest: "{{ alacritty_dest }}/{{ item.path | basename }}"
