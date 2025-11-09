@@ -7,9 +7,14 @@ system_script_dest: "/usr/local/bin"
 shell_config_src: "{{ user_config_src }}/shell"
 user_dirs_src: "{{ user_config_src }}/user-dirs"
 
-vim_config_src: "{{ user_config_src }}/vim"
-vim_template_src: "{{ vim_config_src }}/templates"
+editor_src: "{{ user_config_src }}/editor"
+editor_template_src: "{{ editor_src }}/templates"
+
+vim_config_src: "{{ editor_src }}/vim"
 vim_colors_src: "{{ vim_config_src }}/colors"
+
+nvim_config_src: "{{ editor_src }}/nvim"
+nvim_config_dest: "{{ host_user_home }}/.config/nvim"
 
 alacritty_src: "{{ user_config_src }}/alacritty"
 alacritty_dest: "{{ host_user_home }}/.config/alacritty"

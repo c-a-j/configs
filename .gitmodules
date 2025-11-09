@@ -1,6 +1,3 @@
-[submodule "vim/colors/gruvbox"]
-	path = vim/colors/gruvbox
-	url = git@github.com:morhetz/gruvbox.git
-[submodule "user/vim/colors/gruvbox"]
-	path = user/vim/colors/gruvbox
+[submodule "user/editor/vim/colors/gruvbox"]
+	path = user/editor/vim/colors/gruvbox
 	url = https://github.com/morhetz/gruvbox.git

@@ -119,8 +119,15 @@ set -o vi
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
 ### Aliases
-command -v vim &> /dev/null && alias vi='vim'
-#command -v nvim &> /dev/null && alias vi='nvim'
+if command -v nvim &> /dev/null; then
+  alias vi='nvim'
+  export EDITOR=/usr/bin/nvim
+elif command -v vim &> /dev/null; then
+  alias vi='vim'
+  export EDITOR=/usr/bin/vim
+else
+  export EDITOR=/usr/bin/vi
+fi
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
@@ -144,9 +151,6 @@ fi
 
 ### PATH
 pathadd /sbin
-
-# Editor
-export EDITOR=/usr/bin/vim
 
 # NVM
 export NVM_DIR="/home/cjordan/.nvm"

@@ -1,0 +1,46 @@
+- name: Vim Configuration
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: no
+  vars_files: 
+    - vars.yml
+  tasks:
+    - name: get color scheme
+      git:
+        repo: https://github.com/morhetz/gruvbox.git
+        dest: "{{ vim_colors_src }}/gruvbox"
+        clone: yes
+        update: yes
+    - name: create colors directory
+      ansible.builtin.file:
+        path: "{{ host_user_home }}/.vim/colors"
+        state: directory
+    - name: hard link colors file
+      ansible.builtin.file:
+        src: "{{ vim_colors_src }}/gruvbox/colors/gruvbox.vim"
+        dest: "{{ host_user_home }}/.vim/colors"
+        state: hard
+        force: true
+    - name: create templates directory
+      ansible.builtin.file:
+        path: "{{ host_user_home }}/.vim/templates"
+        state: directory
+    - name: find template files
+      ansible.builtin.find:
+        paths: "{{ editor_template_src }}"
+        file_type: file
+      register: template_files
+    - name: hard link template files
+      ansible.builtin.file:
+        src: "{{ item.path }}"
+        dest: "{{ host_user_home }}/.vim/templates/{{ item.path | basename }}"
+        state: hard
+        force: true
+      loop: "{{ template_files.files }}"
+    - name: hard link vimrc
+      ansible.builtin.file:
+        src: "{{ vim_config_src }}/vimrc"
+        dest: "{{ host_user_home }}/.vimrc"
+        state: hard
+        force: true

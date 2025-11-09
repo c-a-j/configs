@@ -1,0 +1,37 @@
+- name: Terminal Configuration
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: no
+  vars_files: 
+    - vars.yml
+  tasks:
+    - name: create ansible config directory
+      ansible.builtin.file:
+        path: "{{ alacritty_dest }}"
+        state: directory
+    - name: find alacritty configs
+      ansible.builtin.find:
+        paths: "{{ alacritty_src }}"
+        pattern: "*.toml"
+        file_type: file
+      register: files
+    - name: hard link alacritty configs
+      ansible.builtin.file:
+        src: "{{ item.path }}"
+        dest: "{{ alacritty_dest }}/{{ item.path | basename }}"
+        state: hard
+        force: true
+      loop: "{{ files.files }}"
+    - name: get alacritty themes
+      git:
+        repo: https://github.com/alacritty/alacritty-theme
+        dest: "{{ alacritty_dest }}/themes"
+        clone: yes
+        update: yes
+    - name: hard link tmux config
+      ansible.builtin.file:
+        src: "{{ tmux_src }}"
+        dest: "{{ tmux_dest }}"
+        state: hard
+        force: true

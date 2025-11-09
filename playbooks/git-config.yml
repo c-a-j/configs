@@ -1,0 +1,14 @@
+- name: Git Configuration
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: no
+  vars_files: 
+    - vars.yml
+  tasks:
+    - name: hard link gitconfig
+      ansible.builtin.file:
+        src: "{{ user_config_src }}/git/gitconfig"
+        dest: "{{ host_user_home }}/.gitconfig"
+        state: hard
+        force: true

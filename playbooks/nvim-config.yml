@@ -1,50 +1,10 @@
-- name: shell configuration
-  hosts: localhost
-  gather_facts: yes
-  remote_user: cjordan
-  become: no
-  vars_files: 
-    - vars.yml
-  tasks:
-    - name: copy bashrc
-      become: yes
-      ansible.builtin.copy:
-        src: "{{ shell_config_src }}/bashrc"
-        dest: "/root/.bashrc"
-        owner: root
-        group: root
-    - name: copy bash_profile
-      become: yes
-      ansible.builtin.copy:
-        src: "{{ shell_config_src }}/bash_profile"
-        dest: "/root/.bash_profile"
-        owner: root
-        group: root
-    - name: copy inputrc
-      become: yes
-      ansible.builtin.copy:
-        src: "{{ shell_config_src }}/inputrc"
-        dest: "/root/.inputrc"
-        owner: root
-        group: root
-    - name: copy bash_logout
-      become: yes
-      ansible.builtin.copy:
-        src: "{{ shell_config_src }}/bash_logout"
-        dest: "/root/.bash_logout"
-        owner: root
-        group: root
-
 - name: nvim config
   hosts: localhost
-  become: no
+  remote_user: "{{ nvim_user | default('cjordan') }}"
   vars_files:
     - vars.yml
-  vars:
-    nvim_config_dest: "/root/.config/nvim"
   tasks:
     - name: Find all nvim config files
-      become: yes
       ansible.builtin.find:
         paths: "{{ nvim_config_src }}"
         file_type: file
@@ -52,48 +12,41 @@
       register: nvim_files
 
     - name: Create nvim config directory
-      become: yes
       ansible.builtin.file:
         path: "{{ nvim_config_dest }}"
         state: directory
 
     - name: Create nvim sub directories 
-      become: yes
       ansible.builtin.file:
         path: "{{ nvim_config_dest }}/{{ (item.path | regex_replace('^' + nvim_config_src + '/?', '')) | dirname }}"
         state: directory
       loop: "{{ nvim_files.files }}"
       when: (item.path | regex_replace('^' + nvim_config_src + '/?', '')) | dirname != '.'
 
-    - name: copy config files
-      become: yes
-      ansible.builtin.copy:
+    - name: Hard link config files
+      ansible.builtin.file:
         src: "{{ item.path }}"
         dest: "{{ nvim_config_dest }}/{{ item.path | regex_replace('^' + nvim_config_src + '/?', '') }}"
-        owner: root
-        group: root
+        state: hard
+        force: true
       loop: "{{ nvim_files.files }}"
 
     - name: create templates directory
-      become: yes
       ansible.builtin.file:
         path: "{{ nvim_config_dest }}/templates"
         state: directory
-        owner: root
-        group: root
 
     - name: find template files
-      become: yes
       ansible.builtin.find:
         paths: "{{ editor_template_src }}"
         file_type: file
       register: template_files
 
-    - name: copy template files
-      become: yes
-      ansible.builtin.copy:
+    - name: hard link template files
+      ansible.builtin.file:
         src: "{{ item.path }}"
         dest: "{{ nvim_config_dest }}/templates/{{ item.path | basename }}"
-        owner: root
-        group: root
+        state: hard
+        force: true
       loop: "{{ template_files.files }}"
+
