@@ -30,6 +30,12 @@
         dest: "{{ host_user_home }}/.bash_logout"
         state: hard
         force: true
+    - name: hard link profile
+      ansible.builtin.file:
+        src: "{{ shell_config_src }}/profile"
+        dest: "{{ host_user_home }}/.profile"
+        state: hard
+        force: true
 
 - name: Home configuration
   hosts: localhost

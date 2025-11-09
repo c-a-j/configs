@@ -1,0 +1,11 @@
+# switch to workspace with home base keys
+bindsym mod4+a workspace number $ws1
+bindsym mod4+s workspace number $ws2
+bindsym mod4+d workspace number $ws3
+bindsym mod4+f workspace number $ws4
+bindsym mod4+g workspace number $ws5
+bindsym mod4+h workspace number $ws6
+bindsym mod4+j workspace number $ws7
+bindsym mod4+k workspace number $ws8
+bindsym mod4+l workspace number $ws9
+bindsym mod4+semicolon workspace number $ws10

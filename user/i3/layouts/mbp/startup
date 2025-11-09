@@ -1,8 +1,8 @@
 # Workspaces
-exec --no-startup-id "i3-msg 'workspace 1; append_layout /home/cjordan/.config/i3/alacritty.json'"
-exec --no-startup-id "i3-msg 'workspace 2; append_layout /home/cjordan/.config/i3/alacritty.json'"
-exec --no-startup-id "i3-msg 'workspace 6; append_layout /home/cjordan/.config/i3/firefox.json'"
+exec --no-startup-id i3-msg "workspace $ws1; append_layout /home/cjordan/.config/i3/alacritty.json"
+exec --no-startup-id i3-msg "workspace $ws2; append_layout /home/cjordan/.config/i3/alacritty.json"
+exec --no-startup-id i3-msg "workspace $ws7; append_layout /home/cjordan/.config/i3/firefox.json"
 exec --no-startup-id "alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml"
 exec --no-startup-id "alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml"
 exec --no-startup-id firefox
-for_window [class="Alacritty" workspace=1] focus ; workspace number 1
+for_window [class="Alacritty" workspace=$ws1] focus;

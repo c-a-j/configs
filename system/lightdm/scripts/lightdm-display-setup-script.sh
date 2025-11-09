@@ -7,6 +7,7 @@ fi
 if [ "$HOSTNAME" == "nuc" ]; then
   xrandr --output HDMI-1 --primary --mode 1920x1080
   xrandr --output DP-3 --mode 1920x1080
+  xset dpms 0 0 0 && xset s noblank  && xset s off
 fi
 
 exit 0

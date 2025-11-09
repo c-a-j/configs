@@ -1,6 +1,6 @@
 # i3 config file (v4)
 #
-{{MOD_KEY}}
+{{MOD_KEYS}}
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 #
 # This config file uses keycodes (bindsym) and was written for the QWERTY
@@ -59,7 +59,7 @@ set $right semicolon
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec alacritty
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -144,7 +144,9 @@ set $ws10 "10"
 
 {{STARTUP_LAYOUT}}
 
-# switch to workspace
+{{BINDINGS}}
+
+# switch to workspace with mod + numbers
 bindsym $mod+1 workspace number $ws1
 bindsym $mod+2 workspace number $ws2
 bindsym $mod+3 workspace number $ws3

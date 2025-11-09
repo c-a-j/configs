@@ -13,49 +13,61 @@ colorSchemeFile="custom"
 colorSchemeDir=$configDir/color-schemes
 colorScheme=$colorSchemeDir/$colorSchemeFile
 
-# ensure color scheme exists and is valid
-if [ ! -f $colorScheme ]; then
-  echo "error: color scheme file, $colorScheme, doesn't exist"
+missing-or-invalid() {
+  if [ -n $1 ]; then
+    echo "error: mod keys file, $1, is missing or invalid"
+  fi
   exit 1
-fi
-if ! i3 -c $colorScheme -C > /dev/null; then
-  echo "error: color scheme file, $colorScheme, is invalid"
-  exit 1
-fi
+}
 
-# check for host specific startup layout
-if [ -f $layoutDir/$HOSTNAME/startup ]; then
-  startupLayout=$layoutDir/$HOSTNAME/startup
+# check for host specific configs
+if [ -d $layoutDir/$HOSTNAME ]; then
+  layoutDir=$layoutDir/$HOSTNAME
 else
-  startupLayout=$layoutDir/default/startup
+  layoutDir=$layoutDir/default
 fi
-
-case $HOSTNAME in
-  nuc)
-    modKey="mod1"
-    ;;
-  mbp)
-    modKey="mod4"
-    ;;
-  *)
-    modKey="mod1"
-    ;;
-esac
 
 cp $i3template $i3src
 
-sed -i "s|{{MOD_KEY}}|set \$mod $modKey|" $i3src
+modkeys=$layoutDir/modkeys
+bindings=$layoutDir/bindings
+startup=$layoutDir/startup
 
-if i3 -c $startupLayout -C > /dev/null; then
+if i3 -c $modkeys -C &> /dev/null && grep -q '^set $mod' $modkeys; then
   sed -i \
-    -e "/{{STARTUP_LAYOUT}}/r $startupLayout" \
+    -e "/{{MOD_KEYS}}/r $modkeys" \
+    -e "/{{MOD_KEYS}}/d" $i3src
+else
+  missing-or-invalid $modkeys
+fi
+
+if i3 -c $startup -C &> /dev/null; then
+  sed -i \
+    -e "/{{STARTUP_LAYOUT}}/r $startup" \
     -e "/{{STARTUP_LAYOUT}}/d" $i3src
 else
   sed -i "/{{STARTUP_LAYOUT}}/d" $i3src
 fi
 
-sed -i \
-  -e "/{{COLOR_SCHEME}}/r $colorScheme" \
-  -e "/{{COLOR_SCHEME}}/d" $i3src
+if i3 -c $bindings -C &> /dev/null; then
+  sed -i \
+    -e "/{{BINDINGS}}/r $bindings" \
+    -e "/{{BINDINGS}}/d" $i3src
+else
+  sed -i "/{{BINDINGS}}/d" $i3src
+fi
 
-cp $i3src $i3dest
+if i3 -c $colorScheme -C &> /dev/null; then
+  sed -i \
+    -e "/{{COLOR_SCHEME}}/r $colorScheme" \
+    -e "/{{COLOR_SCHEME}}/d" $i3src
+else
+  missing-or-invalid $colorScheme
+fi
+
+if i3 -c $i3src -C &> /dev/null; then
+  cp $i3src $i3dest
+else
+  echo "error: resulting config is invalid"
+  exit 1
+fi
