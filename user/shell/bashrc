@@ -119,10 +119,10 @@ set -o vi
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
 ### Aliases
-if command -v nvim &> /dev/null; then
+if [ $USER != root ] && command -v nvim &> /dev/null; then
   alias vi='nvim'
   export EDITOR=/usr/bin/nvim
-elif command -v vim &> /dev/null; then
+elif [ $USER != root ] && command -v vim &> /dev/null; then
   alias vi='vim'
   export EDITOR=/usr/bin/vim
 else
@@ -133,6 +133,7 @@ alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias py='python'
+[ $USER != root ] && alias svi='sudo -e'
 (command -v podman &> /dev/null && [ $USER != root ]) && alias podman="sudo podman"
 (command -v podman-compose &> /dev/null && [ $USER != root ]) && alias podman-compose="sudo podman-compose"
 (command -v docker &> /dev/null && [ $USER != root ]) && alias docker="sudo docker"
