@@ -244,7 +244,7 @@ vim.api.nvim_create_autocmd("FileType", {
 -- }}}
 
 -- {{{ Templates
-local template_dir = "~/.nvim/templates/skel.test.go"
+local template_dir = "~/.config/nvim/templates"
 vim.api.nvim_create_autocmd("BufNewFile", {
   pattern = "*_test.go",
   command = "0r " .. template_dir .."/skel.test.go"
@@ -308,6 +308,9 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.keymap.set({ "n", "v" }, "Q", "<Nop>")
 vim.o.visualbell = true
 vim.cmd("set t_vb=")
+
+-- Disable mouse
+vim.o.mouse = ""
 
 -- Disable Arrow keys in normal mode
 vim.keymap.set("n", "<up>", "<Nop>")
