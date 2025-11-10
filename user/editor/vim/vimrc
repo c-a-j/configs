@@ -9,6 +9,10 @@ filetype indent on
 set ai
 set si
 
+" clipboard
+" set clipboard=unnamedplus  " Use system clipboard (ctrl-v to paste)
+set clipboard=unnamedplus  " Use X primary selection (mouse middle click or shift+insert to paste)
+
 " turn off auto comment insertion
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 

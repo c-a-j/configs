@@ -23,7 +23,6 @@ vim.o.foldmethod = "marker"
 -- Security
 vim.o.modelines = 0
 
-
 -- Show line numbers
 vim.o.number = true
 
@@ -86,6 +85,10 @@ vim.api.nvim_set_hl(0, "MatchParen", {
 
 -- Formatting
 vim.keymap.set("n", "<leader>q", "gqip")
+
+-- Yank to clipboard
+-- vim.o.clipboard = "unnamedplus"  -- Use system clipboard for yank/delete operations
+vim.o.clipboard = "unnamed"  -- Use X primary selection (middle-click paste) for yank/delete operations
 
 -- Visualize tabs and newlines
 vim.o.listchars = "tab:▸ ,eol:¬"
@@ -299,8 +302,12 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
-    vim.bo.spell = true
-  end
+    vim.cmd("setlocal spell")
+    vim.bo.expandtab = true
+    vim.bo.tabstop = 2
+    vim.bo.softtabstop = 2
+    vim.bo.shiftwidth = 2
+  end,
 })
 -- }}}
 
@@ -333,6 +340,7 @@ vim.keymap.set("v", "<right>", "<Nop>")
 -- Plugins
 require("config.lazy")
 
--- gruvbox
-vim.o.background = "dark" -- or "light" for light mode
-vim.cmd([[colorscheme gruvbox]])
+-- color scheme
+-- vim.cmd([[colorscheme gruvbox]])
+-- vim.cmd("colorscheme kanagawa-wave")
+vim.cmd("colorscheme gruvbox-material")

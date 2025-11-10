@@ -2,7 +2,7 @@
 [[ $- != *i* ]] && return
 
 ### Colorize prompt
-function fancy_prompt {
+fancy_prompt() {
   declare -A colors
 
   colors[black]="\[\e[0;30m\]"
@@ -101,16 +101,8 @@ else
   fi
 fi
 fancy_prompt $bracket_co $user_co $at_co $host_co $path_co $git_co $prompt_co
+unset fancy_prompt
 
-function pbcopy {
-  xclip -i -selection clipboard
-}
-
-pathadd() {
-  if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
-    export PATH="${PATH:+"$PATH:"}$1"
-  fi
-}
 
 ### Vi mode
 set -o vi
@@ -118,7 +110,7 @@ set -o vi
 ### Append to history after each command
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
-### Aliases
+### Aliases {{{
 if [ $USER != root ] && command -v nvim &> /dev/null; then
   alias vi='nvim'
   export EDITOR=/usr/bin/nvim
@@ -133,11 +125,56 @@ alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias py='python'
+alias ctl='systemctl'
+complete -F systemctl ctl
 [ $USER != root ] && alias svi='sudo -e'
+[ $USER != root ] && alias sctl='sudo systemctl'
+
 (command -v podman &> /dev/null && [ $USER != root ]) && alias podman="sudo podman"
 (command -v podman-compose &> /dev/null && [ $USER != root ]) && alias podman-compose="sudo podman-compose"
 (command -v docker &> /dev/null && [ $USER != root ]) && alias docker="sudo docker"
 (command -v docker-compose &> /dev/null && [ $USER != root ]) && alias docker-compose="sudo docker-compose"
+# }}}
+
+# Functions {{{
+pbcopy() {
+  xclip -i -selection clipboard
+}
+
+pathadd() {
+  if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+    export PATH="${PATH:+"$PATH:"}$1"
+  fi
+}
+
+if [ $USER != root ]; then
+  sctlstatus() { 
+    sudo systemctl status "$1" -l --no-pager 
+  }
+  sctlrestart() { 
+    sudo systemctl restart "$1" && sctlstatus "$1"; 
+  }
+  sctlenable() { 
+    sudo systemctl enable --now "$1" 
+  }
+  sctldisable() { 
+    sudo systemctl disable --now "$1" 
+  }
+fi
+
+ctlstatus() { 
+  systemctl status "$1" -l --no-pager 
+}
+ctlrestart() { 
+  systemctl restart "$1" && ctlstatus "$1"; 
+}
+ctlenable() { 
+  systemctl enable --now "$1" 
+}
+ctldisable() { 
+  systemctl disable --now "$1" 
+}
+# }}}
 
 ### User defined export variables
 export HISTCONTROL="erasedups:ignorespace"
@@ -187,3 +224,4 @@ command -v linkerd &> /dev/null && export PATH=$HOME/.linkerd2/bin:$PATH
 if [ -f /etc/bash_completion ]; then
   source /etc/bash_completion
 fi
+
