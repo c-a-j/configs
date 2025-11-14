@@ -13,13 +13,19 @@ workspace $ws9 output $monitorTwo
 workspace $ws10 output $monitorTwo
 
 # Workspaces
-exec --no-startup-id i3-msg "workspace $ws1; append_layout /home/cjordan/.config/i3/alacritty.json"
-exec --no-startup-id i3-msg "workspace $ws2; append_layout /home/cjordan/.config/i3/alacritty.json"
+exec --no-startup-id i3-msg "workspace $ws1; append_layout /home/cjordan/.config/i3/alacritty-splith.json"
+exec --no-startup-id "alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml"
+exec --no-startup-id "alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml"
+
+exec --no-startup-id i3-msg "workspace $ws2; append_layout /home/cjordan/.config/i3/alacritty-splith.json"
+exec --no-startup-id "alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml"
+exec --no-startup-id "alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml"
+
 exec --no-startup-id i3-msg "workspace $ws7; append_layout /home/cjordan/.config/i3/firefox.json"
 exec --no-startup-id i3-msg "workspace $ws10; append_layout /home/cjordan/.config/i3/thunderbird.json"
-exec --no-startup-id "alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml"
-exec --no-startup-id "alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml"
 exec --no-startup-id firefox
 exec --no-startup-id thunderbird
 for_window [class="Alacritty" workspace=$ws1] focus;
 for_window [class="org.mozilla.firefox" workspace=$ws7] focus;
+
+for_window [class="Qemu-system-x86_64"] move container to workspace $ws4;

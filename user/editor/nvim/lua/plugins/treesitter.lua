@@ -16,9 +16,10 @@ return {
         "python",
         "typescript",
         "vim", 
-        "vimdoc", 
+        "vimdoc",
       },
-      auto_install = true,
+      auto_install = true, 
+      ignore_install= { "latex" },
       highlight = {
         enable = true,
         disable = function(lang, buf)

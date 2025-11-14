@@ -3,7 +3,6 @@
     "current_border_width": 2,
     "floating": "auto_off",
     "marks": [],
-    "percent": 1,
     "swallows": [
        {
          "class": "^Alacritty$",

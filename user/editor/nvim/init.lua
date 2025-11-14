@@ -86,9 +86,11 @@ vim.api.nvim_set_hl(0, "MatchParen", {
 -- Formatting
 vim.keymap.set("n", "<leader>q", "gqip")
 
--- Yank to clipboard
--- vim.o.clipboard = "unnamedplus"  -- Use system clipboard for yank/delete operations
-vim.o.clipboard = "unnamed"  -- Use X primary selection (middle-click paste) for yank/delete operations
+-- Yank to clipboard (X primary selection - middle-click paste)
+-- Only yank operations go to primary selection, delete operations are unchanged
+vim.keymap.set({ "n", "v" }, "y", '"*y', { desc = "Yank to primary selection" })
+vim.keymap.set({ "n", "v" }, "yy", '"*yy', { desc = "Yank line to primary selection" })
+vim.keymap.set("n", "Y", '"*Y', { desc = "Yank to end of line to primary selection" })
 
 -- Visualize tabs and newlines
 vim.o.listchars = "tab:▸ ,eol:¬"

@@ -12,13 +12,15 @@
         state: directory
     - name: generate config file
       ansible.builtin.command: "bash {{ i3_config_src }}/genConfig.sh"
-    - name: find layout files
+
+    - name: find container files
       ansible.builtin.find:
-        paths: "{{ i3_layout_dir }}"
+        paths: "{{ i3_container_dir }}"
         patterns: "*.json"
         file_type: file
       register: files
-    - name: hard link layout files
+
+    - name: hard link container files
       ansible.builtin.file:
         src: "{{ item.path }}"
         dest: "{{ i3_config_dest }}/{{ item.path | basename }}"

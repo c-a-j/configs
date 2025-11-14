@@ -1,4 +1,4 @@
-### If not running interactively, don't do anything
+## If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
 ### Colorize prompt
@@ -224,4 +224,3 @@ command -v linkerd &> /dev/null && export PATH=$HOME/.linkerd2/bin:$PATH
 if [ -f /etc/bash_completion ]; then
   source /etc/bash_completion
 fi
-
