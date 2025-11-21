@@ -103,13 +103,6 @@ fi
 fancy_prompt $bracket_co $user_co $at_co $host_co $path_co $git_co $prompt_co
 unset fancy_prompt
 
-
-### Vi mode
-set -o vi
-
-### Append to history after each command
-PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
-
 ### Aliases {{{
 if [ $USER != root ] && command -v nvim &> /dev/null; then
   alias vi='nvim'
@@ -176,10 +169,17 @@ ctldisable() {
 }
 # }}}
 
-### User defined export variables
+### vi mode
+set -o vi
+
+### history
+shopt -s histappend
+PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 export HISTCONTROL="erasedups:ignorespace"
-export HISTSIZE=10000
+export HISTSIZE=1000
 export HISTFILESIZE=10000
+
+### thinkcentre cluster
 if [ $HOSTNAME == "nuc" ]; then
   export tc0='cjordan@10.0.0.70'
   export tc1='cjordan@10.0.0.71'
@@ -187,14 +187,15 @@ if [ $HOSTNAME == "nuc" ]; then
   export tc3='cjordan@10.0.0.73'
 fi
 
-### PATH
+### path
 pathadd /sbin
+pathadd ~/.local/bin
 
-# NVM
+# nvm
 export NVM_DIR="/home/cjordan/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
-# Cargo
+# cargo
 if [ -f "$HOME/.cargo/env" ]; then
   . "$HOME/.cargo/env"
 fi
