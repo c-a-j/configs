@@ -119,10 +119,10 @@ alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias py='python'
 alias ctl='systemctl'
-complete -F systemctl ctl
+alias datel='date +"%a %Y-%m-%d %H:%M:%S %Z"'
+alias dateu='date -u +"%a %Y-%m-%d %H:%M:%S %Z"'
 [ $USER != root ] && alias svi='sudo -e'
 [ $USER != root ] && alias sctl='sudo systemctl'
-
 (command -v podman &> /dev/null && [ $USER != root ]) && alias podman="sudo podman"
 (command -v podman-compose &> /dev/null && [ $USER != root ]) && alias podman-compose="sudo podman-compose"
 (command -v docker &> /dev/null && [ $USER != root ]) && alias docker="sudo docker"
@@ -216,7 +216,7 @@ command -v pyenv &>/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 command -v pyenv &>/dev/null && eval "$(pyenv init -)"
 
 
-### Kubernetes
+### kubernetes
 command -v kubectl &> /dev/null && source <(kubectl completion bash)
 command -v kubectl &> /dev/null && alias k='kubectl'
 command -v kubectl &> /dev/null && complete -o default -F __start_kubectl k
