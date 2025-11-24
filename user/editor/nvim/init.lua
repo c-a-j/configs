@@ -17,8 +17,21 @@ vim.api.nvim_create_autocmd("FileType", {
 -- Turn on syntax highlighting
 vim.cmd("syntax on")
 
--- Fold Method
-vim.o.foldmethod = "marker"
+-- Folding
+vim.o.foldmethod = "indent"
+vim.o.foldnestmax = 1
+vim.o.foldminlines = 0
+vim.o.foldlevel = 1
+vim.o.foldcolumn = "1"
+vim.o.foldopen = ""
+function _G.CustomFoldText()
+  -- return vim.fn.getline(vim.v.foldstart) .. ' ... ' .. vim.fn.getline(vim.v.foldend):gsub("^%s*", "")
+  return ""
+end
+
+vim.opt.foldtext = 'v:lua.CustomFoldText()'
+-- Set up autocommands to manage foldnestmax dynamically
+vim.api.nvim_create_augroup("FoldConfig", { clear = true })
 
 -- Security
 vim.o.modelines = 0
@@ -79,7 +92,7 @@ vim.keymap.set("n", "<leader><space>", ":let @/=''<cr>", { desc = "clear search"
 -- Highlight matching brackets and change the color scheme
 vim.o.showmatch = true
 vim.api.nvim_set_hl(0, "MatchParen", {
-  bg = "red",  -- or use a color name/hex
+  bg = "red", -- or use a color name/hex
   italic = true
 })
 
@@ -252,23 +265,23 @@ vim.api.nvim_create_autocmd("FileType", {
 local template_dir = "~/.config/nvim/templates"
 vim.api.nvim_create_autocmd("BufNewFile", {
   pattern = "*_test.go",
-  command = "0r " .. template_dir .."/skel.test.go"
+  command = "0r " .. template_dir .. "/skel.test.go"
 })
 vim.api.nvim_create_autocmd("BufNewFile", {
   pattern = "*(test)@<!.go",
-  command = "0r " .. template_dir .."/skel.go"
+  command = "0r " .. template_dir .. "/skel.go"
 })
 vim.api.nvim_create_autocmd("BufNewFile", {
   pattern = "*.sh",
-  command = "0r " .. template_dir .."/skel.sh"
+  command = "0r " .. template_dir .. "/skel.sh"
 })
 vim.api.nvim_create_autocmd("BufNewFile", {
   pattern = "*.pl",
-  command = "0r " .. template_dir .."/skel.pl"
+  command = "0r " .. template_dir .. "/skel.pl"
 })
 vim.api.nvim_create_autocmd("BufNewFile", {
   pattern = "*.py",
-  command = "0r " .. template_dir .."/skel.py"
+  command = "0r " .. template_dir .. "/skel.py"
 })
 -- }}}
 

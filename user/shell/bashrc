@@ -103,7 +103,7 @@ fi
 fancy_prompt $bracket_co $user_co $at_co $host_co $path_co $git_co $prompt_co
 unset fancy_prompt
 
-### Aliases {{{
+### Aliases
 if [ $USER != root ] && command -v nvim &> /dev/null; then
   alias vi='nvim'
   export EDITOR=/usr/bin/nvim
@@ -127,9 +127,9 @@ alias dateu='date -u +"%a %Y-%m-%d %H:%M:%S %Z"'
 (command -v podman-compose &> /dev/null && [ $USER != root ]) && alias podman-compose="sudo podman-compose"
 (command -v docker &> /dev/null && [ $USER != root ]) && alias docker="sudo docker"
 (command -v docker-compose &> /dev/null && [ $USER != root ]) && alias docker-compose="sudo docker-compose"
-# }}}
+# 
 
-# Functions {{{
+# functions
 pbcopy() {
   xclip -i -selection clipboard
 }
@@ -167,7 +167,7 @@ ctlenable() {
 ctldisable() { 
   systemctl disable --now "$1" 
 }
-# }}}
+#
 
 ### vi mode
 set -o vi
