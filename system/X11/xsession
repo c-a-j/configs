@@ -1,24 +1,8 @@
 #!/usr/bin/bash
 
-if [ $HOSTNAME == "macinArch" ]; then
-  # set i3 files
-  i3src=/home/cjordan/configs/i3/i3.conf
-  i3dest=/home/cjordan/.config/i3/config
-
+if [ $HOSTNAME == "mac" ]; then
   # set external flag
   xrandr | grep -q "HDMI-1 connected" &&  xConn=true || xConn=false
-
-  # set workspace file
-  wspath=/home/cjordan/configs/i3/macinArch
-  wsfile=workspaces
-  [[ $xConn == "true" ]] && wsfile="$wsfile-external"
-
-  # set i3 configuration file
-  sed -n "/{{WORKSPACE_SETUP}}/!{p;d;}; r $wspath/$wsfile" $i3src |\
-  sed 's|{{SET_MOD_KEY}}|set \$mod mod1|g' > $i3dest
-
-  # set keyboard layout
-  setxkbmap -model mac-us -layout us -option caps:swapescape
 
   # set resolution
   xrandr --output eDP-1 --primary --mode 1600x900
@@ -31,15 +15,7 @@ if [ $HOSTNAME == "macinArch" ]; then
   xrandr --output eDP-1 --brightness 1.0
 fi
 
-if [ $HOSTNAME == "intelArch" ]; then
-  # set i3 configuration file
-  sed -n '/{{WORKSPACE_SETUP}}/!{p;d;}; r /home/cjordan/configs/i3/intelArch/workspaces' /home/cjordan/configs/i3/i3.conf |\
-  sed 's|{{SET_MOD_KEY}}|set \$mod mod1|g' \
-  >| ~/.config/i3/config
-
-  # set keyboard layout
-  setxkbmap -model us -layout us -option caps:swapescape
-
+if [ $HOSTNAME == "nuc" ]; then
   # set resolution
   # xrandr --output eDP-1 --primary --mode 1920x1200
 
@@ -47,4 +23,5 @@ if [ $HOSTNAME == "intelArch" ]; then
   feh --bg-scale "/usr/share/backgrounds/leaf-bg.png"
 fi
 
-
+# set keyboard layout
+setxkbmap -model us -layout us -option caps:swapescape
