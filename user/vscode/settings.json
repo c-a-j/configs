@@ -42,5 +42,9 @@
         "asvetliakov.vscode-neovim": 1
     },
     "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim",
-    "vscode-neovim.neovimInitVimPaths.linux": "/home/cjordan/configs/nvim/init.vim", 
+    "vscode-neovim.neovimInitVimPaths.linux": "/home/cjordan/configs/nvim/init.vim",
+    "workbench.colorTheme": "Gruvbox Material Dark",
+    "editor.wordWrap": "off",
+    "cursorpyright.analysis.inlayHints.genericTypes": false,
+    "javascript.inlayHints.variableTypes.suppressWhenTypeMatchesName": false,
 }
