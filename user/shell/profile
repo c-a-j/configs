@@ -4,5 +4,5 @@ pathadd() {
     fi
 }
 
-### Flatpak
-command -v flatpak > /dev/null && pathadd /var/lib/flatpak/exports/bin
+### Local
+pathadd ~/.local/bin
