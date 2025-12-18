@@ -1,8 +1,13 @@
-- import_playbook: sudo-setup.yml
 - import_playbook: install-packages.yml
-- import_playbook: env-config-user.yml
+- import_playbook: sudo-setup.yml
 - import_playbook: env-config-root.yml
-- import_playbook: backgrounds.yml
-- import_playbook: lightdm-config.yml
+- import_playbook: env-config-user.yml
+- import_playbook: terminal-config.yml
 - import_playbook: i3-config.yml
+# - import_playbook: sway-config.yml
+- import_playbook: nvim-config.yml
+- import_playbook: vim-config.yml
+- import_playbook: git-config.yml
 - import_playbook: dunst-config.yml
+# - import_playbook: backgrounds.yml
+# - import_playbook: lightdm-config.yml
