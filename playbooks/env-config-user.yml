@@ -51,3 +51,12 @@
         dest: "{{ host_user_home }}/.config/user-dirs.dirs"
         state: hard
         force: true
+    - name: turn off xdg user-dirs.dirs auto generate
+      become: yes
+      ansible.builtin.lineinfile:
+        path: /etc/xdg/user-dirs.conf
+        regexp: '^enabled=True'
+        line: enabled=False
+        owner: root
+        group: root
+        mode: '0644'
