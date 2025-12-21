@@ -18,6 +18,8 @@ font pango:monospace 8
 # https://wiki.archlinux.org/index.php/XDG_Autostart
 exec --no-startup-id dex-autostart --autostart --environment i3
 
+exec --no-startup-id xkb_options caps:swapescape
+exec --no-startup-id sh -c "command -v xbindkeys > /dev/null 2>&1 && [ -f ~/.xbindkeysrc ] && xbindkeys"
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).

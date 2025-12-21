@@ -2,6 +2,7 @@
 
 if [ "$HOSTNAME" == "mbp" ]; then
   xrandr --output eDP --primary --mode 1680x1050
+  xset dpms 0 0 0 && xset s noblank  && xset s off
 fi
 
 if [ "$HOSTNAME" == "nuc" ]; then
