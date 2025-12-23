@@ -1,0 +1,144 @@
+* {
+	font-size: 12px;
+	font-family: monospace;
+}
+/* Gruvbox Dark - Background colors */
+@define-color bg-hard #1d2021;
+@define-color bg #282828;
+@define-color bg-soft #32302f;
+@define-color bg1 #3c3836;
+@define-color bg2 #504945;
+@define-color bg3 #665c54;
+@define-color bg4 #7c6f64;
+
+/* Gruvbox Dark - Foreground colors */
+@define-color fg #ebdbb2;
+@define-color fg0 #fbf1c7;
+@define-color fg1 #ebdbb2;
+@define-color fg2 #d5c4a1;
+@define-color fg3 #bdae93;
+@define-color fg4 #a89984;
+
+/* Gruvbox Dark - Accent colors */
+@define-color red #cc241d;
+@define-color red-bright #fb4934;
+@define-color green #98971a;
+@define-color green-bright #b8bb26;
+@define-color yellow #d79921;
+@define-color yellow-bright #fabd2f;
+@define-color blue #458588;
+@define-color blue-bright #83a598;
+@define-color purple #b16286;
+@define-color purple-bright #d3869b;
+@define-color aqua #689d6a;
+@define-color aqua-bright #8ec07c;
+@define-color orange #d65d0e;
+@define-color orange-bright #fe8019;
+@define-color gray #928374;
+@define-color gray-bright #bdae93;
+
+@define-color primary-bg #292b2e;
+@define-color secondary-bg #1a1a1a;
+@define-color text-color #fdf6e3;
+@define-color muted-text #888888;
+@define-color light-text #FFFFFF;
+
+
+/* Main bar */
+window#waybar {
+	background: @primary-bg;
+	color: @text-color;
+}
+
+#custom-right-arrow-dark,
+#custom-left-arrow-dark {
+	color: @secondary-bg;
+	font-size: 20px;
+}
+#custom-right-arrow-light,
+#custom-left-arrow-light {
+	color: @primary-bg;
+	background: @secondary-bg;
+	font-size: 18px;
+}
+
+#network,
+#workspaces,
+#clock.1,
+#clock.2,
+#clock.3,
+#clock.4,
+#pulseaudio,
+#memory,
+#cpu,
+#battery,
+#disk,
+#tray {
+	background: @secondary-bg;
+}
+
+
+/* Workspaces */
+#workspaces button {
+    background: @secondary-bg;
+    color: @muted-text;
+    border: 2px solid #333333;
+    padding: 0 4px;
+}
+
+#workspaces button.focused {
+    background: @blue;
+    color: @light-text;
+    border: 2px solid @blue-bright;
+}
+
+#workspaces button.active {
+    background: @blue;
+    color: @light-text;
+    border: 2px solid #333333;
+}
+
+#workspaces button.urgent {
+    background: @red;
+    color: #FFFFFF;
+    border: 2px solid #2F343A;
+}
+
+#network {
+    color: @green;
+}
+
+#pulseaudio {
+	color: @blue;
+}
+
+#memory {
+	color: @orange;
+}
+#cpu {
+	color: @purple;
+}
+#battery {
+	color: @green;
+}
+#disk {
+	color: @yellow;
+}
+
+#network.disconnected {
+    color: @red;
+}
+
+#clock {
+	color: @gray-bright;
+}
+
+#network,
+#clock,
+#pulseaudio,
+#memory,
+#cpu,
+#battery,
+#disk {
+	padding: 0 10px;
+}
