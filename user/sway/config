@@ -198,6 +198,7 @@ mode "resize" {
     bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
+
 #
 # Utilities:
 #
@@ -212,10 +213,6 @@ bindsym $mod+r mode "resize"
     # Special key to take a screenshot with grim
     bindsym Print exec grim
 
-
-
-# Paste PRIMARY selection on Right Alt release
-bindsym --release Alt_R exec wl-paste -p --no-newline | wtype -
 
 include /etc/sway/config.d/*
 include ~/.config/sway/config.d/*

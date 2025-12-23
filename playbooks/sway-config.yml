@@ -1,27 +1,54 @@
-# - name: Configure i3
-#   hosts: localhost
-#   gather_facts: yes
-#   remote_user: cjordan
-#   become: no
-#   vars_files: 
-#     - vars.yml
-#   tasks:
-#     - name: ensure destination path exists
-#       ansible.builtin.file:
-#         path: "{{ i3_config_dest }}"
-#         state: directory
-#     - name: generate config file
-#       ansible.builtin.command: "bash {{ i3_config_src }}/genConfig.sh"
-#     - name: find layout files
-#       ansible.builtin.find:
-#         paths: "{{ i3_layout_dir }}"
-#         patterns: "*.json"
-#         file_type: file
-#       register: files
-#     - name: hard link layout files
-#       ansible.builtin.file:
-#         src: "{{ item.path }}"
-#         dest: "{{ i3_config_dest }}/{{ item.path | basename }}"
-#         state: hard
-#         force: true
-#       loop: "{{ files.files }}"
+- name: Configure sway
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: no
+  vars_files: 
+    - vars.yml
+  tasks:
+    - name: ensure config directory exists
+      ansible.builtin.file:
+        path: "{{ sway_config_dest }}"
+        state: directory
+
+    - name: ensure drop in directory exists
+      ansible.builtin.file:
+        path: "{{ sway_config_dest }}/config.d"
+        state: directory
+
+    - name: hard link main config
+      ansible.builtin.file:
+        src: "{{ sway_config_src }}/config"
+        dest: "{{ sway_config_dest }}/config"
+        state: hard
+        force: true
+
+    - name: find drop in files
+      ansible.builtin.find:
+        paths: "{{ sway_config_src }}/config.d"
+        patterns: "*"
+        file_type: file
+      register: files
+
+    - name: hard link drop in files
+      ansible.builtin.file:
+        src: "{{ item.path }}"
+        dest: "{{ sway_config_dest }}/config.d/{{ item.path | basename }}"
+        state: hard
+        force: true
+      loop: "{{ files.files }}"
+
+    - name: find host specific drop in files
+      ansible.builtin.find:
+        paths: "{{ sway_config_src }}/{{ hostname }}.d"
+        patterns: "*"
+        file_type: file
+      register: files
+
+    - name: hard link host specific drop in files
+      ansible.builtin.file:
+        src: "{{ item.path }}"
+        dest: "{{ sway_config_dest }}/config.d/{{ item.path | basename }}"
+        state: hard
+        force: true
+      loop: "{{ files.files }}"

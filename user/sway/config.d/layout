@@ -1,10 +1,13 @@
 assign [app_id="org.mozilla.firefox"] workspace number 7
 assign [app_id="net.thunderbird.Thunderbird"] workspace number 10
 assign [class="Spotify"] workspace number 5
+assign [class="Qemu-system-x86_64"] workspace number 4
 
 exec --no-startup-id
 {
   swaymsg 'workspace number 1; exec alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml;'
+  swaymsg 'workspace number 1; exec alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml;'
+  swaymsg 'workspace number 2; exec alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml;'
   swaymsg 'workspace number 2; exec alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml;'
   swaymsg 'workspace number 7; exec firefox;'
   # exec firefox;

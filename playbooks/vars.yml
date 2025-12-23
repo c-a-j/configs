@@ -1,4 +1,5 @@
 host_user_home: "{{ lookup('ansible.builtin.env', 'HOME') }}"
+hostname: "{{ lookup('ansible.builtin.env', 'HOSTNAME') }}"
 config_src: "{{ host_user_home }}/configs"
 user_config_src: "{{ config_src }}/user"
 system_config_src: "{{ config_src }}/system"
@@ -25,6 +26,9 @@ tmux_dest: "{{ host_user_home }}/.tmux.conf"
 i3_config_src: "{{ user_config_src }}/i3"
 i3_config_dest: "{{ host_user_home }}/.config/i3"
 i3_container_dir: "{{ i3_config_src }}/containers"
+
+sway_config_src: "{{ user_config_src }}/sway"
+sway_config_dest: "{{ host_user_home }}/.config/sway"
 
 dunst_config_src: "{{ user_config_src }}/dunst"
 dunst_config_dest: "{{ host_user_home }}/.config/dunst"

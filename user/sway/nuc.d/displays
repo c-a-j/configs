@@ -1,0 +1,13 @@
+# Monitor Layout
+set $monitorOne "HDMI-1"
+set $monitorTwo "DP-3"
+workspace number 1 output $monitorOne
+workspace number 2 output $monitorOne
+workspace number 3 output $monitorOne
+workspace number 4 output $monitorOne
+workspace number 5 output $monitorOne
+workspace number 6 output $monitorTwo
+workspace number 7 output $monitorTwo
+workspace number 8 output $monitorTwo
+workspace number 9 output $monitorTwo
+workspace number 10 output $monitorTwo
