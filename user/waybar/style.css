@@ -1,11 +1,18 @@
+/* Function	Description	Example
+shade(@color, factor)	Adjust brightness (1.0 = original, <1 darker, >1 lighter)	shade(@blue, 0.8)
+lighter(@color)	Make color lighter	lighter(@blue)
+darker(@color)	Make color darker	darker(@blue)
+alpha(@color, value)	Set transparency (0.0–1.0)	alpha(@blue, 0.5)
+mix(@color1, @color2, factor)	Blend two colors */
+
 * {
 	font-size: 12px;
 	font-family: monospace;
 }
 /* Gruvbox Dark - Background colors */
-@define-color bg-hard #1d2021;
-@define-color bg #282828;
-@define-color bg-soft #32302f;
+@define-color bg0 #282828;
+@define-color bg0-h #1d2021;
+@define-color bg0-s #32302f;
 @define-color bg1 #3c3836;
 @define-color bg2 #504945;
 @define-color bg3 #665c54;
@@ -37,17 +44,32 @@
 @define-color gray #928374;
 @define-color gray-bright #bdae93;
 
-@define-color primary-bg #292b2e;
-@define-color secondary-bg #1a1a1a;
-@define-color text-color #fdf6e3;
-@define-color muted-text #888888;
-@define-color light-text #FFFFFF;
+@define-color primary-bg shade(@bg0, 0.85);
+@define-color secondary-bg shade(@bg0, 0.7);
+@define-color primary-text @fg1;
+@define-color muted-text @fg4;
+
+@define-color ws-focused-bg shade(@blue, 0.6);
+@define-color ws-focused-text @primary-text;
+@define-color ws-focused-border shade(@blue, 0.9);
+
+@define-color ws-active-bg @blue;
+@define-color ws-active-text @primary-text;
+@define-color ws-active-border @bg3;
+
+@define-color ws-inactive-bg @bg0-h;
+@define-color ws-inactive-text @muted-text;
+@define-color ws-inactive-border @bg1;
+
+@define-color ws-urgent-bg darker(@red);
+@define-color ws-urgent-text @primary-text;
+@define-color ws-urgent-border @red;
 
 
 /* Main bar */
 window#waybar {
 	background: @primary-bg;
-	color: @text-color;
+	color: @primary-text;
 }
 
 #custom-right-arrow-dark,
@@ -79,33 +101,37 @@ window#waybar {
 
 
 /* Workspaces */
+#workspaces {
+    background: @primary-bg;
+}
+
 #workspaces button {
-    background: @secondary-bg;
-    color: @muted-text;
-    border: 2px solid #333333;
-    padding: 0 4px;
+    background: @ws-inactive-bg;
+    color: @ws-inactive-text;
+    border: 2px solid @ws-inactive-border;
+    padding: 0 2px;
 }
 
 #workspaces button.focused {
-    background: @blue;
-    color: @light-text;
-    border: 2px solid @blue-bright;
+    background: @ws-focused-bg;
+    color: @ws-focused-text;
+    border: 2px solid @ws-focused-border;
 }
 
 #workspaces button.active {
-    background: @blue;
-    color: @light-text;
-    border: 2px solid #333333;
+    background: @ws-active-bg;
+    color: @ws-active-text;
+    border: 2px solid @ws-active-border;
 }
 
 #workspaces button.urgent {
-    background: @red;
-    color: #FFFFFF;
-    border: 2px solid #2F343A;
+    background: @ws-urgent-bg;
+    color: @ws-urgent-text;
+    border: 2px solid @ws-urgent-border;
 }
 
 #network {
-    color: @green;
+    color: @aqua;
 }
 
 #pulseaudio {
@@ -118,9 +144,24 @@ window#waybar {
 #cpu {
 	color: @purple;
 }
-#battery {
-	color: @green;
+
+#battery.full {
+    color: @green;
 }
+
+#battery.good {
+    color: @yellow;
+}
+
+#battery.warning {
+    color: @orange;
+}
+
+#battery.critical {
+    color: @red;
+    animation: blink 2s infinite;
+}
+
 #disk {
 	color: @yellow;
 }

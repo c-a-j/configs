@@ -25,6 +25,7 @@
 		"custom/left-arrow-light",
 		"custom/left-arrow-dark",
 		"disk",
+		"disk#home",
 		"custom/left-arrow-light",
 		"custom/left-arrow-dark",
 		"clock#4",
@@ -102,7 +103,8 @@
 	},
 	"battery": {
 		"states": {
-			"good": 95,
+			"full": 100,
+			"good": 70,
 			"warning": 30,
 			"critical": 15
 		},
@@ -116,9 +118,14 @@
 		]
 	},
 	"disk": {
-		"interval": 5,
-		"format": "Disk {percentage_used:2}%",
+		"interval": 60,
+		"format": "root {percentage_used:2}%",
 		"path": "/"
+	},
+	"disk#home": {
+		"interval": 60,
+		"format": " home {percentage_used:2}%",
+		"path": "/home"
 	},
 	"tray": {
 		"icon-size": 20
