@@ -1,0 +1,15 @@
+input type:keyboard {
+  xkb_layout us
+  xkb_options caps:swapescape
+}
+
+input "1452:628:Apple_Inc._Apple_Internal_Keyboard_/_Trackpad" {
+  xkb_options altwin:swap_lalt_lwin,caps:swapescape
+}
+
+# brightness keys
+bindsym XF86MonBrightnessUp exec brightnessctl s 2%+
+bindsym XF86MonBrightnessDown exec brightnessctl s 2%-
+
+# paste PRIMARY selection on right alt release
+bindsym --release Alt_R exec wl-paste -p --no-newline | wtype -

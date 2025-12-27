@@ -30,6 +30,12 @@ i3_container_dir: "{{ i3_config_src }}/containers"
 sway_config_src: "{{ user_config_src }}/sway"
 sway_config_dest: "{{ host_user_home }}/.config/sway"
 
+waybar_config_src: "{{ user_config_src }}/waybar"
+waybar_config_dest: "{{ host_user_home }}/.config/waybar"
+
+gtk3_config_src: "{{ user_config_src }}/gtk-3.0"
+gtk3_config_dest: "{{ host_user_home }}/.config/gtk-3.0"
+
 dunst_config_src: "{{ user_config_src }}/dunst"
 dunst_config_dest: "{{ host_user_home }}/.config/dunst"
 

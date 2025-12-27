@@ -94,11 +94,11 @@
 		"scroll-step": 5,
 	},
 	"memory": {
-		"interval": 5,
+		"interval": 10,
 		"format": "Mem {}%"
 	},
 	"cpu": {
-		"interval": 5,
+		"interval": 10,
 		"format": "CPU {usage:2}%"
 	},
 	"battery": {

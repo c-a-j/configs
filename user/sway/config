@@ -1,7 +1,3 @@
-# Default config for sway
-#
-# Copy this to ~/.config/sway/config and edit it to your liking.
-#
 # Read `man 5 sway` for a complete reference.
 
 ### Variables
@@ -216,3 +212,4 @@ bindsym $mod+r mode "resize"
 
 include /etc/sway/config.d/*
 include ~/.config/sway/config.d/*
+include ~/.config/sway/$(hostname).d/*
