@@ -61,9 +61,9 @@ mix(@color1, @color2, factor)	Blend two colors */
 @define-color ws-inactive-text @muted-text;
 @define-color ws-inactive-border @bg1;
 
-@define-color ws-urgent-bg darker(@red);
+@define-color ws-urgent-bg shade(@red, 0.6);
 @define-color ws-urgent-text @primary-text;
-@define-color ws-urgent-border @red;
+@define-color ws-urgent-border shade(@red, 0.8);
 
 
 /* Main bar */
@@ -159,7 +159,16 @@ window#waybar {
 
 #battery.critical {
     color: @red;
-    animation: blink 2s infinite;
+    animation: blink 1s ease-in infinite alternate;
+}
+
+@keyframes blink {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0.5;
+    }
 }
 
 #disk {
