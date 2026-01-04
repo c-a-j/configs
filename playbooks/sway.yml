@@ -1,0 +1,5 @@
+- import_playbook: sway-installs.yml
+- import_playbook: sway-config.yml
+- import_playbook: rofi-config.yml
+- import_playbook: sddm-config.yml
+- import_playbook: waybar-config.yml
