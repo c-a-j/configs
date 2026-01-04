@@ -21,9 +21,6 @@
 		"cpu",
 		"custom/left-arrow-light",
 		"custom/left-arrow-dark",
-		"battery",
-		"custom/left-arrow-light",
-		"custom/left-arrow-dark",
 		"disk",
 		"disk#home",
 		"custom/left-arrow-light",
@@ -116,6 +113,16 @@
 			"",
 			""
 		]
+	},
+	"custom/battery-arrows": {
+		"exec": "test -e /sys/class/power_supply/BAT0 && echo '<span id=\"custom-left-arrow-dark\"> </span><span id=\"custom-left-arrow-light\"> </span>' || echo ''",
+		"interval": 60,
+		"return-type": "json"
+	},
+	"custom/battery-arrows-after": {
+		"exec": "test -e /sys/class/power_supply/BAT0 && echo '<span id=\"custom-left-arrow-light\"> </span><span id=\"custom-left-arrow-dark\"> </span>' || echo ''",
+		"interval": 60,
+		"return-type": "json"
 	},
 	"disk": {
 		"interval": 60,

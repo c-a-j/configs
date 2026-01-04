@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+if [ -f ~/.config/waybar/config.$(hostname).jsonc ]; then
+    exec waybar -c ~/.config/waybar/config.$(hostname).jsonc -s ~/.config/waybar/style.css
+else
+    exec waybar -c ~/.config/waybar/config.jsonc -s ~/.config/waybar/style.css
+fi

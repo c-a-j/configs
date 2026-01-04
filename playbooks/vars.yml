@@ -33,6 +33,14 @@ sway_config_dest: "{{ host_user_home }}/.config/sway"
 waybar_config_src: "{{ user_config_src }}/waybar"
 waybar_config_dest: "{{ host_user_home }}/.config/waybar"
 
+rofi_config_src: "{{ user_config_src }}/rofi"
+rofi_config_dest: "{{ host_user_home }}/.config/rofi"
+
+sddm_config_src: "{{ system_config_src }}/sddm/sddm.conf.d"
+sddm_config_dest: "/etc/sddm.conf.d"
+sddm_theme_src: "{{ system_config_src }}/sddm/themes"
+sddm_theme_dest: "/usr/share/sddm/themes"
+
 gtk3_config_src: "{{ user_config_src }}/gtk-3.0"
 gtk3_config_dest: "{{ host_user_home }}/.config/gtk-3.0"
 

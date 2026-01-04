@@ -1,4 +1,4 @@
-- name: sway
+- name: waybar
   hosts: localhost
   gather_facts: yes
   remote_user: cjordan
@@ -6,10 +6,10 @@
   vars_files: 
     - vars.yml
   vars:
-    src: "{{ sway_config_src }}"
-    dest: "{{ sway_config_dest }}"
+    src: "{{ waybar_config_src }}"
+    dest: "{{ waybar_config_dest }}"
   tasks:
-    - name: ensure config directory exists
+    - name: sync directory
       ansible.posix.synchronize:
         src: "{{ src }}/"
         dest: "{{ dest }}"

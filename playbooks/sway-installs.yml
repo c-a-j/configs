@@ -1,0 +1,13 @@
+- name: sway installations
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: yes
+  tasks:
+    - name: install packages
+      ansible.builtin.dnf:
+        name:
+          - sway
+          - waybar
+          - rofi
+          - sddm

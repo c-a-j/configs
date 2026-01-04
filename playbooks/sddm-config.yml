@@ -1,0 +1,32 @@
+- name: sddm configuration
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: yes
+  vars_files: 
+    - vars.yml
+  vars:
+    src: "{{ sddm_config_src }}"
+    dest: "{{ sddm_config_dest }}"
+    theme_src: "{{ sddm_theme_src }}"
+    theme_dest: "{{ sddm_theme_dest }}"
+  tasks:
+    - name: sync config directories
+      ansible.posix.synchronize:
+        src: "{{ src }}/"
+        dest: "{{ dest }}"
+        mode: push
+        archive: yes
+        rsync_opts:
+          - "--delete"
+          - "--chown=root:root"
+
+    - name: sync theme directories
+      ansible.posix.synchronize:
+        src: "{{ sddm_theme_src }}/"
+        dest: "{{ sddm_theme_dest }}"
+        mode: push
+        archive: yes
+        rsync_opts:
+          - "--delete"
+          - "--chown=root:root"
