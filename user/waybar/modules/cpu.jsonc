@@ -1,0 +1,8 @@
+// -*- mode: json -*-
+
+{
+	"cpu": {
+		"interval": 10,
+		"format": "CPU {usage:2}%"
+	},
+}

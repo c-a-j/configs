@@ -1,0 +1,14 @@
+// -*- mode: json -*-
+
+{
+	"disk": {
+		"interval": 60,
+		"format": "root {percentage_used:2}%",
+		"path": "/"
+	},
+	"disk#home": {
+		"interval": 60,
+		"format": " home {percentage_used:2}%",
+		"path": "/home"
+	},
+}

@@ -53,13 +53,13 @@ mix(@color1, @color2, factor)	Blend two colors */
 @define-color ws-focused-text @primary-text;
 @define-color ws-focused-border shade(@blue, 0.9);
 
-@define-color ws-active-bg @blue;
-@define-color ws-active-text @primary-text;
-@define-color ws-active-border @bg3;
+@define-color ws-visible-bg @ws-focused-bg;
+@define-color ws-visible-text @primary-text;
+@define-color ws-visible-border @ws-focused-bg;
 
-@define-color ws-inactive-bg @bg0-h;
-@define-color ws-inactive-text @muted-text;
-@define-color ws-inactive-border @bg1;
+@define-color ws-active-bg @bg0-h;
+@define-color ws-active-text @muted-text;
+@define-color ws-active-border @bg1;
 
 @define-color ws-urgent-bg shade(@red, 0.6);
 @define-color ws-urgent-text @primary-text;
@@ -106,9 +106,9 @@ window#waybar {
 }
 
 #workspaces button {
-    background: @ws-inactive-bg;
-    color: @ws-inactive-text;
-    border: 2px solid @ws-inactive-border;
+    background: @ws-active-bg;
+    color: @ws-active-text;
+    border: 2px solid @ws-active-border;
     padding: 0 2px;
 }
 
@@ -116,6 +116,12 @@ window#waybar {
     background: @ws-focused-bg;
     color: @ws-focused-text;
     border: 2px solid @ws-focused-border;
+}
+
+#workspaces button.visible:not(.focused) {
+    background: @ws-visible-bg;
+    color: @ws-visible-text;
+    border: 2px solid @ws-visible-border;
 }
 
 #workspaces button.active {

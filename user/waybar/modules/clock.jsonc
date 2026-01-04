@@ -1,0 +1,21 @@
+// -*- mode: json -*-
+{
+	"clock#1": {
+		"format": "{:%a}",
+		"tooltip": false
+	},
+	"clock#2": {
+		"format": "{:%a %m-%d}",
+		"tooltip": false
+	},
+	"clock#3": {
+		"format": "{:%H:%M:%S %Z}",
+		"interval": 10,
+		"tooltip": false
+	},
+	"clock#4": {
+		"format": "{:%a %m-%d | %H:%M:%S %Z}",
+		"interval": 10,
+		"tooltip": false
+	}
+}

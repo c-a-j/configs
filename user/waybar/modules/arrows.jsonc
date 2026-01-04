@@ -1,0 +1,27 @@
+// -*- mode: json -*-
+{
+	"custom/left-arrow-dark": {
+		"format": "",
+		"tooltip": false
+	},
+	"custom/left-arrow-light": {
+		"format": "",
+		"tooltip": false
+	},
+	"custom/right-arrow-dark": {
+		"format": "",
+		"tooltip": false
+	},
+	"custom/right-arrow-light": {
+		"format": "",
+		"tooltip": false
+	},
+	"custom/sep-bar-dark": {
+		"format": " ",
+		"tooltip": false
+	},
+	"custom/sep-bar-light": {
+		"format": " ",
+		"tooltip": false
+	}
+}

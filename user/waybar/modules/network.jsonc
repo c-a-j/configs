@@ -1,0 +1,9 @@
+// -*- mode: json -*-
+{
+	"network": {
+			"format-wifi": " W: {signalStrength}% at {essid} {ipaddr} ",
+			"format-ethernet": " E: {ipaddr} ",
+			"format-disconnected": " Disconnected",
+			"tooltip": false
+	}
+}

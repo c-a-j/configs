@@ -1,0 +1,7 @@
+// -*- mode: json -*-
+
+{
+	"tray": {
+		"icon-size": 20
+	}
+}

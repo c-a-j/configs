@@ -1,0 +1,20 @@
+// -*- mode: json -*-
+
+{
+	"battery": {
+		"states": {
+			"full": 100,
+			"good": 70,
+			"warning": 30,
+			"critical": 15
+		},
+		"format": "{icon} {capacity}%",
+		"format-icons": [
+			"",
+			"",
+			"",
+			"",
+			""
+		]
+	}
+}

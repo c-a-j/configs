@@ -1,12 +1,24 @@
 // -*- mode: json -*-
 
 {
+	  "include": [
+    "~/.config/waybar/modules/workspaces.jsonc",
+    "~/.config/waybar/modules/arrows.jsonc",
+    "~/.config/waybar/modules/network.jsonc",
+    "~/.config/waybar/modules/audio.jsonc",
+    "~/.config/waybar/modules/memory.jsonc",
+    "~/.config/waybar/modules/cpu.jsonc",
+    "~/.config/waybar/modules/disk.jsonc",
+    "~/.config/waybar/modules/clock.jsonc"
+  ],
+
 	"layer": "top",
 	"position": "bottom",
 
 	"modules-left": [
 		"sway/workspaces",
 	],
+
 	"modules-right": [
 		"custom/left-arrow-dark",
 		"network",
@@ -25,126 +37,6 @@
 		"disk#home",
 		"custom/left-arrow-light",
 		"custom/left-arrow-dark",
-		"clock#4",
-	],
-
-	"custom/left-arrow-dark": {
-		"format": "",
-		"tooltip": false
-	},
-	"custom/left-arrow-light": {
-		"format": "",
-		"tooltip": false
-	},
-	"custom/right-arrow-dark": {
-		"format": "",
-		"tooltip": false
-	},
-	"custom/right-arrow-light": {
-		"format": "",
-		"tooltip": false
-	},
-	"custom/sep-bar-dark": {
-		"format": " ",
-		"tooltip": false
-	},
-	"custom/sep-bar-light": {
-		"format": " ",
-		"tooltip": false
-	},
-
-	"sway/workspaces": {
-		"disable-scroll": true,
-		"format": "{name}"
-	},
-
-	"clock#1": {
-		"format": "{:%a}",
-		"tooltip": false
-	},
-	"clock#2": {
-		"format": "{:%a %m-%d}",
-		"tooltip": false
-	},
-	"clock#3": {
-		"format": "{:%H:%M:%S %Z}",
-		"interval": 10,
-		"tooltip": false
-	},
-	"clock#4": {
-		"format": "{:%a %m-%d | %H:%M:%S %Z}",
-		"interval": 10,
-		"tooltip": false
-	},
-
-	"pulseaudio": {
-		"format": "{icon} {volume:2}%",
-		"format-bluetooth": "{icon}  {volume}%",
-		"format-muted": "MUTE",
-		"format-icons": {
-			"headphones": "",
-			"default": [
-				"",
-				""
-			]
-		},
-		"scroll-step": 5,
-	},
-	"memory": {
-		"interval": 10,
-		"format": "Mem {}%"
-	},
-	"cpu": {
-		"interval": 10,
-		"format": "CPU {usage:2}%"
-	},
-	"battery": {
-		"states": {
-			"full": 100,
-			"good": 70,
-			"warning": 30,
-			"critical": 15
-		},
-		"format": "{icon} {capacity}%",
-		"format-icons": [
-			"",
-			"",
-			"",
-			"",
-			""
-		]
-	},
-	"custom/battery-arrows": {
-		"exec": "test -e /sys/class/power_supply/BAT0 && echo '<span id=\"custom-left-arrow-dark\"> </span><span id=\"custom-left-arrow-light\"> </span>' || echo ''",
-		"interval": 60,
-		"return-type": "json"
-	},
-	"custom/battery-arrows-after": {
-		"exec": "test -e /sys/class/power_supply/BAT0 && echo '<span id=\"custom-left-arrow-light\"> </span><span id=\"custom-left-arrow-dark\"> </span>' || echo ''",
-		"interval": 60,
-		"return-type": "json"
-	},
-	"disk": {
-		"interval": 60,
-		"format": "root {percentage_used:2}%",
-		"path": "/"
-	},
-	"disk#home": {
-		"interval": 60,
-		"format": " home {percentage_used:2}%",
-		"path": "/home"
-	},
-	"tray": {
-		"icon-size": 20
-	},
-	"network": {
-    "format": " {ipaddr}",
-    "tooltip": false
-	},
-	"network": {
-			"format-wifi": " W: {signalStrength}% at {essid} {ipaddr} ",
-			"format-ethernet": " E: {ipaddr} ",
-			"format-disconnected": " Disconnected",
-			"tooltip": false
-	},
+		"clock#4"
+	]
 }

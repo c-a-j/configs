@@ -1,0 +1,7 @@
+// -*- mode: json -*-
+{
+	"memory": {
+		"interval": 10,
+		"format": "Mem {}%"
+	},
+}
