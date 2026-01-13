@@ -176,7 +176,7 @@ set -o vi
 shopt -s histappend
 PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 export HISTCONTROL="erasedups:ignorespace"
-export HISTSIZE=1000
+export HISTSIZE=10000
 export HISTFILESIZE=10000
 
 ### thinkcentre cluster
@@ -191,9 +191,10 @@ fi
 pathadd /sbin
 pathadd ~/.local/bin
 
-# nvm
+# node
 export NVM_DIR="/home/cjordan/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -d "$HOME/.local/npm/bin" ] && pathadd ~/.local/npm/bin 
 
 # cargo
 if [ -f "$HOME/.cargo/env" ]; then
