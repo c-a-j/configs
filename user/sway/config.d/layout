@@ -1,7 +1,7 @@
 assign [app_id="org.mozilla.firefox"] workspace number 7
 assign [app_id="net.thunderbird.Thunderbird"] workspace number 10
 assign [class="Spotify"] workspace number 5
-assign [class="Cursor"] workspace number 9
+#assign [class="Cursor"] workspace number 9
 assign [app_id="qemu"] workspace number 4
 assign [app_id="org.kde.okular"] workspace number 6
 
