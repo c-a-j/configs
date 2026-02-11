@@ -1,8 +1,9 @@
-pathadd() {
-    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
-        PATH="${PATH:+"$PATH:"}$1"
-    fi
-}
+export PATH="${PATH:+"$PATH:"}$HOME/.local/bin"
 
-### Local
-pathadd ~/.local/bin
+if command -v xdg-user-dir > /dev/null 2>&1; then
+  export XDG_PICTURES_DIR=$(xdg-user-dir PICTURES)
+fi
+
+if [ -n "$XDG_PICTURES_DIR" ] && [ -d "$XDG_PICTURES_DIR/screenshots" ]; then
+  export GRIM_DEFAULT_DIR="$XDG_PICTURES_DIR/screenshots"
+fi

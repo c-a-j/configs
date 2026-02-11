@@ -9,7 +9,8 @@
     "~/.config/waybar/modules/memory.jsonc",
     "~/.config/waybar/modules/cpu.jsonc",
     "~/.config/waybar/modules/disk.jsonc",
-    "~/.config/waybar/modules/clock.jsonc"
+    "~/.config/waybar/modules/clock.jsonc",
+    "~/.config/waybar/modules/tray.jsonc"
   ],
 
 	"layer": "top",
@@ -37,6 +38,7 @@
 		"disk#home",
 		"custom/left-arrow-light",
 		"custom/left-arrow-dark",
-		"clock#4"
+		"clock#4",
+		"tray"
 	]
 }

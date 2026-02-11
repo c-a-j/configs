@@ -179,18 +179,10 @@ set -o vi
 
 ### history
 shopt -s histappend
-PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 export HISTCONTROL="erasedups:ignorespace"
 export HISTSIZE=10000
 export HISTFILESIZE=10000
-
-### thinkcentre cluster
-if [ $HOSTNAME == "nuc" ]; then
-  export tc0='cjordan@10.0.0.70'
-  export tc1='cjordan@10.0.0.71'
-  export tc2='cjordan@10.0.0.72'
-  export tc3='cjordan@10.0.0.73'
-fi
 
 ### path
 pathadd /sbin
@@ -228,6 +220,8 @@ command -v kubectl &> /dev/null && alias k='kubectl'
 command -v kubectl &> /dev/null && complete -o default -F __start_kubectl k
 command -v helm &> /dev/null && source <(helm completion bash)
 command -v linkerd &> /dev/null && export PATH=$HOME/.linkerd2/bin:$PATH
+
 if [ -f /etc/bash_completion ]; then
   source /etc/bash_completion
 fi
+

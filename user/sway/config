@@ -207,7 +207,7 @@ bindsym $mod+r mode "resize"
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
     # Special key to take a screenshot with grim
-    bindsym Print exec grim
+    bindsym Print exec grim -g "$(slurp)"
 
 include /etc/sway/config.d/*
 include ~/.config/sway/config.d/*
