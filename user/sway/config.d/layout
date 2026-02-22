@@ -4,6 +4,7 @@ assign [class="Spotify"] workspace number 5
 #assign [class="Cursor"] workspace number 9
 assign [app_id="qemu"] workspace number 4
 assign [app_id="org.kde.okular"] workspace number 6
+assign [app_id="flashcard-beast"] workspace number 9
 
 exec --no-startup-id
 {
