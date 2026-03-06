@@ -19,3 +19,7 @@
           - thunderbird
           - npm
           - pnpm
+          - cmake
+          - just
+          - make
+          - clang
