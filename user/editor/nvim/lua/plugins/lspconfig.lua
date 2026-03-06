@@ -67,9 +67,21 @@ return {
     })
     vim.lsp.enable('tsserver')
 
-    -- C/C++
+    -- C/C++ (clangd provides diagnostics/linting; ClangTidy adds extra checks)
     vim.lsp.config('clangd', {
       on_attach = on_attach,
+      cmd = {
+        'clangd',
+        '--background-index',
+        '--clang-tidy',
+        '--header-insertion=iwyu',
+        '--completion-style=bundled',
+      },
+      filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
+      root_markers = { 'compile_commands.json', 'compile_flags.txt', '.clangd' },
+      capabilities = {
+        offsetEncoding = { 'utf-16' },
+      },
     })
     vim.lsp.enable('clangd')
     -- Rust

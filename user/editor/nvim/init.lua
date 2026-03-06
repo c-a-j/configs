@@ -181,6 +181,14 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "c", "cpp" },
+  callback = function()
+    vim.keymap.set("v", "\\c", ":s/^/\\/\\/ / <bar> :noh", { buffer = 0 })
+    vim.keymap.set("v", "\\u", ":s/\\/\\/ \\?// <bar> :noh", { buffer = 0 })
+  end
+})
+
+vim.api.nvim_create_autocmd("FileType", {
   pattern = "tmux",
   callback = function()
     vim.keymap.set("v", "\\c", ":s/^/# / <bar> :noh", { buffer = 0 })
