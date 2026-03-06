@@ -12,10 +12,10 @@
       ansible.builtin.dnf:
         name:
           - vim
+          - nvim
           - git
           - tmux
           - alacritty
-          - xclip
           - thunderbird
           - npm
           - pnpm

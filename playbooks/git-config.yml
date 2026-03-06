@@ -1,4 +1,4 @@
-- name: Git Configuration
+- name: git config
   hosts: localhost
   gather_facts: yes
   remote_user: cjordan

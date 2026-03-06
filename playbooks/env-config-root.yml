@@ -1,4 +1,4 @@
-- name: shell configuration
+- name: root shell configuration
   hosts: localhost
   gather_facts: yes
   remote_user: cjordan

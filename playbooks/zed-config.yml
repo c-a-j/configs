@@ -1,0 +1,36 @@
+- name: zed config
+  hosts: localhost
+  remote_user: "{{ nvim_user | default('cjordan') }}"
+  vars_files:
+    - vars.yml
+  vars:
+    config_item: "zed"
+    src: "{{ zed_config_src }}"
+    dest: "{{ zed_config_dest }}"
+  tasks:
+    - name: Find all {{ config_item }} config files
+      ansible.builtin.find:
+        paths: "{{ src }}"
+        file_type: file
+        recurse: yes
+      register: config_files
+
+    - name: Create {{ config_item }} config directory
+      ansible.builtin.file:
+        path: "{{ dest }}"
+        state: directory
+
+    - name: Create {{ config_item }} sub directories 
+      ansible.builtin.file:
+        path: "{{ dest }}/{{ (item.path | regex_replace('^' + src + '/?', '')) | dirname }}"
+        state: directory
+      loop: "{{ config_files.files }}"
+      when: (item.path | regex_replace('^' + src + '/?', '')) | dirname != '.'
+
+    - name: Hard link config files
+      ansible.builtin.file:
+        src: "{{ item.path }}"
+        dest: "{{ dest }}/{{ item.path | regex_replace('^' + src + '/?', '') }}"
+        state: hard
+        force: true
+      loop: "{{ config_files.files }}"

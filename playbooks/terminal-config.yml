@@ -1,4 +1,4 @@
-- name: Terminal Configuration
+- name: terminal config
   hosts: localhost
   gather_facts: yes
   remote_user: cjordan
@@ -6,7 +6,7 @@
   vars_files: 
     - vars.yml
   tasks:
-    - name: create ansible config directory
+    - name: create alacritty config directory
       ansible.builtin.file:
         path: "{{ alacritty_dest }}"
         state: directory

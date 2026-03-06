@@ -7,13 +7,13 @@
     src: "{{ host_user_home }}/configs/system/sudoers.d"
     dest: "/etc/sudoers.d"
   tasks:
-    - name: Find sudoers files
+    - name: find sudoers files
       ansible.builtin.find:
         paths: "{{ src }}"
         file_type: file
       register: files
 
-    - name: Add files /etc/sudoers.d
+    - name: add files /etc/sudoers.d
       become: yes
       ansible.builtin.template:
         src: "{{ item.path }}"

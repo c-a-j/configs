@@ -5,9 +5,18 @@ user_config_src: "{{ config_src }}/user"
 system_config_src: "{{ config_src }}/system"
 system_script_dest: "/usr/local/bin"
 
+
+### Terminal
 shell_config_src: "{{ user_config_src }}/shell"
 user_dirs_src: "{{ user_config_src }}/user-dirs"
 
+alacritty_src: "{{ user_config_src }}/alacritty"
+alacritty_dest: "{{ host_user_home }}/.config/alacritty"
+
+tmux_src: "{{ user_config_src }}/tmux/tmux.conf"
+tmux_dest: "{{ host_user_home }}/.tmux.conf"
+
+### Editor
 editor_src: "{{ user_config_src }}/editor"
 editor_template_src: "{{ editor_src }}/templates"
 
@@ -17,12 +26,10 @@ vim_colors_src: "{{ vim_config_src }}/colors"
 nvim_config_src: "{{ editor_src }}/nvim"
 nvim_config_dest: "{{ host_user_home }}/.config/nvim"
 
-alacritty_src: "{{ user_config_src }}/alacritty"
-alacritty_dest: "{{ host_user_home }}/.config/alacritty"
+zed_config_src: "{{ editor_src }}/zed"
+zed_config_dest: "{{ host_user_home }}/.config/zed"
 
-tmux_src: "{{ user_config_src }}/tmux/tmux.conf"
-tmux_dest: "{{ host_user_home }}/.tmux.conf"
-
+### Window Manager
 i3_config_src: "{{ user_config_src }}/i3"
 i3_config_dest: "{{ host_user_home }}/.config/i3"
 i3_container_dir: "{{ i3_config_src }}/containers"
@@ -30,23 +37,28 @@ i3_container_dir: "{{ i3_config_src }}/containers"
 sway_config_src: "{{ user_config_src }}/sway"
 sway_config_dest: "{{ host_user_home }}/.config/sway"
 
-waybar_config_src: "{{ user_config_src }}/waybar"
-waybar_config_dest: "{{ host_user_home }}/.config/waybar"
-
-rofi_config_src: "{{ user_config_src }}/rofi"
-rofi_config_dest: "{{ host_user_home }}/.config/rofi"
-
+#### Display Manager
 sddm_config_src: "{{ system_config_src }}/sddm/sddm.conf.d"
 sddm_config_dest: "/etc/sddm.conf.d"
 sddm_theme_src: "{{ system_config_src }}/sddm/themes"
 sddm_theme_dest: "/usr/share/sddm/themes"
 
-gtk3_config_src: "{{ user_config_src }}/gtk-3.0"
-gtk3_config_dest: "{{ host_user_home }}/.config/gtk-3.0"
-
-dunst_config_src: "{{ user_config_src }}/dunst"
-dunst_config_dest: "{{ host_user_home }}/.config/dunst"
-
 lightdm_config_src: "{{ system_config_src }}/lightdm"
 lightdm_config_dest: "/etc/lightdm/lightdm.conf.d"
 lightdm_script_src: "{{ lightdm_config_src }}/scripts"
+
+### Window Switcher 
+rofi_config_src: "{{ user_config_src }}/rofi"
+rofi_config_dest: "{{ host_user_home }}/.config/rofi"
+
+### Status Bar
+waybar_config_src: "{{ user_config_src }}/waybar"
+waybar_config_dest: "{{ host_user_home }}/.config/waybar"
+
+### GTK
+gtk3_config_src: "{{ user_config_src }}/gtk-3.0"
+gtk3_config_dest: "{{ host_user_home }}/.config/gtk-3.0"
+
+### Notifications
+dunst_config_src: "{{ user_config_src }}/dunst"
+dunst_config_dest: "{{ host_user_home }}/.config/dunst"

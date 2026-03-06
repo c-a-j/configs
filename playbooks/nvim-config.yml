@@ -3,37 +3,41 @@
   remote_user: "{{ nvim_user | default('cjordan') }}"
   vars_files:
     - vars.yml
+  vars:
+    config_item: "nvim"
+    src: "{{ nvim_config_src }}"
+    dest: "{{ nvim_config_dest }}"
   tasks:
-    - name: Find all nvim config files
+    - name: find all {{ config_item }} config files
       ansible.builtin.find:
-        paths: "{{ nvim_config_src }}"
+        paths: "{{ src }}"
         file_type: file
         recurse: yes
-      register: nvim_files
+      register: config_files
 
-    - name: Create nvim config directory
+    - name: create {{ config_item }} config directory
       ansible.builtin.file:
-        path: "{{ nvim_config_dest }}"
+        path: "{{ dest }}"
         state: directory
 
-    - name: Create nvim sub directories 
+    - name: create {{ config_item }} sub directories 
       ansible.builtin.file:
-        path: "{{ nvim_config_dest }}/{{ (item.path | regex_replace('^' + nvim_config_src + '/?', '')) | dirname }}"
+        path: "{{ dest }}/{{ (item.path | regex_replace('^' + src + '/?', '')) | dirname }}"
         state: directory
-      loop: "{{ nvim_files.files }}"
-      when: (item.path | regex_replace('^' + nvim_config_src + '/?', '')) | dirname != '.'
+      loop: "{{ config_files.files }}"
+      when: (item.path | regex_replace('^' + src + '/?', '')) | dirname != '.'
 
-    - name: Hard link config files
+    - name: hard link config files
       ansible.builtin.file:
         src: "{{ item.path }}"
-        dest: "{{ nvim_config_dest }}/{{ item.path | regex_replace('^' + nvim_config_src + '/?', '') }}"
+        dest: "{{ dest }}/{{ item.path | regex_replace('^' + src + '/?', '') }}"
         state: hard
         force: true
-      loop: "{{ nvim_files.files }}"
+      loop: "{{ config_files.files }}"
 
     - name: create templates directory
       ansible.builtin.file:
-        path: "{{ nvim_config_dest }}/templates"
+        path: "{{ dest }}/templates"
         state: directory
 
     - name: find template files
@@ -45,7 +49,7 @@
     - name: hard link template files
       ansible.builtin.file:
         src: "{{ item.path }}"
-        dest: "{{ nvim_config_dest }}/templates/{{ item.path | basename }}"
+        dest: "{{ dest }}/templates/{{ item.path | basename }}"
         state: hard
         force: true
       loop: "{{ template_files.files }}"

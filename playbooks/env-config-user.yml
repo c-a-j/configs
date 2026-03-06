@@ -1,4 +1,4 @@
-- name: Shell configuration
+- name: user shell configuration
   hosts: localhost
   gather_facts: yes
   remote_user: cjordan
@@ -37,7 +37,7 @@
         state: hard
         force: true
 
-- name: Home configuration
+- name: home configuration
   hosts: localhost
   gather_facts: yes
   remote_user: cjordan

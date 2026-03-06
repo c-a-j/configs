@@ -23,8 +23,8 @@
 
     - name: sync theme directories
       ansible.posix.synchronize:
-        src: "{{ sddm_theme_src }}/"
-        dest: "{{ sddm_theme_dest }}"
+        src: "{{ theme_src }}/"
+        dest: "{{ theme_dest }}"
         mode: push
         archive: yes
         rsync_opts:
