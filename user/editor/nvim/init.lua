@@ -19,19 +19,50 @@ vim.cmd("syntax on")
 
 -- Folding
 vim.o.foldmethod = "indent"
-vim.o.foldnestmax = 1
+vim.o.foldnestmax = 3
 vim.o.foldminlines = 0
-vim.o.foldlevel = 1
-vim.o.foldcolumn = "1"
+-- Keep nested folds open at startup so `zc` closes the nearest fold first.
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
+vim.o.foldcolumn = "0"
 vim.o.foldopen = ""
 function _G.CustomFoldText()
-  -- return vim.fn.getline(vim.v.foldstart) .. ' ... ' .. vim.fn.getline(vim.v.foldend):gsub("^%s*", "")
-  return ""
+  local first = vim.fn.getline(vim.v.foldstart):gsub("^%s*", "")
+  local line_count = vim.v.foldend - vim.v.foldstart + 1
+  return string.format("%s  ...  [%d lines]", first, line_count)
 end
 
 vim.opt.foldtext = 'v:lua.CustomFoldText()'
 -- Set up autocommands to manage foldnestmax dynamically
-vim.api.nvim_create_augroup("FoldConfig", { clear = true })
+local fold_config_group = vim.api.nvim_create_augroup("FoldConfig", { clear = true })
+
+function _G.CppBraceFoldExpr()
+  local line = vim.fn.getline(vim.v.lnum)
+  -- Remove simple comments/strings so braces there don't affect folding.
+  line = line:gsub("//.*$", "")
+  line = line:gsub([["(\\.|[^"\\])*"]], "")
+  line = line:gsub([['(\\.|[^'\\])*']], "")
+
+  local opens = select(2, line:gsub("{", ""))
+  local closes = select(2, line:gsub("}", ""))
+
+  if opens > closes then
+    return "a" .. (opens - closes)
+  end
+  if closes > opens then
+    return "s" .. (closes - opens)
+  end
+  return "="
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = fold_config_group,
+  pattern = { "c", "cpp" },
+  callback = function()
+    vim.opt_local.foldmethod = "expr"
+    vim.opt_local.foldexpr = "v:lua.CppBraceFoldExpr()"
+  end,
+})
 
 -- Security
 vim.o.modelines = 0
