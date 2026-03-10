@@ -12,7 +12,7 @@
       ansible.builtin.dnf:
         name:
           - vim
-          - nvim
+          - neovim
           - git
           - tmux
           - alacritty

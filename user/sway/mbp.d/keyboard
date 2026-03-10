@@ -11,5 +11,9 @@ input "1452:628:Apple_Inc._Apple_Internal_Keyboard_/_Trackpad" {
 bindsym XF86MonBrightnessUp exec brightnessctl s 2%+
 bindsym XF86MonBrightnessDown exec brightnessctl s 2%-
 
+# Apple keyboard backlight keys (F5/F6)
+bindsym --locked XF86KbdBrightnessDown exec brightnessctl -d smc::kbd_backlight set 5%-
+bindsym --locked XF86KbdBrightnessUp exec brightnessctl -d smc::kbd_backlight set 5%+
+
 # paste PRIMARY selection on right alt release
 bindsym --release Alt_R exec wl-paste -p --no-newline | wtype -
