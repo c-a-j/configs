@@ -69,6 +69,8 @@ vim.o.modelines = 0
 
 -- Show line numbers
 vim.o.number = true
+-- Keep diagnostic signs from shifting text when they appear/disappear.
+vim.o.signcolumn = "yes"
 
 -- Show cursor position (line and column)
 vim.o.ruler = true
