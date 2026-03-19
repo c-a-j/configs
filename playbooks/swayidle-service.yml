@@ -1,0 +1,34 @@
+- name: swayidle systemd user service
+  hosts: localhost
+  gather_facts: yes
+  remote_user: cjordan
+  become: no
+  vars_files: 
+    - vars.yml
+  tasks:
+    - name: "ensure user user systemd directory exists: {{ user_systemd_dest }}"
+      ansible.builtin.file:
+        path: "{{ user_systemd_dest }}"
+        state: directory
+    - name: "ensure user user bin directory exists: {{ user_bin_dest }}"
+      ansible.builtin.file:
+        path: "{{ user_bin_dest }}"
+        state: directory
+    - name: "hard link systemd unit file: {{ user_systemd_dest }}/swayidle.service"
+      ansible.builtin.file:
+        src: "{{ user_systemd_src }}/swayidle.service"
+        dest: "{{ user_systemd_dest }}/swayidle.service"
+        state: hard
+        force: true
+    - name: "hard link script: {{ user_bin_dest }}/start-swayidle"
+      ansible.builtin.file:
+        src: "{{ user_bin_src }}/start-swayidle"
+        dest: "{{ user_bin_dest }}/start-swayidle"
+        state: hard
+        force: true
+    - name: "Enable swayidle.service"
+      ansible.builtin.systemd_service:
+        name: swayidle
+        enabled: true
+        state: started
+        scope: user

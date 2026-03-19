@@ -1,0 +1,10 @@
+[Unit]
+Description=Start swayidle
+After=sway-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/start-swayidle
+
+[Install]
+WantedBy=sway-session.target

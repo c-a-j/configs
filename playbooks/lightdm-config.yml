@@ -16,7 +16,7 @@
       become: yes
       ansible.builtin.copy:
         src: "{{ item.path }}"
-        dest: "{{ system_script_dest }}/{{ item.path | basename | regex_replace('\\.sh$', '') }}"
+        dest: "{{ system_bin_dest }}/{{ item.path | basename | regex_replace('\\.sh$', '') }}"
         owner: root
         group: root
         mode: '0744'
@@ -24,11 +24,11 @@
 
     - name: Run greeter setup script
       become: yes
-      ansible.builtin.command: "bash {{ system_script_dest }}/lightdm-gtk-greeter-gen-config"
+      ansible.builtin.command: "bash {{ system_bin_dest }}/lightdm-gtk-greeter-gen-config"
 
     - name: Set initial background
       become: yes
-      ansible.builtin.command: "bash {{ system_script_dest }}/lightdm-gtk-greeter-set-bg"
+      ansible.builtin.command: "bash {{ system_bin_dest }}/lightdm-gtk-greeter-set-bg"
 
     - name: Find lightdm.conf.d files
       ansible.builtin.find:

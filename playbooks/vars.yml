@@ -3,8 +3,18 @@ hostname: "{{ lookup('ansible.builtin.env', 'HOSTNAME') }}"
 config_src: "{{ host_user_home }}/configs"
 user_config_src: "{{ config_src }}/user"
 system_config_src: "{{ config_src }}/system"
-system_script_dest: "/usr/local/bin"
 
+
+### Scripts/Binaries
+system_bin_src: "{{ system_config_src }}/scripts"
+system_bin_dest: "/usr/local/bin"
+
+user_bin_src: "{{ user_config_src }}/scripts"
+user_bin_dest: "{{ host_user_home }}/.local/bin"
+
+### User systemd
+user_systemd_src: "{{ user_config_src }}/systemd"
+user_systemd_dest: "{{ host_user_home }}/.config/systemd/user"
 
 ### Terminal
 shell_config_src: "{{ user_config_src }}/shell"

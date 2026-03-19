@@ -7,6 +7,8 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "buffer_line_height": "standard",
+  "buffer_font_weight": 400.0,
   "linked_edits": false,
   "edit_predictions": {
     "mode": "subtle"
@@ -24,7 +26,8 @@
     }
   },
   "agent_servers": {
-    "codex": {
+    "codex-acp": {
+      "type": "registry",
       "default_config_options": {
         "mode": "auto"
       },
@@ -34,7 +37,8 @@
         ]
       }
     },
-    "claude": {
+    "claude-acp": {
+      "type": "registry",
       "default_mode": "plan",
       "default_model": "haiku"
     }
@@ -55,8 +59,8 @@
   "preferred_line_length": 80,
   "tab_size": 2,
   "icon_theme": "Zed (Default)",
-  "ui_font_size": 16,
-  "buffer_font_size": 15,
+  "ui_font_size": 15.0,
+  "buffer_font_size": 13.0,
   "theme": {
     "mode": "dark",
     "light": "Gruvbox Light",
@@ -66,4 +70,19 @@
     // Disable ligatures:
     "calt": false,
   },
+  "lsp": {
+      "clangd": {
+          "binary": {
+              // Optional: specify a custom path to clangd if not in your PATH
+              // "path": "/path/to/clangd", 
+              "arguments": [
+                  "--background-index",
+                  "--clang-tidy", // This argument enables clang-tidy support
+                  "--header-insertion=never", // Optional, can prevent annoying header reordering
+                  "--compile-commands-dir=./build/build/compile_commands.json",
+                  // "-j=4", // Optional, adjust as needed
+              ]
+          }
+      }
+  }
 }
