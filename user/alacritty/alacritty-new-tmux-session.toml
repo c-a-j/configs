@@ -2,8 +2,13 @@
 import = [
     "~/.config/alacritty/themes/themes/gruvbox_dark.toml"
 ]
+
 live_config_reload = true
+
+[font]
+size = 10
 
 [terminal.shell]
 program = "/bin/bash"
 args = ["-l", "-c", "tmux"]
+
