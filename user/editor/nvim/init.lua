@@ -348,14 +348,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end
 })
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = "python",
-  callback = function()
-    vim.bo.softtabstop = 2
-    vim.bo.shiftwidth = 2
-    vim.bo.tabstop = 2
-  end
-})
-vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
     vim.cmd("setlocal spell")
