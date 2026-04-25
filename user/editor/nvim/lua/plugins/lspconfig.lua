@@ -54,6 +54,15 @@ return {
     })
     vim.lsp.enable('pyright')
 
+    -- Python linter (ruff provides diagnostics/autofixes; pairs with pyright for types)
+    vim.lsp.config('ruff', {
+      on_attach = function(client)
+        -- Defer hover to pyright
+        client.server_capabilities.hoverProvider = false
+      end,
+    })
+    vim.lsp.enable('ruff')
+
     -- Bash
     vim.lsp.config('bashls', {
     })
