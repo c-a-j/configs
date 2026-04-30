@@ -392,7 +392,3 @@ require("config.lazy")
 -- vim.cmd([[colorscheme gruvbox]])
 -- vim.cmd("colorscheme kanagawa-wave")
 vim.cmd("colorscheme gruvbox-material")
-
--- oil
-require("oil").setup()
-vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
