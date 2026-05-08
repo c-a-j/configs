@@ -5,24 +5,38 @@ return {
     vim.api.nvim_create_autocmd('LspAttach', {
       callback = function(ev)
         local bufnr = ev.buf
+        local client = vim.lsp.get_client_by_id(ev.data.client_id)
+        if not client then
+          return
+        end
+
         vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
         local opts = { noremap = true, silent = true, buffer = bufnr }
-        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-        vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+        local function map(lhs, rhs)
+          vim.keymap.set('n', lhs, rhs, opts)
+        end
+        local function map_if_supported(method, lhs, rhs)
+          if client:supports_method(method, bufnr) then
+            map(lhs, rhs)
+          end
+        end
+
+        map_if_supported('textDocument/declaration', 'gD', vim.lsp.buf.declaration)
+        map_if_supported('textDocument/definition', 'gd', vim.lsp.buf.definition)
+        map_if_supported('textDocument/hover', 'K', vim.lsp.buf.hover)
+        map_if_supported('textDocument/implementation', 'gi', vim.lsp.buf.implementation)
+        map_if_supported('textDocument/signatureHelp', '<C-k>', vim.lsp.buf.signature_help)
         vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
         vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
         vim.keymap.set('n', '<leader>wl', function()
           print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
         end, opts)
-        vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
-        vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-        vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
-        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-        vim.keymap.set('n', 'ee', vim.diagnostic.open_float, opts)
+        map_if_supported('textDocument/typeDefinition', '<leader>D', vim.lsp.buf.type_definition)
+        map_if_supported('textDocument/rename', '<leader>rn', vim.lsp.buf.rename)
+        map_if_supported('textDocument/codeAction', '<leader>ca', vim.lsp.buf.code_action)
+        map_if_supported('textDocument/references', 'gr', vim.lsp.buf.references)
+        map('ee', vim.diagnostic.open_float)
       end,
     })
 
