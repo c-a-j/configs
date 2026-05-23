@@ -1,0 +1,6 @@
+update-all:
+  ansible-playbook main.yml -K
+
+update-nvim:
+  ansible-playbook nvim-config.yml
+

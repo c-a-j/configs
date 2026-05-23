@@ -236,3 +236,5 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+source '/home/cjordan/.bash_completions/setup.py.sh'
