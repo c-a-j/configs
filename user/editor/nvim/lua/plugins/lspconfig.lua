@@ -107,5 +107,11 @@ return {
     vim.lsp.config('rust_analyzer', {
     })
     vim.lsp.enable('rust_analyzer')
+
+    -- C#
+    vim.lsp.config('roslyn_ls', {
+      cmd = { vim.fs.joinpath(vim.fn.stdpath('data'), 'mason', 'bin', 'roslyn-language-server'), '--stdio' },
+    })
+    vim.lsp.enable('roslyn_ls')
   end,
 }
