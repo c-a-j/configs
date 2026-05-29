@@ -37,6 +37,13 @@ return {
         map_if_supported('textDocument/codeAction', '<leader>ca', vim.lsp.buf.code_action)
         map_if_supported('textDocument/references', 'gr', vim.lsp.buf.references)
         map('ee', vim.diagnostic.open_float)
+
+        -- Inlay hints (inline type annotations): off by default, <leader>th toggles.
+        if client:supports_method('textDocument/inlayHint', bufnr) then
+          map('<leader>th', function()
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
+          end)
+        end
       end,
     })
 
@@ -63,10 +70,25 @@ return {
     -- Enable the language server
     vim.lsp.enable('lua_ls')
 
-    -- Python
-    vim.lsp.config('pyright', {
+    -- Python (basedpyright: open-source pyright fork that also serves inlay hints)
+    vim.lsp.config('basedpyright', {
+      settings = {
+        basedpyright = {
+          analysis = {
+            -- Global default for projects without their own pyrightconfig.json.
+            -- Per-project config (e.g. typeCheckingMode) overrides this.
+            typeCheckingMode = "standard",
+            inlayHints = {
+              variableTypes = true,
+              functionReturnTypes = true,
+              callArgumentNames = true,
+              pytestParameters = true,
+            },
+          },
+        },
+      },
     })
-    vim.lsp.enable('pyright')
+    vim.lsp.enable('basedpyright')
 
     -- Python linter (ruff provides diagnostics/autofixes; pairs with pyright for types)
     vim.lsp.config('ruff', {

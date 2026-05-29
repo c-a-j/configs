@@ -238,3 +238,14 @@ esac
 # pnpm end
 
 source '/home/cjordan/.bash_completions/setup.py.sh'
+
+## LLM
+run-codex() {
+  tmux set-option mouse on
+  codex
+}
+
+run-claude() {
+  tmux set-option mouse on
+  claude
+}
