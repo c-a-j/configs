@@ -240,12 +240,19 @@ esac
 source '/home/cjordan/.bash_completions/setup.py.sh'
 
 ## LLM
-run-codex() {
+with-tmux-mouse() {
+  local previous status
+  previous=$(tmux show-option -gv mouse)
   tmux set-option mouse on
-  codex
+  "$@"
+  status=$?
+  tmux set-option mouse "$previous"
+  return "$status"
+}
+run-codex() {
+  with-tmux-mouse codex "$@"
 }
 
 run-claude() {
-  tmux set-option mouse on
-  claude
+  with-tmux-mouse claude "$@"
 }
