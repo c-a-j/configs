@@ -14,9 +14,8 @@ return {
     appearance = { nerd_font_variant = "mono" },
 
     completion = {
-      -- Inline grey preview of the top match, shown even when nothing in the
-      -- menu is selected. <Tab> accepts it.
-      ghost_text = { enabled = true, show_without_selection = true },
+      -- Inline grey preview disabled: top match often wrong, distracting.
+      ghost_text = { enabled = false },
 
       -- Menu is toggle-only: it never auto-pops. Summon the full list with
       -- <C-space>, then <C-n>/<C-p> (or arrows) to move through it.

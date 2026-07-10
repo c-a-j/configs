@@ -237,7 +237,9 @@ case ":$PATH:" in
 esac
 # pnpm end
 
-source '/home/cjordan/.bash_completions/setup.py.sh'
+if [ -f "~/.bash_completions/setup.py.sh" ]; then
+  source "~/.bash_completions/setup.py.sh"
+fi
 
 ## LLM
 with-tmux-mouse() {
