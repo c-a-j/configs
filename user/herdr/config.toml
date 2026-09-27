@@ -1,0 +1,56 @@
+onboarding = false
+
+[ui.toast]
+delivery = "herdr"
+
+# copy on select stays on; just hide the "copied" toast
+[ui.toast.clipboard]
+enabled = false
+
+[ui]
+status_indicators = "symbols"
+tab_bar_position = "bottom"
+prompt_new_tab_name = false
+
+# date format (tmux: '%a %Y-%m-%d %H:%M %Z'); %Z unsupported by datetime, so shell out for it
+tab_bar_right = [
+  { type = "datetime", format = "%a %Y-%m-%d %H:%M" },
+  { type = "command", command = "date +%Z", interval_seconds = 60, timeout_seconds = 2 },
+]
+tab_bar_right_separator = " "
+
+[theme]
+name = "gruvbox"
+auto_switch = false
+
+[keys]
+prefix = "ctrl+a"
+
+# switch tabs with meta key (tmux: M-, / M-.)
+previous_tab = ["alt+comma", "prefix+p"]
+next_tab = "alt+period"
+
+# split panes using prefix \ and prefix -
+split_vertical = "prefix+backslash"
+split_horizontal = "prefix+minus"
+
+# switch panes with meta key
+focus_pane_left = ["alt+left", "prefix+h"]
+focus_pane_right = ["alt+right", "prefix+l"]
+focus_pane_up = ["alt+up", "prefix+k"]
+focus_pane_down = ["alt+down", "prefix+j"]
+cycle_pane_previous = ["alt+[", "prefix+shift+tab"]
+cycle_pane_next = ["alt+]", "prefix+tab"]
+
+# settings on prefix S, goto on prefix s (tmux: choose-tree)
+settings = "prefix+shift+s"
+goto = "prefix+s"
+
+# new workspace on prefix n
+new_workspace = "prefix+n"
+
+# navigate mode (prefix w): j/k move between workspaces, J/K move between panes
+navigate_workspace_up = ["k", "up"]
+navigate_workspace_down = ["j", "down"]
+navigate_pane_up = "shift+k"
+navigate_pane_down = "shift+j"

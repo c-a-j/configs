@@ -9,10 +9,10 @@ assign [app_id="flashcard-beast"] workspace number 9
 
 exec --no-startup-id
 {
-  swaymsg 'workspace number 1; exec alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml;'
-  swaymsg 'workspace number 1; exec alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml;'
-  swaymsg 'workspace number 2; exec alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml;'
-  swaymsg 'workspace number 2; exec alacritty --config-file /home/cjordan/.config/alacritty/alacritty-new-tmux-session.toml;'
+  swaymsg 'workspace number 1; exec alacritty --config-file /home/cjordan/.config/alacritty/tmux-new.toml;'
+  swaymsg 'workspace number 1; exec alacritty --config-file /home/cjordan/.config/alacritty/tmux-new.toml;'
+  swaymsg 'workspace number 2; exec alacritty --config-file /home/cjordan/.config/alacritty/tmux-new.toml;'
+  swaymsg 'workspace number 2; exec alacritty --config-file /home/cjordan/.config/alacritty/tmux-new.toml;'
   swaymsg 'workspace number 7; exec firefox;'
   # exec firefox;
   exec thunderbird;

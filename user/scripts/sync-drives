@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage="Usage: $0 --src SRC --dest DEST"
+if [ ! $# -eq 4 ]; then
+    echo $usage
+    exit 1
+fi
+
+short=s:,d:
+long=src:,dest:
+opts=`getopt \
+    --options $short \
+    --long $long \
+    --name $( basename "$0" ) \
+    -- "$@"`
+if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
+
+eval set -- "$opts"
+
+# printf "%s \n" ${opts[*]}
+
+while (( $# )); do
+  case "$1" in
+    -s | --src ) src=$2; shift 2 ;;
+    -d | --dest ) dest=$2; shift 2 ;;
+    -- ) break ;;
+    * ) break ;;
+  esac
+done
+
+# Eliminate trailing slashes
+src=$(sed 's|/$||' <<< "$src")
+dest=$(sed 's|/$||' <<< "$dest")
+opts="-aAXHhi --delete --ignore-errors --fake-super"
+
+if [ -d $src ] && [ -d $dest ]; then
+    rsync $opts $src/ $dest
+else
+    echo "One or both drives could not be found"
+fi

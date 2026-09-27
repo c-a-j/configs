@@ -1,0 +1,19 @@
+[general]
+import = ["~/.config/alacritty/themes/themes/gruvbox_dark.toml"]
+
+live_config_reload = true
+
+[font]
+size = 10
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Light"
+
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Normal"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Italic"

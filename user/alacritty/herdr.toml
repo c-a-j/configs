@@ -3,4 +3,4 @@ import = ["~/.config/alacritty/base.toml"]
 
 [terminal.shell]
 program = "/bin/bash"
-args = ["-l", "-c", "tmux a || tmux"]
+args = ["-l", "-c", "herdr"]

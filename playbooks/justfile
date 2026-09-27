@@ -4,3 +4,15 @@ update-all:
 update-nvim:
   ansible-playbook nvim-config.yml
 
+update-alacritty:
+  ansible-playbook terminal-config.yml
+
+update-herdr:
+  ln -f $HOME/configs/user/herdr/config.toml $HOME/.config/herdr/config.toml
+
+update-sway-config:
+  ansible-playbook sway-config.yml
+
+update-sway:
+  ansible-playbook sway.yml -K
+
