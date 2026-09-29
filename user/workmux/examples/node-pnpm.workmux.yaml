@@ -1,0 +1,45 @@
+# Node / pnpm web app
+# Copy to the repository root as `.workmux.yaml`.
+
+main_branch: main
+base_branch: auto
+
+files:
+  # Untracked local config each worktree needs its own copy of
+  copy:
+    - .env
+    - .env.local
+  # Share the build cache across worktrees
+  symlink:
+    - .next/cache
+
+# Runs before the tmux window opens, so keep it fast
+post_create:
+  - "<global>"
+  - corepack enable
+
+pre_merge:
+  - pnpm run lint
+  - pnpm run typecheck
+  - pnpm test
+
+pre_remove:
+  - "<cleanup-node-modules>"
+
+panes:
+  - command: <agent>
+    focus: true
+  - command: nvim
+    split: horizontal
+  - command: pnpm install && pnpm run dev
+    split: vertical
+    size: 12
+
+layouts:
+  # Agent only, for batch-spawned worktrees: workmux add <branch> -l solo
+  solo:
+    panes:
+      - command: pnpm install
+      - command: <agent>
+        split: horizontal
+        focus: true

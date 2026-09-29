@@ -1,0 +1,16 @@
+# Minimal override for small repositories such as dotfiles or docs
+# Copy to the repository root as `.workmux.yaml`.
+#
+# Everything not set here falls back to ~/.config/workmux/config.yaml.
+
+main_branch: master
+
+# Short-lived worktrees: keep names short and history linear
+worktree_naming: basename
+merge_strategy: rebase
+
+panes:
+  - command: <agent>
+    focus: true
+  - command: nvim
+    split: horizontal

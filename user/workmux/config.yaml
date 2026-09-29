@@ -1,0 +1,50 @@
+nerdfont: true
+agent: claude
+merge_strategy: rebase
+worktree_naming: basename
+worktree_dir: ../{project}__wt
+window_placement: rightmost
+
+panes: 
+  - command: nvim
+    focus: true
+
+layouts:
+  edit:
+    panes:
+      - command: nvim
+        focus: true
+  agent:
+    panes:
+      - command: <agent>
+        focus: true
+  both:
+    panes:
+      - command: <agent>
+        focus: true
+      - command: nvim
+        split: horizontal
+
+sidebar:
+  group_by: project
+  position: left
+  width: 30
+  layout: tiles
+  sort: recency
+
+sandbox:
+  # Off by default. Enable per repo in that repo's .workmux.yaml:
+  #   sandbox:
+  #     enabled: true
+  enabled: false
+  container:
+    runtime: docker
+    excluded_files:
+      - .env
+      - config/secrets.yaml
+  network:
+    policy: deny
+    allowed_domains:
+      - api.anthropic.com
+      - platform.claude.com
+

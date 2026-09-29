@@ -1,0 +1,37 @@
+# .NET / C# solution
+# Copy to the repository root as `.workmux.yaml`.
+
+main_branch: main
+base_branch: auto
+
+files:
+  # Untracked local settings; user secrets live outside the repo already
+  copy:
+    - "**/appsettings.Development.json"
+    - "**/Properties/launchSettings.json"
+    - .env
+
+pre_merge:
+  - dotnet format --verify-no-changes
+  - dotnet build --no-restore -warnaserror
+  - dotnet test --no-build
+
+panes:
+  - command: <agent>
+    focus: true
+  - command: nvim
+    split: horizontal
+  # Restore runs in a pane rather than post_create so the window opens
+  # immediately
+  - command: dotnet restore && dotnet watch test
+    split: vertical
+    size: 12
+
+layouts:
+  # Agent only, for batch-spawned worktrees: workmux add <branch> -l solo
+  solo:
+    panes:
+      - command: dotnet restore
+      - command: <agent>
+        split: horizontal
+        focus: true

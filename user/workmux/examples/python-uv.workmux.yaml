@@ -1,0 +1,37 @@
+# Python project managed with uv
+# Copy to the repository root as `.workmux.yaml`.
+
+main_branch: main
+base_branch: auto
+
+files:
+  copy:
+    - .env
+  # Do not symlink .venv: it embeds absolute paths to the original checkout.
+  # `uv sync` below recreates it quickly from the shared uv cache.
+
+# Runs before the tmux window opens, so keep it fast
+post_create:
+  - "<global>"
+  - uv sync --frozen
+
+pre_merge:
+  - uv run ruff check .
+  - uv run ruff format --check .
+  - uv run pytest -q
+
+panes:
+  - command: <agent>
+    focus: true
+  - command: nvim
+    split: horizontal
+  # Plain shell for running scripts and tests
+  - split: vertical
+    size: 12
+
+layouts:
+  # Agent only, for batch-spawned worktrees: workmux add <branch> -l solo
+  solo:
+    panes:
+      - command: <agent>
+        focus: true

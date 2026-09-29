@@ -1,0 +1,8 @@
+# Project-level workmux config. Overrides ~/.config/workmux/config.yaml.
+
+sandbox:
+  enabled: true
+
+panes:
+  - command: <agent>
+    focus: true

@@ -1,0 +1,38 @@
+# Rust / cargo project
+# Copy to the repository root as `.workmux.yaml`.
+
+main_branch: main
+base_branch: auto
+
+# Squash keeps agent work-in-progress commits out of main
+merge_strategy: squash
+
+files:
+  copy:
+    - .env
+  # Optional: share one target directory to save disk and rebuild time.
+  # Concurrent builds in different worktrees will then block on cargo's lock,
+  # so leave this off when several agents build at once.
+  # symlink:
+  #   - target
+
+pre_merge:
+  - cargo fmt --check
+  - cargo clippy --all-targets -- -D warnings
+  - cargo test
+
+panes:
+  - command: <agent>
+    focus: true
+  - command: nvim
+    split: horizontal
+  - command: cargo check
+    split: vertical
+    size: 12
+
+layouts:
+  # Agent only, for batch-spawned worktrees: workmux add <branch> -l solo
+  solo:
+    panes:
+      - command: <agent>
+        focus: true
