@@ -26,6 +26,9 @@ alacritty_dest: "{{ host_user_home }}/.config/alacritty"
 tmux_src: "{{ user_config_src }}/tmux/tmux.conf"
 tmux_dest: "{{ host_user_home }}/.tmux.conf"
 
+workmux_src: "{{ user_config_src }}/workmux/config.yaml"
+workmux_dest: "{{ host_user_home }}/.config/workmux/config.yaml"
+
 ### Editor
 editor_src: "{{ user_config_src }}/editor"
 editor_template_src: "{{ editor_src }}/templates"

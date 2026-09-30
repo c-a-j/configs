@@ -16,3 +16,5 @@ update-sway-config:
 update-sway:
   ansible-playbook sway.yml -K
 
+update-terminal:
+  ansible-playbook terminal-config.yml

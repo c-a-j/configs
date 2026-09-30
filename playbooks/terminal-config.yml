@@ -35,3 +35,9 @@
         dest: "{{ tmux_dest }}"
         state: hard
         force: true
+    - name: hard link workmux config
+      ansible.builtin.file:
+        src: "{{ workmux_src }}"
+        dest: "{{ workmux_dest }}"
+        state: hard
+        force: true

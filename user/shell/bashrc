@@ -241,6 +241,9 @@ if [ -f "~/.bash_completions/setup.py.sh" ]; then
   source "~/.bash_completions/setup.py.sh"
 fi
 
+## workmux
+command -v workmux &> /dev/null && alias wm='workmux'
+
 ## LLM
 with-tmux-mouse() {
   local previous status
