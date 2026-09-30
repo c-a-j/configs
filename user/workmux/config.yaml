@@ -48,3 +48,4 @@ sandbox:
       - api.anthropic.com
       - platform.claude.com
 
+theme: glacier-signal
