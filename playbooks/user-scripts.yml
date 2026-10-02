@@ -1,0 +1,29 @@
+- name: user scripts
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  become: no
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: create user bin directory
+      ansible.builtin.file:
+        path: "{{ user_bin_dest }}"
+        state: directory
+        mode: '0755'
+    - name: find user scripts
+      ansible.builtin.find:
+        paths: "{{ user_bin_src }}"
+        patterns: '*'
+        file_type: file
+        hidden: false
+        recurse: false
+      register: user_scripts
+    - name: install user scripts
+      ansible.builtin.copy:
+        src: "{{ item.path }}"
+        dest: "{{ user_bin_dest }}/{{ item.path | basename }}"
+        mode: '0755'
+      loop: "{{ user_scripts.files }}"
+      loop_control:
+        label: "{{ item.path | basename }}"

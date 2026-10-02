@@ -13,6 +13,9 @@ update-alacritty:
 update-user-env:
   ansible-playbook env-config-user.yml
 
+update-user-scripts:
+  ansible-playbook user-scripts.yml
+
 update-herdr:
   ln -f $HOME/configs/user/herdr/config.toml $HOME/.config/herdr/config.toml
 

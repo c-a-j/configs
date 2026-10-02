@@ -1,6 +1,6 @@
 {
   "yoloMode": false,
-  "authorizerChain": [],
+  "authorizerChain": ["classifier"],
   "permissionReviewLog": true,
   "debugLog": false,
   "permission": {

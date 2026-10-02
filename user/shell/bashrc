@@ -250,26 +250,3 @@ fi
 
 ## workmux
 command -v workmux &> /dev/null && alias wm='workmux'
-
-## LLM
-with-tmux-mouse() {
-  local previous status
-  previous=$(tmux show-option -gv mouse)
-  tmux set-option mouse on
-  "$@"
-  status=$?
-  tmux set-option mouse "$previous"
-  return "$status"
-}
-
-run-codex() {
-  with-tmux-mouse codex "$@"
-}
-
-run-claude() {
-  with-tmux-mouse claude "$@"
-}
-
-run-pi() {
-  with-tmux-mouse pi "$@"
-}

@@ -4,7 +4,7 @@ import { FooterComponent, type ExtensionAPI } from "@earendil-works/pi-coding-ag
 /** Keep Pi's built-in footer (stats, model, permission statuses, etc.).
  * Pi currently has no separate theme tokens for the path and git branch,
  * so decorate only its rendered first line. Restore the method on reload.
- * Install with: pi install ./user/pi/extensions/footer-colors.ts
+ * Installed as a regular file by user/pi/setup.sh; no worktree symlink.
  */
 export default function (pi: ExtensionAPI) {
 	let restore: (() => void) | undefined;

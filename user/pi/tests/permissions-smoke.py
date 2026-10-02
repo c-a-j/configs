@@ -2,6 +2,7 @@
 """Offline integration checks against installed packages; never edits live config.
 Run: python3 user/pi/tests/permissions-smoke.py (after setup.sh).
 """
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -29,25 +30,79 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
                  "PI_CODING_AGENT_DIR": str(agent), "PI_INSTALL_TRACE": str(installs)}
     def setup(*args):
         subprocess.run(["bash", str(ROOT / "setup.sh"), *args], env=setup_env, check=True, capture_output=True)
+    agent.mkdir()
+    settings_path = agent / "settings.json"
+    settings_path.write_text(json.dumps({"theme": "system", "defaultThinkingLevel": "high",
+                                         "defaultTools": ["-bash", "+codemode", "-grep"]}))
     setup()
+    settings = json.loads(settings_path.read_text())
+    assert settings == {"theme": "system", "defaultThinkingLevel": "high",
+                        "defaultTools": ["-bash", "+codemode", "+grep", "+find", "+ls"]}
+    for name in ("pi-hermes-memory", "projects-memory"):
+        assert (agent / name).stat().st_mode & 0o777 == 0o700, "New memory stores must be private"
+    runtime_files = ["subagents.json", "hermes-memory-config.json"]
+    for file in runtime_files:
+        assert (agent / file).read_bytes() == (ROOT / file).read_bytes()
+        (agent / file).write_text('{"localCustomization": true}\n')
+    reviewer = agent / "agents/reviewer.md"
+    assert reviewer.read_bytes() == (ROOT / "agents/reviewer.md").read_bytes()
+    reviewer.write_text("outdated agent")
+    workflows = ["review.md", "handoff.md"]
+    for file in workflows:
+        assert (agent / "prompts" / file).read_bytes() == (ROOT / "prompts" / file).read_bytes()
+        (agent / "prompts" / file).write_text("outdated template")
     policy = json.loads((ROOT / "permissions/config.json").read_text())
     assert json.loads(gate.read_text()) == policy
+    assert policy["yoloMode"] is False and policy["authorizerChain"] == ["classifier"], "Fresh setup must default to Auto"
     assert not (agent / "extensions/jev-reviewer").exists()
     helper = agent / "extensions/permission-modes.ts"
     assert helper.read_bytes() == (ROOT / "extensions/permission-modes.ts").read_bytes()
+    footer = agent / "extensions/footer-colors.ts"
+    assert not footer.is_symlink() and footer.read_bytes() == (ROOT / "extensions/footer-colors.ts").read_bytes()
+    footer.unlink()
+    footer.symlink_to(temp / "deleted-worktree/footer-colors.ts")
+    teaching = agent / "prompts/teach.md"
+    assert teaching.read_bytes() == (ROOT / "prompts/teach.md").read_bytes()
+    teaching.write_text("outdated template")
+    caveman_files = ["SKILL.md", "LICENSE", "LICENSE-MIT", "NOTICE", "UPSTREAM.md"]
+    caveman = agent / "skills/caveman"
+    assert {file.name for file in caveman.iterdir()} == set(caveman_files), "Install only the core skill and attribution"
+    for file in caveman_files:
+        assert (caveman / file).read_bytes() == (ROOT / "skills/caveman" / file).read_bytes()
+    assert hashlib.sha256((caveman / "SKILL.md").read_bytes()).hexdigest() == "0bf09a0a9a017d004a81d4b693e5a2d830e1a28230a5885df773e1ed9c0571cc", "Keep the reviewed upstream skill verbatim"
+    (caveman / "SKILL.md").write_text("outdated skill")
     policy["authorizerChain"] = ["test-existing-mode"]
     gate.write_text(json.dumps(policy))
     saved = gate.read_bytes()
     setup()
     assert gate.read_bytes() == saved, "Setup must preserve existing runtime policy/mode"
+    assert json.loads(settings_path.read_text()) == settings, "Tool merge must be idempotent"
+    for file in runtime_files:
+        assert (agent / file).read_text() == '{"localCustomization": true}\n'
+    assert reviewer.read_bytes() == (ROOT / "agents/reviewer.md").read_bytes()
+    for file in workflows:
+        assert (agent / "prompts" / file).read_bytes() == (ROOT / "prompts" / file).read_bytes()
+    for existing, expected in [([], ["grep", "find", "ls"]),
+                               (["read", "-ls"], ["read", "grep", "find", "ls"]),
+                               (None, ["+grep", "+find", "+ls"])]:
+        custom = {"defaultThinkingLevel": "high", "custom": {"preserve": True}}
+        if existing is not None:
+            custom["defaultTools"] = existing
+        settings_path.write_text(json.dumps(custom))
+        setup()
+        assert json.loads(settings_path.read_text()) == {**custom, "defaultTools": expected}
+    assert not footer.is_symlink() and footer.read_bytes() == (ROOT / "extensions/footer-colors.ts").read_bytes(), "Setup must repair a dangling footer worktree symlink"
+    assert teaching.read_bytes() == (ROOT / "prompts/teach.md").read_bytes(), "Setup must refresh the teaching template"
+    assert (caveman / "SKILL.md").read_bytes() == (ROOT / "skills/caveman/SKILL.md").read_bytes(), "Setup must refresh the Caveman skill"
     setup("--with-jev")
     assert gate.read_bytes() == saved
     for file in ["index.ts", "core.mjs", "package.json"]:
         assert (agent / "extensions/jev-reviewer" / file).read_bytes() == (ROOT / "extensions/jev-reviewer" / file).read_bytes()
     assert set(installs.read_text().splitlines()) == {
         "install npm:pi-vim@0.14.2", "install npm:@signalridge/pi-plan-mode@1.4.2",
-        "install npm:pi-permission-classifier@0.5.2", "install npm:@gotgenes/pi-permission-system@36.2.1"}
-    print("Setup: pinned packages, stable extension copies, preserved policy, Jev opt-in")
+        "install npm:pi-permission-classifier@0.5.2", "install npm:@gotgenes/pi-permission-system@36.2.1",
+        "install npm:@gotgenes/pi-subagents@21.9.1", "install npm:pi-hermes-memory@0.9.9"}
+    print("Setup: Auto default, pinned packages, stable extension copies, preserved policy, Jev opt-in")
     policy["authorizerChain"] = []
     # A deterministic deny must survive YOLO as well as other mode changes.
     blocked = temp / "always-denied.txt"
@@ -156,6 +211,11 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
             result, _ = request("commands", "get_commands")
             names = {entry["name"] for entry in result["data"]["commands"]}
             assert {"manual", "auto", "jev-shadow", "yolo", "permissions", "probe-write", "jev-test", "jev-status"} <= names, names
+            assert {"teach", "review", "handoff"} <= names, "Pi must discover native workflow prompts"
+            assert "test-plan" not in names, "Do not install the declined test-plan prompt"
+            assert "skill:caveman" in names, "Pi must discover the native Caveman skill"
+            assert next(entry for entry in result["data"]["commands"] if entry["name"] == "skill:caveman")["source"] == "skill"
+            assert "caveman" not in names, "No custom Caveman command wrapper"
             assert "auto-gpt" not in names, "No redundant Auto alias"
             assert json.loads(gate.read_text())["authorizerChain"] == []
             original = gate.read_bytes()

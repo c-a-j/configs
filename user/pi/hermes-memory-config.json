@@ -1,0 +1,14 @@
+{
+  "memoryMode": "policy-only",
+  "memoryPolicyStyle": "compact",
+  "reviewEnabled": true,
+  "reviewTransport": "direct",
+  "nudgeInterval": 20,
+  "nudgeToolCalls": 30,
+  "reviewRecentMessages": 20,
+  "correctionDetection": true,
+  "flushOnCompact": true,
+  "flushOnShutdown": false,
+  "standingInstructionsEnabled": false,
+  "sessionRetentionDays": 30
+}

@@ -17,6 +17,7 @@
 - import_playbook: sudo-setup.yml
 - import_playbook: env-config-root.yml
 - import_playbook: env-config-user.yml
+- import_playbook: user-scripts.yml
 - import_playbook: terminal-config.yml
 
 ### Editors

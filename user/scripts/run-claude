@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/with-tmux-mouse" || exit "$?"
+
+with-tmux-mouse claude "$@"

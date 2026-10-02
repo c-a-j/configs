@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+with-tmux-mouse() (
+  # Keep traps local to this invocation and leave ordinary shells untouched.
+  if [[ -z ${TMUX:-} ]] || ! command -v tmux >/dev/null 2>&1; then
+    "$@"
+    exit "$?"
+  fi
+
+  local session
+  session=$(tmux display-message -p -t "${TMUX_PANE:?}" '#{session_id}') || exit "$?"
+
+  # Target the original session even if the user switches sessions while running.
+  trap 'tmux set-option -t "$session" mouse off >/dev/null 2>&1 || true' EXIT
+  trap 'exit 130' INT
+  trap 'exit 143' TERM
+  trap 'exit 129' HUP
+
+  tmux set-option -t "$session" mouse on || exit "$?"
+  "$@"
+  exit "$?"
+)
