@@ -3,15 +3,16 @@
 
 Run after setup: python3 user/pi/tests/features-smoke.py
 """
+import hashlib
 import json
 import os
-from pathlib import Path
 import select
 import shutil
 import sqlite3
 import subprocess
 import tempfile
 import time
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 AGENT = Path(os.environ.get("PI_CODING_AGENT_DIR", Path.home() / ".pi/agent"))
@@ -25,6 +26,13 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
     agent.mkdir()
     (agent / "npm").symlink_to(AGENT / "npm", target_is_directory=True)
     shutil.copytree(ROOT / "prompts", agent / "prompts")
+    shutil.copytree(ROOT / "skills", agent / "skills")
+    grill = agent / "skills/grill-me"
+    for name, digest in {
+        "SKILL.md": "74147eb6010a65957efef2b9e0f0b3ff935c1def7fc117697151b1d0f3610556",
+        "LICENSE": "0e7ac423bf2c6e223b7c5b156f8cf72da49d748e56a1641402c31f22ad07dbb5",
+    }.items():
+        assert hashlib.sha256((grill / name).read_bytes()).hexdigest() == digest, name
     shutil.copytree(ROOT / "agents", agent / "agents")
     shutil.copyfile(ROOT / "subagents.json", agent / "subagents.json")
     memory_config = json.loads((ROOT / "hermes-memory-config.json").read_text())
@@ -75,6 +83,7 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
         buffer = bytearray()
 
         def receive(deadline):
+            assert process.stdout is not None
             while b"\n" not in buffer:
                 remaining = deadline - time.monotonic()
                 if remaining <= 0 or not select.select([process.stdout], [], [], remaining)[0]:
@@ -88,6 +97,7 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
             return json.loads(line)
 
         def request(identifier, kind, **fields):
+            assert process.stdin is not None
             process.stdin.write((json.dumps({"id": identifier, "type": kind, **fields}) + "\n").encode())
             process.stdin.flush()
             events = []
@@ -108,7 +118,11 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
             assert len(handoffs) == 1 and handoffs[0]["source"] == "extension", handoffs
             assert {"teach", "review", "handoff", "subagents:sessions", "subagents:settings",
                     "memory-insights", "memory-preview-context", "websearch",
-                    "search", "c7-docs", "skill:context7-docs"} <= names, names
+                    "search", "c7-docs", "skill:context7-docs",
+                    "grill-me", "skill:grill-me"} <= names, names
+            for name, source in (("grill-me", "prompt"), ("skill:grill-me", "skill")):
+                entries = [entry for entry in commands if entry["name"] == name]
+                assert len(entries) == 1 and entries[0]["source"] == source, entries
             assert next(entry for entry in commands if entry["name"] == "c7-docs")["source"] == "prompt"
             assert next(entry for entry in commands if entry["name"] == "skill:context7-docs")["source"] == "skill"
             assert "test-plan" not in names
@@ -129,6 +143,7 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
             assert set(reviewer["locked"]) == {"max_turns", "inherit_context", "run_in_background"}
             assert reviewer.get("model") is None and reviewer.get("thinking") is None
             print("Discovery: native search tools, workflow prompts, handoff extension, subagents, read-only background reviewer")
+            print("Skills: pinned Grill Me content, native skill command, and /grill-me prompt shortcut")
             print("Web: Web Access tools, Context7 tools, documentation prompt and skill (no network calls)")
             _, events = request("memory", "prompt", message="/memory-insights")
             assert any(fixture in event.get("message", "") for event in events), events
@@ -140,6 +155,7 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
                 assert connection.execute("SELECT count(*) FROM memory_fts WHERE memory_fts MATCH ?", ('"Offline fixture"',)).fetchone()[0] == 1
             print("Memory: isolated Markdown load, SQLite integrity, and full-text search")
         finally:
+            assert process.stdin is not None
             process.stdin.close()
             try:
                 process.wait(timeout=10)

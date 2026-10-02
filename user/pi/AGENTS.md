@@ -66,6 +66,13 @@ not merely response length or the price of an individual model call.
 - Review and sanitize knowledge before sharing it. Never commit raw memory
   databases, live sessions, credentials, or review logs.
 
+## Commit Messages
+
+- Keep all commit messages terse: one main header line, a blank line, and a few
+  short hyphenated bullets.
+- No agent may ever sign commits or add agent attribution, signatures,
+  `Signed-off-by`, or `Co-authored-by` trailers. No exceptions.
+
 ## Communication and Verification
 
 - Be concise and direct. Preserve technical accuracy, safety warnings, exact

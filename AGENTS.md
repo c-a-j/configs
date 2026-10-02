@@ -4,6 +4,9 @@ This repository contains user dotfiles and local Ansible installation playbooks.
 
 - Preserve unrelated working-tree changes. Do not deploy all configuration as a
   side effect of editing one component.
+- Preserve existing hard links when modifying repository files: edit files in
+  place and keep their inode numbers unchanged whenever possible. Avoid
+  replacement-by-rename or delete-and-recreate workflows that break hard links.
 - User configuration lives under `user/`; installation playbooks and Just
   targets live under `playbooks/`.
 - Pi configuration lives under `user/pi/`. Read `user/pi/README.md` before

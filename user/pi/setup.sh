@@ -19,6 +19,7 @@ pi install npm:@gotgenes/pi-subagents@21.9.1
 pi install npm:pi-hermes-memory@0.9.9
 pi install npm:pi-web-access@0.35.0
 pi install npm:@upstash/context7-pi@0.1.2
+pi install npm:pi-lens@4.3.0
 
 # Policies are initial defaults, not files to overwrite on every setup run.
 # Install local extensions into Pi's standard directory, not a worktree path.
@@ -40,9 +41,9 @@ for file in permission-modes.ts footer-colors.ts; do
   install -m 600 "$config_dir/extensions/$file" "$target"
 done
 
-# Review and teaching are prompt templates; handoff is an upstream extension.
+# Review, teaching, and the grill-me shortcut are native prompt templates.
 mkdir -p "$agent_dir/prompts" "$agent_dir/agents"
-for file in teach.md review.md; do
+for file in teach.md review.md grill-me.md; do
   install -m 600 "$config_dir/prompts/$file" "$agent_dir/prompts/$file"
 done
 install -m 600 "$config_dir/agents/reviewer.md" "$agent_dir/agents/reviewer.md"
@@ -101,10 +102,12 @@ if settings.get("defaultTools") != tools:
             temporary.unlink(missing_ok=True)
 PY
 
-# Vendored upstream skill only: no Caveman installer, CLI, or proxy.
-mkdir -p "$agent_dir/skills/caveman"
-for file in SKILL.md LICENSE LICENSE-MIT NOTICE UPSTREAM.md; do
-  install -m 600 "$config_dir/skills/caveman/$file" "$agent_dir/skills/caveman/$file"
+# Vendored Markdown skills only: no upstream installers, CLIs, or proxies.
+for skill in caveman grill-me; do
+  mkdir -p "$agent_dir/skills/$skill"
+  for source in "$config_dir/skills/$skill/"*; do
+    install -m 600 "$source" "$agent_dir/skills/$skill/${source##*/}"
+  done
 done
 
 # Jev is an optional experiment, not part of normal Auto mode.

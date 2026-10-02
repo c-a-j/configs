@@ -14,7 +14,7 @@ Packages are pinned: `pi-vim@0.14.2`, `@signalridge/pi-plan-mode@1.4.2`,
 `@ar-llm/pi-handoff@0.5.0`, `pi-permission-classifier@0.5.2`,
 `@gotgenes/pi-permission-system@36.2.1`,
 `@gotgenes/pi-subagents@21.9.1`, `pi-hermes-memory@0.9.9`,
-`pi-web-access@0.35.0`, and `@upstash/context7-pi@0.1.2`.
+`pi-web-access@0.35.0`, `@upstash/context7-pi@0.1.2`, and `pi-lens@4.3.0`.
 Setup also requires Python 3 to merge native tool settings.
 Local permission and footer extensions are copied into Pi's standard `extensions/` directory: they do
 not depend on this checkout or worktree remaining at the same path. Rerun setup
@@ -23,7 +23,7 @@ to update those copies. Normal setup does not uninstall an existing Jev extensio
 Initial policies in `permissions/`, `subagents.json`, and
 `hermes-memory-config.json` are copied **only if absent**. Runtime customizations
 stay local and are not overwritten by setup. Templates, the reviewer definition,
-local extensions, and the vendored Caveman skill are refreshed each run.
+local extensions, and the vendored Caveman and Grill Me skills are refreshed each run.
 Credentials, sessions, device IDs, learned memory, databases, and logs must not
 be committed.
 
@@ -117,6 +117,42 @@ billable calls. Browser-cookie access and third-party hosted page extraction are
 upstream opt-ins, not enabled by this setup. Existing personal configuration can
 change these behaviors. Tool-call permissions still apply, but extensions are not
 an OS or network sandbox, and fetched content is untrusted input.
+
+## Code diagnostics and navigation
+
+[`pi-lens`](https://github.com/apmantza/pi-lens) provides language-aware
+diagnostics after edits, LSP navigation, symbol search, and structural analysis.
+It also monitors read-before-edit and adds diagnostic tools and bundled skills.
+No custom runtime patch or pi-lens configuration is installed by setup; existing
+local configuration is preserved.
+
+```text
+/lens-health           # Runtime health and degraded checks
+/lens-tools            # Language server and tool installation status
+/lens-toggle           # Enable/disable pi-lens for this session
+```
+
+Upstream defaults enable diagnostics, context injection, related-test execution,
+autoformatting, and autofixes. Formatting normally runs at the end of an agent
+run; fixes can change written files immediately or edited files at run end.
+Language servers, linters, and scanners may be downloaded automatically as needed
+in trusted projects. These extension-managed subprocesses and file changes are
+not an OS sandbox and are not individually gated by tool-call permissions.
+The experimental commit/push guard is opt-in and is not enabled by setup.
+
+Optional user settings live in `~/.pi-lens/config.json`; project overrides live
+in `.pi-lens.json`. See upstream [settings](https://github.com/apmantza/pi-lens/blob/master/docs/settings.md)
+for precedence and controls. For example, `--no-autoformat --no-autofix --no-tests`
+disables automatic rewriting and related-test execution for one Pi invocation.
+Some project settings can override global mutation defaults, but explicit
+disabling CLI flags take precedence.
+
+The isolated smoke test below checks real Pi 1.0.0 command/tool registration and
+TypeScript symbol parsing without model calls, tool downloads, or live settings
+changes. It does not validate the complete LSP fleet, automatic fixers, or
+interactive rendering. The package's standalone self-test checks grammars in a
+dependency directory rather than the bundled `grammars/` directory, so its
+missing-grammar result alone does not establish a runtime parsing failure.
 
 ## Subagents and background reviewers
 
@@ -253,6 +289,27 @@ reply style for the conversation, not global settings or permissions. It keeps
 code and exact errors intact and prioritizes clarity for warnings. It does not
 compress input or internal reasoning, and token savings are not guaranteed.
 
+## Grill Me
+
+Matt Pocock's [Grill Me skill](https://skills.sh/mattpocock/skills/grill-me)
+stress-tests a plan or design through an interview. It asks one question at a
+time, recommends an answer, and inspects the codebase when it can resolve a
+question without asking you.
+
+```text
+/grill-me                    # Discuss the current plan, or ask for a topic
+/grill-me my caching design  # Start with a specific topic
+/skill:grill-me              # Pi's native skill command
+```
+
+The self-contained upstream skill and MIT license are vendored verbatim from
+commit `383b6a06d59c4ce0ffcb14112bfd91265a86cf91` in `skills/grill-me/`, with
+source and SHA-256 hashes in `UPSTREAM.md`. Setup copies them into Pi's standard
+skills directory. The native `prompts/grill-me.md` template provides the short
+command by asking the model to load that skill. No executable extension, skill
+collection, or runtime patch is installed, and setup does not fetch updates.
+This is conversational guidance, not a permission or read-only enforcement mode.
+
 ## Permissions
 
 A **fresh** setup defaults to Auto:
@@ -330,6 +387,7 @@ node --test user/pi/tests/jev-reviewer.test.mjs
 python3 user/pi/tests/permissions-smoke.py
 python3 user/pi/tests/features-smoke.py
 node user/pi/tests/handoff-smoke.mjs
+python3 user/pi/tests/lens-smoke.py
 ```
 
 These tests make no model calls or live policy changes. They cover shadow safety,

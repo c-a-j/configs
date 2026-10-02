@@ -1,12 +1,16 @@
 nerdfont: true
-agent: claude
+agent: pi
+agents:
+  pi:
+    type: pi
+    command: run-pi
 merge_strategy: rebase
 worktree_naming: basename
 worktree_dir: ../{project}__wt
 window_placement: rightmost
 
-panes: 
-  - command: nvim
+panes:
+  - command: <agent>
     focus: true
 
 layouts:
