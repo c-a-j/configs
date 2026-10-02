@@ -6,6 +6,9 @@ update-nvim:
 
 update-alacritty:
   ansible-playbook terminal-config.yml
+  
+update-user-env:
+  ansible-playbook env-config-user.yml
 
 update-herdr:
   ln -f $HOME/configs/user/herdr/config.toml $HOME/.config/herdr/config.toml
