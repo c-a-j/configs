@@ -1,0 +1,33 @@
+{
+  "yoloMode": false,
+  "authorizerChain": [],
+  "permissionReviewLog": true,
+  "debugLog": false,
+  "permission": {
+    "*": "ask",
+    "path": {
+      "*": "allow",
+      "*.env": "ask",
+      "*.env.*": "ask",
+      "*.env.example": "allow",
+      "~/.ssh/*": "ask",
+      "~/.aws/*": "ask",
+      "*/auth.json": "ask"
+    },
+    "path_write": {
+      "*pi-permission-system/config.json": "ask",
+      "*pi-permission-classifier/config.json": "ask",
+      "*jev-reviewer/config.json": "ask"
+    },
+    "external_directory": "ask",
+    "read": "allow",
+    "grep": "allow",
+    "find": "allow",
+    "ls": "allow",
+    "write": "ask",
+    "edit": "ask",
+    "bash": "ask",
+    "plan_mode_question": "allow",
+    "plan_mode_complete": "allow"
+  }
+}

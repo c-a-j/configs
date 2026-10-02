@@ -1,6 +1,9 @@
 update-all:
   ansible-playbook main.yml -K
 
+update-pi:
+  bash ../user/pi/setup.sh
+
 update-nvim:
   ansible-playbook nvim-config.yml
 

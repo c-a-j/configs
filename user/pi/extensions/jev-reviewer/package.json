@@ -1,0 +1,6 @@
+{
+  "name": "configs-jev-shadow-reviewer",
+  "private": true,
+  "type": "module",
+  "pi": { "extensions": ["./index.ts"] }
+}
