@@ -48,8 +48,9 @@ for file in teach.md review.md grill-me.md; do
 done
 install -m 600 "$config_dir/agents/reviewer.md" "$agent_dir/agents/reviewer.md"
 
-# Runtime preferences are initial defaults; preserve local customizations.
-for file in subagents.json hermes-memory-config.json; do
+# Runtime preferences and global instructions are initial defaults.
+# Preserve existing local customizations, including user-written AGENTS.md.
+for file in subagents.json hermes-memory-config.json AGENTS.md; do
   if [[ ! -e "$agent_dir/$file" ]]; then
     install -m 600 "$config_dir/$file" "$agent_dir/$file"
   fi

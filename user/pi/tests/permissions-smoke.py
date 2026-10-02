@@ -43,7 +43,7 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
                         "defaultTools": ["-bash", "+codemode", "+grep", "+find", "+ls"]}
     for name in ("pi-hermes-memory", "projects-memory"):
         assert (agent / name).stat().st_mode & 0o777 == 0o700, "New memory stores must be private"
-    runtime_files = ["subagents.json", "hermes-memory-config.json"]
+    runtime_files = ["subagents.json", "hermes-memory-config.json", "AGENTS.md"]
     for file in runtime_files:
         assert (agent / file).read_bytes() == (ROOT / file).read_bytes()
         (agent / file).write_text('{"localCustomization": true}\n')

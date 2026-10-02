@@ -20,8 +20,9 @@ Local permission and footer extensions are copied into Pi's standard `extensions
 not depend on this checkout or worktree remaining at the same path. Rerun setup
 to update those copies. Normal setup does not uninstall an existing Jev extension.
 
-Initial policies in `permissions/`, `subagents.json`, and
-`hermes-memory-config.json` are copied **only if absent**. Runtime customizations
+Initial policies in `permissions/`, `subagents.json`,
+`hermes-memory-config.json`, and global `AGENTS.md` instructions are copied
+**only if absent**. Runtime customizations
 stay local and are not overwritten by setup. Templates, the reviewer definition,
 local extensions, and the vendored Caveman and Grill Me skills are refreshed each run.
 Credentials, sessions, device IDs, learned memory, databases, and logs must not
@@ -284,10 +285,22 @@ are installed. Updates are explicit, not fetched during setup.
 /skill:caveman off    # Return to normal prose
 ```
 
-Pi uses `/skill:caveman`, not upstream's `/caveman` shorthand. The skill changes
-reply style for the conversation, not global settings or permissions. It keeps
-code and exact errors intact and prioritizes clarity for warnings. It does not
-compress input or internal reasoning, and token savings are not guaranteed.
+Pi uses `/skill:caveman`, not upstream's `/caveman` shorthand. Fresh setup installs
+`user/pi/AGENTS.md` as native global instructions in the agent directory, so new
+conversations start in **Caveman full** mode without a command. The instructions
+ask the model to load the installed skill before its first conversational reply.
+No startup model call or custom extension is added. Existing global `AGENTS.md`
+files are preserved; merge the default-style instructions yourself if one exists.
+An `AGENTS.override.md` can override global instruction discovery.
+
+`/skill:caveman off` or "normal mode" restores normal replies for the current
+conversation; the next new conversation defaults to full again. To change the
+persistent default, edit the agent directory's `AGENTS.md`. Restart Pi or `/reload`
+after changing it. Code, comments, documentation, and other durable text remain
+in normal prose. This is conversational guidance, not a permission control. The
+skill keeps exact errors intact and prioritizes clarity for warnings. It does not
+compress input or internal reasoning; loading it adds input context, and net token
+savings are not guaranteed.
 
 ## Grill Me
 

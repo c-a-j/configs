@@ -25,6 +25,7 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
     agent = temp / "agent"
     agent.mkdir()
     (agent / "npm").symlink_to(AGENT / "npm", target_is_directory=True)
+    shutil.copyfile(ROOT / "AGENTS.md", agent / "AGENTS.md")
     shutil.copytree(ROOT / "prompts", agent / "prompts")
     shutil.copytree(ROOT / "skills", agent / "skills")
     grill = agent / "skills/grill-me"
@@ -57,13 +58,15 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
     probe = temp / "probe.ts"
     parser = AGENT / "npm/node_modules/@gotgenes/pi-subagents/src/config/custom-agents.ts"
     probe.write_text(f'import {{loadCustomAgents}} from {json.dumps(str(parser))};\n' + '''
+      import {getAgentDir, loadProjectContextFiles} from "@earendil-works/pi-coding-agent";
       export default function(pi) {
         pi.registerCommand("probe-features", {
           description: "Inspect tool and agent configuration without calling models",
           handler: async (_args, ctx) => {
             const reviewer = loadCustomAgents(ctx.cwd).get("reviewer");
             ctx.ui.notify(JSON.stringify({probe: true, tools: pi.getActiveTools(),
-              registeredTools: pi.getAllTools().map(tool => tool.name), reviewer}), "info");
+              registeredTools: pi.getAllTools().map(tool => tool.name), reviewer,
+              contextFiles: loadProjectContextFiles({cwd: ctx.cwd, agentDir: getAgentDir()})}), "info");
           }
         });
       }
@@ -129,6 +132,12 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
             _, events = request("probe", "prompt", message="/probe-features")
             payload = next(json.loads(event["message"]) for event in events
                            if event.get("method") == "notify" and event.get("message", "").startswith('{"probe":'))
+            global_instructions = next(entry["content"] for entry in payload["contextFiles"]
+                                       if entry["path"] == str(agent / "AGENTS.md"))
+            assert global_instructions == (ROOT / "AGENTS.md").read_text(), payload
+            assert "Start each conversation in Caveman full mode" in global_instructions
+            assert '"normal mode"' in global_instructions
+            print("Caveman: native global instructions load at startup, with session-local style overrides")
             tools = set(payload["tools"])
             assert {"read", "bash", "edit", "write", "grep", "find", "ls",
                     "subagent", "get_subagent_result", "steer_subagent", "memory_search"} <= tools, tools

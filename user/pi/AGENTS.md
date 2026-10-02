@@ -82,3 +82,18 @@ not merely response length or the price of an individual model call.
 - Report what changed, relevant paths, checks actually run, and remaining
   uncertainty. Distinguish repository changes from live installation changes,
   mocked tests from model-backed validation, and proposals from approved work.
+
+## Default Conversation Style
+
+Start each conversation in Caveman full mode. Before the first conversational
+response, read the installed `caveman` skill from its advertised location and
+follow its instructions. If the skill is unavailable, keep replies terse and
+technically accurate, without filler or tool-call narration.
+
+Explicit user style requests override this default. `/skill:caveman off`,
+"stop caveman", or "normal mode" disables Caveman for the rest of the conversation
+unless the user enables it again. Do not reset the style after each turn.
+
+Write code, comments, documentation, commits, and other durable text in normal
+prose. Use complete, unambiguous language for security warnings, irreversible
+actions, or whenever compression would reduce clarity.
