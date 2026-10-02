@@ -32,6 +32,9 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
         subprocess.run(["bash", str(ROOT / "setup.sh"), *args], env=setup_env, check=True, capture_output=True)
     agent.mkdir()
     settings_path = agent / "settings.json"
+    web_config = agent / "web-search.json"
+    saved_web_config = '{"provider": "brave", "workflow": "none", "localCustomization": true}\n'
+    web_config.write_text(saved_web_config)
     settings_path.write_text(json.dumps({"theme": "system", "defaultThinkingLevel": "high",
                                          "defaultTools": ["-bash", "+codemode", "-grep"]}))
     setup()
@@ -47,7 +50,10 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     reviewer = agent / "agents/reviewer.md"
     assert reviewer.read_bytes() == (ROOT / "agents/reviewer.md").read_bytes()
     reviewer.write_text("outdated agent")
-    workflows = ["review.md", "handoff.md"]
+    legacy_handoff = agent / "prompts/handoff.md"
+    assert not legacy_handoff.exists(), "Fresh setup must not install a handoff prompt"
+    legacy_handoff.write_bytes((ROOT / "tests/fixtures/legacy-handoff.md").read_bytes())
+    workflows = ["review.md"]
     for file in workflows:
         assert (agent / "prompts" / file).read_bytes() == (ROOT / "prompts" / file).read_bytes()
         (agent / "prompts" / file).write_text("outdated template")
@@ -75,7 +81,10 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     gate.write_text(json.dumps(policy))
     saved = gate.read_bytes()
     setup()
+    assert not legacy_handoff.exists(), "Setup must remove the exact legacy handoff prompt"
+    legacy_handoff.write_text("Locally customized handoff prompt\n")
     assert gate.read_bytes() == saved, "Setup must preserve existing runtime policy/mode"
+    assert web_config.read_text() == saved_web_config, "Setup must preserve personal web provider settings"
     assert json.loads(settings_path.read_text()) == settings, "Tool merge must be idempotent"
     for file in runtime_files:
         assert (agent / file).read_text() == '{"localCustomization": true}\n'
@@ -95,13 +104,17 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     assert teaching.read_bytes() == (ROOT / "prompts/teach.md").read_bytes(), "Setup must refresh the teaching template"
     assert (caveman / "SKILL.md").read_bytes() == (ROOT / "skills/caveman/SKILL.md").read_bytes(), "Setup must refresh the Caveman skill"
     setup("--with-jev")
+    assert legacy_handoff.read_text() == "Locally customized handoff prompt\n", "Preserve customized handoff prompts"
+    legacy_handoff.unlink()
     assert gate.read_bytes() == saved
     for file in ["index.ts", "core.mjs", "package.json"]:
         assert (agent / "extensions/jev-reviewer" / file).read_bytes() == (ROOT / "extensions/jev-reviewer" / file).read_bytes()
     assert set(installs.read_text().splitlines()) == {
         "install npm:pi-vim@0.14.2", "install npm:@signalridge/pi-plan-mode@1.4.2",
         "install npm:pi-permission-classifier@0.5.2", "install npm:@gotgenes/pi-permission-system@36.2.1",
-        "install npm:@gotgenes/pi-subagents@21.9.1", "install npm:pi-hermes-memory@0.9.9"}
+        "install npm:@gotgenes/pi-subagents@21.9.1", "install npm:pi-hermes-memory@0.9.9",
+        "install npm:@ar-llm/pi-handoff@0.5.0",
+        "install npm:pi-web-access@0.35.0", "install npm:@upstash/context7-pi@0.1.2"}
     print("Setup: Auto default, pinned packages, stable extension copies, preserved policy, Jev opt-in")
     policy["authorizerChain"] = []
     # A deterministic deny must survive YOLO as well as other mode changes.
@@ -211,7 +224,8 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
             result, _ = request("commands", "get_commands")
             names = {entry["name"] for entry in result["data"]["commands"]}
             assert {"manual", "auto", "jev-shadow", "yolo", "permissions", "probe-write", "jev-test", "jev-status"} <= names, names
-            assert {"teach", "review", "handoff"} <= names, "Pi must discover native workflow prompts"
+            assert {"teach", "review"} <= names, "Pi must discover native workflow prompts"
+            assert "handoff" not in names, "Handoff is no longer a native prompt template"
             assert "test-plan" not in names, "Do not install the declined test-plan prompt"
             assert "skill:caveman" in names, "Pi must discover the native Caveman skill"
             assert next(entry for entry in result["data"]["commands"] if entry["name"] == "skill:caveman")["source"] == "skill"

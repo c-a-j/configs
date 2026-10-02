@@ -12,10 +12,13 @@ agent_dir="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
 # Pi manages packages and preserves existing settings and authentication.
 pi install npm:pi-vim@0.14.2
 pi install npm:@signalridge/pi-plan-mode@1.4.2
+pi install npm:@ar-llm/pi-handoff@0.5.0
 pi install npm:pi-permission-classifier@0.5.2
 pi install npm:@gotgenes/pi-permission-system@36.2.1
 pi install npm:@gotgenes/pi-subagents@21.9.1
 pi install npm:pi-hermes-memory@0.9.9
+pi install npm:pi-web-access@0.35.0
+pi install npm:@upstash/context7-pi@0.1.2
 
 # Policies are initial defaults, not files to overwrite on every setup run.
 # Install local extensions into Pi's standard directory, not a worktree path.
@@ -37,9 +40,9 @@ for file in permission-modes.ts footer-colors.ts; do
   install -m 600 "$config_dir/extensions/$file" "$target"
 done
 
-# Workflow commands are native prompt templates, not executable extensions.
+# Review and teaching are prompt templates; handoff is an upstream extension.
 mkdir -p "$agent_dir/prompts" "$agent_dir/agents"
-for file in teach.md review.md handoff.md; do
+for file in teach.md review.md; do
   install -m 600 "$config_dir/prompts/$file" "$agent_dir/prompts/$file"
 done
 install -m 600 "$config_dir/agents/reviewer.md" "$agent_dir/agents/reviewer.md"
@@ -57,8 +60,10 @@ for directory in pi-hermes-memory projects-memory; do
   fi
 done
 
+# Retire only our exact legacy handoff prompt; preserve locally edited templates.
 # Add native search tools without replacing other settings or tool choices.
 python3 - "$agent_dir/settings.json" <<'PY'
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -66,6 +71,13 @@ import sys
 import tempfile
 
 path = Path(sys.argv[1])
+legacy = path.parent / "prompts/handoff.md"
+if legacy.is_file():
+    digest = hashlib.sha256(legacy.read_bytes()).hexdigest()
+    if digest == "3c0cc2092795147757bf262c5cc358a59a89060c90dd5a484c5aa18088635b65":
+        legacy.unlink()
+    else:
+        print("Preserved customized prompts/handoff.md; the /handoff extension takes precedence.", file=sys.stderr)
 settings = json.loads(path.read_text()) if path.exists() else {}
 existing = settings.get("defaultTools", ["+grep", "+find", "+ls"])
 if not isinstance(existing, list) or not all(isinstance(item, str) for item in existing):

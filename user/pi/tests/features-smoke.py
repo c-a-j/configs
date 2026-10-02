@@ -15,7 +15,9 @@ import time
 
 ROOT = Path(__file__).resolve().parents[1]
 AGENT = Path(os.environ.get("PI_CODING_AGENT_DIR", Path.home() / ".pi/agent"))
-PACKAGES = ["npm:@gotgenes/pi-subagents@21.9.1", "npm:pi-hermes-memory@0.9.9"]
+PACKAGES = ["npm:@gotgenes/pi-subagents@21.9.1", "npm:pi-hermes-memory@0.9.9",
+            "npm:@ar-llm/pi-handoff@0.5.0", "npm:pi-web-access@0.35.0",
+            "npm:@upstash/context7-pi@0.1.2"]
 
 with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
     temp = Path(directory)
@@ -52,7 +54,8 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
           description: "Inspect tool and agent configuration without calling models",
           handler: async (_args, ctx) => {
             const reviewer = loadCustomAgents(ctx.cwd).get("reviewer");
-            ctx.ui.notify(JSON.stringify({probe: true, tools: pi.getActiveTools(), reviewer}), "info");
+            ctx.ui.notify(JSON.stringify({probe: true, tools: pi.getActiveTools(),
+              registeredTools: pi.getAllTools().map(tool => tool.name), reviewer}), "info");
           }
         });
       }
@@ -99,9 +102,15 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
 
         try:
             result, _ = request("commands", "get_commands")
-            names = {entry["name"] for entry in result["data"]["commands"]}
+            commands = result["data"]["commands"]
+            names = {entry["name"] for entry in commands}
+            handoffs = [entry for entry in commands if entry["name"] == "handoff"]
+            assert len(handoffs) == 1 and handoffs[0]["source"] == "extension", handoffs
             assert {"teach", "review", "handoff", "subagents:sessions", "subagents:settings",
-                    "memory-insights", "memory-preview-context"} <= names, names
+                    "memory-insights", "memory-preview-context", "websearch",
+                    "search", "c7-docs", "skill:context7-docs"} <= names, names
+            assert next(entry for entry in commands if entry["name"] == "c7-docs")["source"] == "prompt"
+            assert next(entry for entry in commands if entry["name"] == "skill:context7-docs")["source"] == "skill"
             assert "test-plan" not in names
             _, events = request("probe", "prompt", message="/probe-features")
             payload = next(json.loads(event["message"]) for event in events
@@ -109,13 +118,18 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
             tools = set(payload["tools"])
             assert {"read", "bash", "edit", "write", "grep", "find", "ls",
                     "subagent", "get_subagent_result", "steer_subagent", "memory_search"} <= tools, tools
+            # Web Access can activate tools lazily; registration is the stable contract.
+            assert {"web_search", "source_check", "fetch_content", "get_search_content",
+                    "resolve-library-id", "query-docs"} <= set(payload["registeredTools"]), payload
+            assert {"resolve-library-id", "query-docs"} <= tools, tools
             reviewer = payload["reviewer"]
             assert set(reviewer["toolNames"]) == {"read", "grep", "find", "ls"}, reviewer
             assert reviewer["runInBackground"] and not reviewer["inheritContext"]
             assert reviewer["maxTurns"] == 12
             assert set(reviewer["locked"]) == {"max_turns", "inherit_context", "run_in_background"}
             assert reviewer.get("model") is None and reviewer.get("thinking") is None
-            print("Discovery: native search tools, workflow prompts, subagents, read-only background reviewer")
+            print("Discovery: native search tools, workflow prompts, handoff extension, subagents, read-only background reviewer")
+            print("Web: Web Access tools, Context7 tools, documentation prompt and skill (no network calls)")
             _, events = request("memory", "prompt", message="/memory-insights")
             assert any(fixture in event.get("message", "") for event in events), events
             database = storage / "sessions.db"

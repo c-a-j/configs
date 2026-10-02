@@ -11,8 +11,10 @@ bash user/pi/setup.sh --with-jev # Also install the optional Jev experiment
 after installation. `PI_CODING_AGENT_DIR` is respected.
 
 Packages are pinned: `pi-vim@0.14.2`, `@signalridge/pi-plan-mode@1.4.2`,
-`pi-permission-classifier@0.5.2`, `@gotgenes/pi-permission-system@36.2.1`,
-`@gotgenes/pi-subagents@21.9.1`, and `pi-hermes-memory@0.9.9`.
+`@ar-llm/pi-handoff@0.5.0`, `pi-permission-classifier@0.5.2`,
+`@gotgenes/pi-permission-system@36.2.1`,
+`@gotgenes/pi-subagents@21.9.1`, `pi-hermes-memory@0.9.9`,
+`pi-web-access@0.35.0`, and `@upstash/context7-pi@0.1.2`.
 Setup also requires Python 3 to merge native tool settings.
 Local permission and footer extensions are copied into Pi's standard `extensions/` directory: they do
 not depend on this checkout or worktree remaining at the same path. Rerun setup
@@ -25,7 +27,7 @@ local extensions, and the vendored Caveman skill are refreshed each run.
 Credentials, sessions, device IDs, learned memory, databases, and logs must not
 be committed.
 
-## Native search and workflow prompts
+## Native search and workflow commands
 
 Setup enables Pi's native `grep`, `find`, and `ls` through `defaultTools` in the
 agent's `settings.json`. It preserves other settings and existing tool choices,
@@ -36,8 +38,7 @@ is needed. Project settings and CLI overrides can still change the selection.
 ```text
 /review                  # Review staged, unstaged, and relevant untracked changes
 /review error handling   # Focus the review
-/handoff                 # Produce a brief to paste into a fresh session
-/handoff remaining tests
+/handoff finish the remaining tests  # Review a summary, switch, and continue
 ```
 
 `/review` gathers a read-only diff and launches the `reviewer` background agent
@@ -49,10 +50,73 @@ if subagents are unavailable. Reviews are **request-driven**, not a watcher
 that automatically runs after every edit. This prompt is conversational guidance;
 the child agent's explicit tool allowlist enforces its lack of mutation tools.
 
-`/handoff` only produces text. It does not save files, compact, open a session,
-or transfer live background agents. Finish or collect those agents before
-switching sessions. No `/test-plan` prompt is installed, and the main thinking
-level is unchanged.
+### Handoff
+
+The maintained [`@ar-llm/pi-handoff`](https://github.com/arichiardi/ar-llm/tree/main/extensions/pi-handoff)
+extension replaces our old text-only prompt. In interactive Pi, run
+`/handoff <goal for the next session>`; a goal is required. It summarizes the
+active branch (including relevant compaction context), opens a review editor,
+then creates a fresh session linked to the original and **automatically submits
+the edited summary**. Accepting the editor starts work in the new session; it
+is not just a clipboard brief or an unsent draft. The original remains available
+through `/resume`.
+
+Run handoff **while idle**, after finishing or collecting background agents.
+The extension does not wait for idle or transfer agents, and session shutdown
+aborts subagents. Generation failure, empty model output, or cancellation before
+switching leaves the original session active. The pinned version mislabels review
+editor cancellation as an editor error, but does not switch. Session replacement
+failures have no guaranteed rollback. This is not a transactional workflow.
+
+Summary generation makes an additional model call using the active model and
+Pi authentication by default; the selected conversation is sent to that provider.
+Review the summary for secrets, constraints, test results, and unfinished work
+before accepting it. Setup adds no custom runtime patch or handoff configuration.
+It removes only the exact legacy `prompts/handoff.md`; locally edited copies are
+preserved, but the extension command takes precedence. Rename a custom copy if
+you want to keep using it as a separate prompt command.
+
+No `/test-plan` prompt is installed, and the main thinking level is unchanged.
+
+## Web research and library documentation
+
+The maintained [Pi Web Access](https://github.com/nicobailon/pi-web-access)
+package provides web search, page extraction, source checking, and stored-result
+retrieval. The official [Context7 extension](https://github.com/upstash/context7/tree/master/packages/pi)
+provides current library documentation and examples. No custom web extension or
+MCP adapter is installed, and Interactive Shell is not included.
+
+Ask Pi to research a topic or retrieve documentation for the library version you
+use. Context7's bundled skill prefers its documentation tools over general web
+search for library-specific questions. Explicit entry points are also available:
+
+```text
+/c7-docs next.js How do Cache Components work?
+/skill:context7-docs
+/websearch              # Web Access configuration UI
+```
+
+Context7 registers `resolve-library-id` and `query-docs`. Web Access registers
+`web_search`, `fetch_content`, `source_check`, and `get_search_content`; it may
+activate these lazily through `web_enable`, depending on the model. The restricted
+reviewer retains its existing read-only tool allowlist, without web tools.
+
+Neither package requires a new API key to try its default service. Context7 uses
+IP-based limits without a key; optionally export `CONTEXT7_API_KEY` for higher
+quotas. Web Access supports keyless Exa search and eligible existing Pi Codex
+authentication, as well as separately configured providers. Personal Web Access
+settings live in `web-search.json` under the agent directory. Setup does not
+create or overwrite that file, add credentials, or change provider routing.
+Keep API keys outside this repository.
+
+**Privacy and cost:** searches, documentation queries, and requested URLs leave
+your machine. Do not include secrets, personal data, or proprietary code in
+queries. Web Access defaults to its `none` workflow, without generated summaries
+or the curator; explicit summary workflows and some providers can make additional
+billable calls. Browser-cookie access and third-party hosted page extraction are
+upstream opt-ins, not enabled by this setup. Existing personal configuration can
+change these behaviors. Tool-call permissions still apply, but extensions are not
+an OS or network sandbox, and fetched content is untrusted input.
 
 ## Subagents and background reviewers
 
@@ -265,15 +329,22 @@ live judgments and their quality have not yet been validated.
 node --test user/pi/tests/jev-reviewer.test.mjs
 python3 user/pi/tests/permissions-smoke.py
 python3 user/pi/tests/features-smoke.py
+node user/pi/tests/handoff-smoke.mjs
 ```
 
 These tests make no model calls or live policy changes. They cover shadow safety,
 real gate approval/denial, reviewer-failure fallback, mode naming, busy-mode
-rejection, settings preservation, feature discovery, parsed reviewer restrictions,
-and isolated Markdown/SQLite memory storage and search. Automatic learning is
-disabled in the memory test. They do **not** establish classifier or review
-accuracy, live model-backed delegation/learning, OS isolation, live hot switching,
-or the complete interactive planning workflow.
+rejection, settings preservation, feature discovery (including Web Access and Context7
+registration without network calls), parsed reviewer restrictions,
+isolated Markdown/SQLite memory storage and search, and real Pi session
+replacement/continuation with a mocked handoff model. Handoff checks also cover
+compaction context, cancellation, empty output, provider errors, and switch vetoes.
+Automatic learning is disabled in the memory test. They do **not** establish
+classifier or review accuracy, live model-backed delegation, learning or handoff,
+OS isolation, live hot switching, live search/documentation retrieval, or the
+complete interactive planning workflow.
+The handoff SDK test needs a Node-based Pi host; set `PI_TEST_HOST_DIR` to the
+`@earendil-works/pi-coding-agent` package directory for non-managed installations.
 
 Setup installs `extensions/footer-colors.ts` as a regular file: green path, red
 git branch, with Pi's other footer information unchanged. It replaces old
