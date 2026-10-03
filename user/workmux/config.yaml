@@ -6,7 +6,7 @@ agents:
     command: run-pi
 merge_strategy: rebase
 worktree_naming: basename
-worktree_dir: ../{project}__wt
+worktree_dir: ~/.worktrees/{project}__wt
 window_placement: rightmost
 
 panes:
