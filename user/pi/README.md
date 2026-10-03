@@ -16,7 +16,7 @@ Packages are pinned: `pi-vim@0.14.2`, `@signalridge/pi-plan-mode@1.4.2`,
 `@gotgenes/pi-subagents@21.9.1`, `pi-hermes-memory@0.9.9`,
 `pi-web-access@0.35.0`, `@upstash/context7-pi@0.1.2`, and `pi-lens@4.3.0`.
 Setup also requires Python 3 to merge native tool settings.
-Local permission and footer extensions are copied into Pi's standard `extensions/` directory: they do
+Local permission, footer, and chain extensions are copied into Pi's standard `extensions/` directory: they do
 not depend on this checkout or worktree remaining at the same path. Rerun setup
 to update those copies. Normal setup does not uninstall an existing Jev extension.
 
@@ -78,6 +78,57 @@ preserved, but the extension command takes precedence. Rename a custom copy if
 you want to keep using it as a separate prompt command.
 
 No `/test-plan` prompt is installed, and the main thinking level is unchanged.
+
+### Group a task and handoff
+
+The local `extensions/chain.ts` extension adds an explicit workflow command:
+
+```text
+/chain Update .plans/init.md with our decisions then /handoff Continue inserting models in teaching mode.
+```
+
+The separator can also start a new line:
+
+```text
+/chain Update .plans/init.md with our decisions.
+then /handoff Continue inserting models in teaching mode.
+```
+
+Chain submits the ordinary task first. It waits for Pi's final `agent_settled`
+notification, including automatic continuations, before dispatching the installed
+`/handoff` extension. The usual summary editor remains mandatory; accepting the
+summary creates a fresh session and starts the continuation. Chain does not
+replace the maintained handoff implementation or change permissions.
+
+This first version supports **one ordinary task and one terminal `/handoff`**,
+not arbitrary command pipelines, shell syntax, or recursive chains. The exact
+`then /<command>` pattern is reserved syntax even inside quotes or Markdown;
+avoid it in the task or goal except for the handoff separator. Neither task nor
+goal may begin with a slash command. Describe teaching mode in the goal instead
+of appending `/sensei` or `/learn`. Commands embedded in other ordinary messages
+still do not execute.
+
+Start while idle, with no queued messages. A second chain is rejected while one
+is pending. Model errors, aborts, truncated responses, new user input, other user
+messages entering the run, transformed tasks, session shutdown, and tree
+navigation prevent the pending handoff. New input cancels the chain, not the
+ongoing task. `/chain status` reports whether a handoff is pending;
+`/chain cancel` removes that pending handoff without aborting the task. Cancel
+before invoking another session-changing command yourself. If prompt preflight
+fails or another extension consumes the task without running it, use
+`/chain cancel` before retrying.
+
+Normal model completion is **not proof that the requested work succeeded**.
+Review the summary for unanswered questions, failed tests, or incomplete work.
+Chain does not collect or transfer background agents; have the initial task
+collect their results before finishing. Handoff cancellation, provider failures,
+and session-switch failures retain the pinned extension's documented behavior.
+
+Chain requires interactive Pi **1.0.1** or newer with deferred message dispatch
+from `agent_settled`. The offline SDK test verifies the pinned handoff on 1.0.1;
+future host versions still need compatibility checks. This extension adds no
+model call beyond the initial task and the handoff's existing summary and
+continuation calls.
 
 ## Web research and library documentation
 
@@ -250,24 +301,56 @@ YOLO, not an OS sandbox. Explicit plan export is a user-requested file mutation.
 The pinned planning package declares Pi 0.x peers. It loads on Pi 1.0.0, but the
 full interactive approval/handoff workflow has not been verified end to end.
 
-## Teaching
+## Sensei
 
-`/teach [topic]` asks Pi to act as a coding tutor: short examples, explanations of
-how the code works, and one step at a time. You type the code and run commands;
-Pi waits for your result before continuing. It may inspect code with read-only
-tools, but is instructed not to change files or execute commands.
+`/sensei [guide | show] [topic]` asks Pi to act as a coding tutor, one step at a
+time. You type the code and run commands; Pi waits for your result before
+continuing. It may inspect code with read-only tools, but is instructed not to
+change files or execute commands.
+
+- `guide` explains the goal, relevant concepts, file/location, and success
+  criteria, then gives actionable instructions without solution code, diffs, or
+  solution-shaped pseudocode. It reviews your attempt and explains problems
+  without supplying replacement code.
+- `show` explains each step, supplies short code examples, and explains the
+  important lines. This is the default whenever `/sensei` has no explicit mode.
+
+The selected mode stays active on subsequent ordinary messages until changed or
+teaching ends. Switch modes without a topic to continue the current lesson rather
+than restart it. Setup and verification command examples are allowed in both
+modes, but `guide` must not hide implementation code inside commands. Asking for
+solution code in `guide` prompts a mode-switch question rather than silently
+changing modes. Active teaching instructions and the selected mode should be
+preserved in conversation summaries.
 
 ```text
-/teach build a small Python CLI
-/teach explain the code in this project
-/teach off
+/sensei build a small Python CLI          # Defaults to show
+/sensei guide build a small Python CLI    # Instructions without solution code
+/sensei show                             # Demonstrate the current lesson step
+/sensei guide                            # Continue without solution code
+/sensei off
 ```
 
-This uses Pi's native prompt template in `prompts/teach.md`, copied by setup. No
+This uses Pi's native prompt template in `prompts/sensei.md`, copied by setup. No
 additional package or custom extension is needed. It changes conversational
 behavior, not permissions: it is **not** an enforced read-only mode. It does not
 change global settings, but its instructions remain part of the conversation
-when you resume it. `/teach off` explicitly ends teaching.
+when you resume it. `/sensei off` explicitly ends teaching.
+
+Sensei includes self-contained engineering principles: understand conventions
+before shortcuts, solve the actual problem simply, favor predictable behavior,
+debug with evidence, maintain existing code, and build the learner's independence.
+They also favor gradual abstraction, readable expressions, small safe refactors,
+risk-based testing, useful observability, measured optimization, and justified
+concurrency or dependencies. Simpler scope is proposed openly, never substituted
+without approval. These are contextual preferences rather than blanket bans on
+specific tools or methods. They require no external reading or lookup and do not
+relax the teaching restrictions.
+
+Sensei replaces the old `/teach` command; the teaching restrictions are unchanged. Setup
+removes `prompts/teach.md` only when it exactly matches the former repository
+template. Customized copies are preserved with a warning, so a local `/teach`
+command may remain until you rename or remove that custom template yourself.
 
 ## Caveman
 
@@ -280,7 +363,7 @@ are installed. Updates are explicit, not fetched during setup.
 
 ```text
 /skill:caveman        # Full style by default
-/skill:caveman lite   # Concise, normal sentences; recommended with /teach
+/skill:caveman lite   # Concise, normal sentences; recommended with /sensei
 /skill:caveman ultra  # Maximum terseness
 /skill:caveman off    # Return to normal prose
 ```
@@ -400,6 +483,7 @@ node --test user/pi/tests/jev-reviewer.test.mjs
 python3 user/pi/tests/permissions-smoke.py
 python3 user/pi/tests/features-smoke.py
 node user/pi/tests/handoff-smoke.mjs
+node user/pi/tests/chain-smoke.mjs
 python3 user/pi/tests/lens-smoke.py
 ```
 
@@ -410,12 +494,19 @@ registration without network calls), parsed reviewer restrictions,
 isolated Markdown/SQLite memory storage and search, and real Pi session
 replacement/continuation with a mocked handoff model. Handoff checks also cover
 compaction context, cancellation, empty output, provider errors, and switch vetoes.
+Chain checks exercise real task settlement and fresh-session handoff, automatic
+continuations, busy rejection, explicit cancellation, new and queued input,
+interrupted/failed/truncated tasks, transformed or consumed input, summary/editor
+failures, missing handoff, unsupported modes, and syntax validation. They use
+mocked models and a mocked terminal UI, not a real interactive terminal.
 Automatic learning is disabled in the memory test. They do **not** establish
 classifier or review accuracy, live model-backed delegation, learning or handoff,
 OS isolation, live hot switching, live search/documentation retrieval, or the
 complete interactive planning workflow.
-The handoff SDK test needs a Node-based Pi host; set `PI_TEST_HOST_DIR` to the
-`@earendil-works/pi-coding-agent` package directory for non-managed installations.
+The handoff and chain SDK tests need a Node-based Pi host; set `PI_TEST_HOST_DIR`
+to the `@earendil-works/pi-coding-agent` package directory for non-managed
+installations. Chain defaults to the managed 1.0.1 host; the older handoff test
+defaults to 1.0.0.
 
 Setup installs `extensions/footer-colors.ts` as a regular file: green path, red
 git branch, with Pi's other footer information unchanged. It replaces old

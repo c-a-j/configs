@@ -24,9 +24,13 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
     temp = Path(directory)
     agent = temp / "agent"
     agent.mkdir()
+    (agent / "extensions").mkdir()
+    shutil.copyfile(ROOT / "extensions/chain.ts", agent / "extensions/chain.ts")
     (agent / "npm").symlink_to(AGENT / "npm", target_is_directory=True)
     shutil.copyfile(ROOT / "AGENTS.md", agent / "AGENTS.md")
     shutil.copytree(ROOT / "prompts", agent / "prompts")
+    assert not (agent / "prompts/teach.md").exists(), "Fresh configuration must not contain the retired teach prompt"
+    assert (agent / "prompts/sensei.md").read_bytes() == (ROOT / "prompts/sensei.md").read_bytes()
     shutil.copytree(ROOT / "skills", agent / "skills")
     grill = agent / "skills/grill-me"
     for name, digest in {
@@ -58,14 +62,28 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
     probe = temp / "probe.ts"
     parser = AGENT / "npm/node_modules/@gotgenes/pi-subagents/src/config/custom-agents.ts"
     probe.write_text(f'import {{loadCustomAgents}} from {json.dumps(str(parser))};\n' + '''
-      import {getAgentDir, loadProjectContextFiles} from "@earendil-works/pi-coding-agent";
+      import {getAgentDir, getPackageDir, loadProjectContextFiles} from "@earendil-works/pi-coding-agent";
+      import {join} from "node:path";
+      import {pathToFileURL} from "node:url";
       export default function(pi) {
         pi.registerCommand("probe-features", {
           description: "Inspect tool and agent configuration without calling models",
           handler: async (_args, ctx) => {
             const reviewer = loadCustomAgents(ctx.cwd).get("reviewer");
+            // Prompt expansion helpers are internal, not package-root exports.
+            const {expandPromptTemplate, loadPromptTemplates} = await import(
+              pathToFileURL(join(getPackageDir(), "dist/core/prompt-templates.js")).href);
+            const {templates} = loadPromptTemplates({cwd: ctx.cwd, agentDir: getAgentDir(),
+              promptPaths: [], includeDefaults: true});
+            const sensei = templates.find(template => template.name === "sensei");
+            const senseiRequests = Object.fromEntries([
+              "/sensei", "/sensei build a CLI", "/sensei guide",
+              "/sensei guide build a CLI", "/sensei show",
+              "/sensei show build a CLI", "/sensei off",
+            ].map(request => [request, expandPromptTemplate(request, templates)]));
             ctx.ui.notify(JSON.stringify({probe: true, tools: pi.getActiveTools(),
               registeredTools: pi.getAllTools().map(tool => tool.name), reviewer,
+              senseiArgumentHint: sensei?.argumentHint, senseiRequests,
               contextFiles: loadProjectContextFiles({cwd: ctx.cwd, agentDir: getAgentDir()})}), "info");
           }
         });
@@ -119,11 +137,14 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
             names = {entry["name"] for entry in commands}
             handoffs = [entry for entry in commands if entry["name"] == "handoff"]
             assert len(handoffs) == 1 and handoffs[0]["source"] == "extension", handoffs
-            assert {"teach", "review", "handoff", "subagents:sessions", "subagents:settings",
+            chains = [entry for entry in commands if entry["name"] == "chain"]
+            assert len(chains) == 1 and chains[0]["source"] == "extension", chains
+            assert {"sensei", "review", "handoff", "subagents:sessions", "subagents:settings",
                     "memory-insights", "memory-preview-context", "websearch",
                     "search", "c7-docs", "skill:context7-docs",
                     "grill-me", "skill:grill-me"} <= names, names
-            for name, source in (("grill-me", "prompt"), ("skill:grill-me", "skill")):
+            assert "teach" not in names, "Fresh discovery must not expose the retired teach prompt"
+            for name, source in (("sensei", "prompt"), ("grill-me", "prompt"), ("skill:grill-me", "skill")):
                 entries = [entry for entry in commands if entry["name"] == name]
                 assert len(entries) == 1 and entries[0]["source"] == source, entries
             assert next(entry for entry in commands if entry["name"] == "c7-docs")["source"] == "prompt"
@@ -132,6 +153,28 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
             _, events = request("probe", "prompt", message="/probe-features")
             payload = next(json.loads(event["message"]) for event in events
                            if event.get("method") == "notify" and event.get("message", "").startswith('{"probe":'))
+            assert payload["senseiArgumentHint"] == "[guide | show] [topic] | off", payload
+            for command, arguments in {
+                "/sensei": "", "/sensei build a CLI": "build a CLI",
+                "/sensei guide": "guide", "/sensei guide build a CLI": "guide build a CLI",
+                "/sensei show": "show", "/sensei show build a CLI": "show build a CLI",
+                "/sensei off": "off",
+            }.items():
+                expanded = payload["senseiRequests"][command]
+                assert expanded.startswith(f"Teaching-mode request: {arguments}\n"), expanded
+                assert "$ARGUMENTS" not in expanded, expanded
+                for instruction in (
+                    "If no mode is\nsupplied, select `show`.",
+                    "no solution code, diffs,\n  or solution-shaped pseudocode",
+                    "without supplying replacement code",
+                    "`show` (default)",
+                    "Do not edit, create, delete, or format",
+                    "Do not continue to the next step until I respond.",
+                    "these teaching instructions and the selected mode",
+                    "Do not implement anything\njust because teaching mode ended.",
+                ):
+                    assert instruction in expanded, (command, instruction)
+            print("Sensei: native guide/show/default/off expansion and teaching instructions (no model behavior test)")
             global_instructions = next(entry["content"] for entry in payload["contextFiles"]
                                        if entry["path"] == str(agent / "AGENTS.md"))
             assert global_instructions == (ROOT / "AGENTS.md").read_text(), payload

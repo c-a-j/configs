@@ -67,9 +67,47 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     assert not footer.is_symlink() and footer.read_bytes() == (ROOT / "extensions/footer-colors.ts").read_bytes()
     footer.unlink()
     footer.symlink_to(temp / "deleted-worktree/footer-colors.ts")
-    teaching = agent / "prompts/teach.md"
-    assert teaching.read_bytes() == (ROOT / "prompts/teach.md").read_bytes()
+    chain = agent / "extensions/chain.ts"
+    assert chain.is_file() and not chain.is_symlink(), "Setup must install chain as a regular file"
+    assert chain.read_bytes() == (ROOT / "extensions/chain.ts").read_bytes()
+    assert chain.stat().st_mode & 0o777 == 0o600, "The chain extension copy must be private"
+    chain.write_text("outdated extension")
+    chain.chmod(0o644)
+    teaching = agent / "prompts/sensei.md"
+    teaching_source = (ROOT / "prompts/sensei.md").read_bytes()
+    legacy_teach = agent / "prompts/teach.md"
+    legacy_teach_content = (ROOT / "tests/fixtures/legacy-teach.md").read_bytes()
+    assert hashlib.sha256(legacy_teach_content).hexdigest() == "bd3f990cd1a57dce6b40b88b36ec6e98ac784dfeb53ef020556793d0a73f6357", "Keep the exact original teaching prompt fixture"
+    # Mode-specific teaching changes must preserve the shared safety boundaries.
+    for rule in (
+        b"I type the code and run the commands.",
+        b"Do not edit, create, delete, or format",
+        b"files, install packages, run tests or other commands, or delegate implementation.",
+        b"You may use read-only inspection tools",
+        b"Do not continue to the next step until I respond.",
+        b"Do not implement anything\njust because teaching mode ended.",
+        b"not a permission-policy change or a sandbox",
+        b"these teaching instructions and the selected mode",
+    ):
+        assert rule in teaching_source, rule
+    _, heading, principles = teaching_source.partition(b"\n## Engineering principles\n")
+    assert heading, "Keep principles directly in the prompt"
+    for rule in (b"Teach understanding before shortcuts", b"simplest solution",
+                 b"predictable behavior", b"testable hypotheses", b"maintenance",
+                 b"Build independence", b"Do not use parables",
+                 b"ask before changing requirements", b"modest duplication",
+                 b"Preserve working behavior and contracts", b"regression test",
+                 b"Keep secrets out of logs", b"measured bottlenecks",
+                 b"make it safe to", b"not blanket bans"):
+        assert rule in principles, rule
+    assert b"http://" not in teaching_source and b"https://" not in teaching_source, "The prompt must be self-contained"
+    assert not legacy_teach.exists(), "Fresh setup must not install a teach prompt"
+    legacy_teach.write_bytes(legacy_teach_content)
+    assert teaching.is_file() and not teaching.is_symlink(), "Setup must install sensei as a regular file"
+    assert teaching.read_bytes() == teaching_source
+    assert teaching.stat().st_mode & 0o777 == 0o600, "The sensei prompt copy must be private"
     teaching.write_text("outdated template")
+    teaching.chmod(0o644)
     caveman_files = ["SKILL.md", "LICENSE", "LICENSE-MIT", "NOTICE", "UPSTREAM.md"]
     caveman = agent / "skills/caveman"
     assert {file.name for file in caveman.iterdir()} == set(caveman_files), "Install only the core skill and attribution"
@@ -87,8 +125,17 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     gate.write_text(json.dumps(policy))
     saved = gate.read_bytes()
     setup()
+    assert chain.is_file() and not chain.is_symlink(), "Setup must keep chain as a regular file"
+    assert chain.read_bytes() == (ROOT / "extensions/chain.ts").read_bytes(), "Setup must refresh the chain extension"
+    assert chain.stat().st_mode & 0o777 == 0o600, "Setup must restore the private chain extension mode"
     assert not legacy_handoff.exists(), "Setup must remove the exact legacy handoff prompt"
     legacy_handoff.write_text("Locally customized handoff prompt\n")
+    assert not legacy_teach.exists(), "Setup must remove the exact legacy teach prompt"
+    customized_teach = legacy_teach_content + b"\nLocally customized teaching instruction.\n"
+    legacy_teach.write_bytes(customized_teach)
+    assert teaching.is_file() and not teaching.is_symlink(), "Setup must keep sensei as a regular file"
+    assert teaching.read_bytes() == teaching_source, "Setup must refresh the sensei prompt"
+    assert teaching.stat().st_mode & 0o777 == 0o600, "Setup must restore the private sensei prompt mode"
     assert gate.read_bytes() == saved, "Setup must preserve existing runtime policy/mode"
     assert web_config.read_text() == saved_web_config, "Setup must preserve personal web provider settings"
     assert json.loads(settings_path.read_text()) == settings, "Tool merge must be idempotent"
@@ -106,13 +153,16 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
         settings_path.write_text(json.dumps(custom))
         setup()
         assert json.loads(settings_path.read_text()) == {**custom, "defaultTools": expected}
+        assert legacy_teach.read_bytes() == customized_teach, "Setup must preserve customized teach prompts"
     assert not footer.is_symlink() and footer.read_bytes() == (ROOT / "extensions/footer-colors.ts").read_bytes(), "Setup must repair a dangling footer worktree symlink"
-    assert teaching.read_bytes() == (ROOT / "prompts/teach.md").read_bytes(), "Setup must refresh the teaching template"
+    assert teaching.read_bytes() == teaching_source, "Setup must refresh the sensei prompt"
     assert (caveman / "SKILL.md").read_bytes() == (ROOT / "skills/caveman/SKILL.md").read_bytes(), "Setup must refresh the Caveman skill"
     assert (grill / "SKILL.md").read_bytes() == (ROOT / "skills/grill-me/SKILL.md").read_bytes(), "Setup must refresh the Grill Me skill"
     setup("--with-jev")
     assert legacy_handoff.read_text() == "Locally customized handoff prompt\n", "Preserve customized handoff prompts"
     legacy_handoff.unlink()
+    assert legacy_teach.read_bytes() == customized_teach, "Optional Jev setup must preserve customized teach prompts"
+    legacy_teach.unlink()  # Remove the custom test prompt before runtime discovery.
     assert gate.read_bytes() == saved
     for file in ["index.ts", "core.mjs", "package.json"]:
         assert (agent / "extensions/jev-reviewer" / file).read_bytes() == (ROOT / "extensions/jev-reviewer" / file).read_bytes()
@@ -234,11 +284,14 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
             result, _ = request("commands", "get_commands")
             names = {entry["name"] for entry in result["data"]["commands"]}
             assert {"manual", "auto", "jev-shadow", "yolo", "permissions", "probe-write", "jev-test", "jev-status"} <= names, names
-            assert {"teach", "review", "grill-me", "skill:grill-me"} <= names, "Pi must discover native workflow prompts and Grill Me"
-            for name, source in (("grill-me", "prompt"), ("skill:grill-me", "skill")):
+            assert {"sensei", "review", "grill-me", "skill:grill-me"} <= names, "Pi must discover native workflow prompts and Grill Me"
+            assert "teach" not in names, "Fresh discovery must not expose the retired teach prompt"
+            for name, source in (("sensei", "prompt"), ("grill-me", "prompt"), ("skill:grill-me", "skill")):
                 entries = [entry for entry in result["data"]["commands"] if entry["name"] == name]
                 assert len(entries) == 1 and entries[0]["source"] == source, entries
             print("Grill Me: isolated setup, refresh, native skill discovery, and prompt shortcut")
+            chains = [entry for entry in result["data"]["commands"] if entry["name"] == "chain"]
+            assert len(chains) == 1 and chains[0]["source"] == "extension", chains
             assert "handoff" not in names, "Handoff is no longer a native prompt template"
             assert "test-plan" not in names, "Do not install the declined test-plan prompt"
             assert "skill:caveman" in names, "Pi must discover the native Caveman skill"

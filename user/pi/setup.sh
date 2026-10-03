@@ -32,7 +32,7 @@ for spec in 'config:pi-permission-system' 'classifier:pi-permission-classifier';
     cp "$config_dir/permissions/$source_name.json" "$target"
   fi
 done
-for file in permission-modes.ts footer-colors.ts; do
+for file in permission-modes.ts footer-colors.ts chain.ts; do
   target="$agent_dir/extensions/$file"
   # Replace old symlinks, including dangling links to removed worktrees.
   if [[ -L "$target" ]]; then
@@ -43,7 +43,7 @@ done
 
 # Review, teaching, and the grill-me shortcut are native prompt templates.
 mkdir -p "$agent_dir/prompts" "$agent_dir/agents"
-for file in teach.md review.md grill-me.md; do
+for file in sensei.md review.md grill-me.md; do
   install -m 600 "$config_dir/prompts/$file" "$agent_dir/prompts/$file"
 done
 install -m 600 "$config_dir/agents/reviewer.md" "$agent_dir/agents/reviewer.md"
@@ -62,7 +62,7 @@ for directory in pi-hermes-memory projects-memory; do
   fi
 done
 
-# Retire only our exact legacy handoff prompt; preserve locally edited templates.
+# Retire only our exact legacy prompts; preserve locally edited templates.
 # Add native search tools without replacing other settings or tool choices.
 python3 - "$agent_dir/settings.json" <<'PY'
 import hashlib
@@ -73,6 +73,13 @@ import sys
 import tempfile
 
 path = Path(sys.argv[1])
+legacy_teach = path.parent / "prompts/teach.md"
+if legacy_teach.is_file():
+    digest = hashlib.sha256(legacy_teach.read_bytes()).hexdigest()
+    if digest == "bd3f990cd1a57dce6b40b88b36ec6e98ac784dfeb53ef020556793d0a73f6357":
+        legacy_teach.unlink()
+    else:
+        print("Preserved customized prompts/teach.md; /sensei is the new teaching command.", file=sys.stderr)
 legacy = path.parent / "prompts/handoff.md"
 if legacy.is_file():
     digest = hashlib.sha256(legacy.read_bytes()).hexdigest()
