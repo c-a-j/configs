@@ -7,15 +7,24 @@ with-tmux-mouse() (
     exit "$?"
   fi
 
-  local session
-  session=$(tmux display-message -p -t "${TMUX_PANE:?}" '#{session_id}') || exit "$?"
+  local session pane=${TMUX_PANE:?}
+  session=$(tmux display-message -p -t "$pane" '#{session_id}') || exit "$?"
 
-  # Target the original session even if the user switches sessions while running.
-  trap 'tmux set-option -t "$session" mouse off >/dev/null 2>&1 || true' EXIT
+  _tmux_mouse_cleanup() {
+    tmux set-option -pu -t "$pane" @agent_mouse >/dev/null 2>&1 || true
+    # Check every pane in every window. tmux evaluates and applies this itself.
+    tmux if-shell -F -t "$session" '#{!=:#{W:#{P:#{?@agent_mouse,1,}}},}' \
+      "set-option -t '$session' mouse on" \
+      "set-option -t '$session' mouse off" >/dev/null 2>&1 || true
+  }
+
+  # One agent per pane; mouse stays on while any pane in this session needs it.
+  trap '_tmux_mouse_cleanup' EXIT
   trap 'exit 130' INT
   trap 'exit 143' TERM
   trap 'exit 129' HUP
 
+  tmux set-option -p -t "$pane" @agent_mouse 1 || exit "$?"
   tmux set-option -t "$session" mouse on || exit "$?"
   "$@"
   exit "$?"
