@@ -27,7 +27,7 @@ link permissions/config.json "$agent_dir/extensions/pi-permission-system/config.
 link permissions/classifier.json "$agent_dir/extensions/pi-permission-classifier/config.json"
 
 # Files deleted from the repository stay installed until removed here.
-rm -f -- "$agent_dir/extensions/chain.ts" "$agent_dir/extensions/jev-reviewer/config.json"
+rm -f -- "$agent_dir/extensions/chain.ts" "$agent_dir"/extensions/jev-reviewer/{config.json,core.mjs}
 
 # Pi rewrites settings.json and stores machine-local keys there, so merge the
 # repository keys into it instead of linking. Repository values win.

@@ -153,7 +153,7 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
         raise AssertionError(process.stderr.read())
     try:
         assert command("/permissions invalid-mode") == policy, "An invalid mode must not change policy"
-        for mode, yolo, chain in (("/yolo", True, []), ("/jev-shadow", False, ["jev-shadow"]),
+        for mode, yolo, chain in (("/yolo", True, []), ("/auto-jev", False, ["auto-jev"]), ("/auto-clef", False, ["auto-clef"]),
                                  ("/manual", False, []), ("/permissions auto", False, ["classifier"])):
             config = command(mode)
             assert (config["yoloMode"], config["authorizerChain"]) == (yolo, chain), (mode, config)
@@ -162,4 +162,4 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     finally:
         process.stdin.close()
         process.wait(timeout=10)
-    print("Modes: /manual, /auto, /yolo, /jev-shadow, and /permissions rewrite only the installed policy")
+    print("Modes: /manual, /auto, /yolo, /auto-jev, /auto-clef, and /permissions rewrite only the installed policy")

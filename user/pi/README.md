@@ -118,7 +118,7 @@ this setup adds or chooses.
 | Subagents | `pi-subagents`, [`subagents.json`](subagents.json) | Automatic; `/subagents:settings` |
 | Web and library docs | `pi-web-access`, `context7-pi` | Automatic; `/websearch`, `/c7-docs` |
 | Diagnostics | `pi-lens` | Automatic; `/lens-health` |
-| Jev dangerous-command detector (experiment) | [`extensions/jev-reviewer/`](extensions/jev-reviewer/) | `/jev-test`, `/jev-shadow` |
+| Classifier-model permission review | [`extensions/jev-reviewer/`](extensions/jev-reviewer/) | `/auto-jev`, `/auto-clef`, `/jev-test`, `/clef-test` |
 
 ## Things to know
 
@@ -145,14 +145,18 @@ this setup adds or chooses.
 - **`footer-colors.ts` wraps Pi's built-in footer renderer** because Pi has no
   theme tokens for the path and branch. If a Pi update changes the footer, the
   colors may be wrong; the footer content itself is unaffected.
-- **Jev is an experiment in detecting dangerous shell commands.** In
-  `/jev-shadow` mode every bash permission ask is sent to the Jev model, which
-  labels it benign, risky, or unknown. The label appears in the footer and as a
-  `jev.shadow` entry in the permission review log, and you still approve or deny
-  every ask yourself. Compare the logged labels with your own decisions to judge
-  it. It needs `/login vercel-ai-gateway`; `/jev-test` makes one real call to
-  check access. The model, timeout, and rubric are constants in
-  `extensions/jev-reviewer/core.mjs`.
+- **`/auto-jev` and `/auto-clef` let a small classifier model approve permission asks.**
+  The model labels each ask benign, risky, or unknown. A benign label with at
+  least 80% confidence is approved without a prompt; anything else, and every
+  failure, asks you. The model never denies. Sensitive-path and outside-project
+  asks always go to you. The two modes differ only in the model: Jev draws on
+  prepaid Cloudflare credits, clef runs within the free daily Workers AI
+  allowance. Each review is a `jev-reviewer.decision` entry in the permission
+  review log, whose `reviewer` field names the model and whose `requestId`
+  matches the package's own entries for the same ask. The models, threshold,
+  timeout, and rubric are constants in `extensions/jev-reviewer/core.ts`. Both
+  need `/login` for Cloudflare Workers AI on each machine; `/jev-test` and
+  `/clef-test` each make one real call to check access.
 - **Vendored skills are pinned copies.** Each `UPSTREAM.md` records the source
   commit and hashes; setup never fetches updates.
 

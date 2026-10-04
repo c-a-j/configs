@@ -8,7 +8,8 @@ const choices = [
   { name: "manual", label: "Manual — approval prompts", chain: [] },
   { name: "auto", label: "Auto — GPT risk assessment", chain: ["classifier"] },
   { name: "yolo", label: "YOLO — no permission prompts", chain: [] },
-  { name: "jev-shadow", label: "Jev shadow — experimental; always asks you", chain: ["jev-shadow"] },
+  { name: "auto-jev", label: "Auto (Jev) — approves what it judges benign; asks you otherwise", chain: ["auto-jev"] },
+  { name: "auto-clef", label: "Auto (Clef) — approves what it judges benign; asks you otherwise", chain: ["auto-clef"] },
 ];
 const configPath = () => join(getAgentDir(), "extensions/pi-permission-system/config.json");
 
@@ -43,7 +44,7 @@ export default function (pi: ExtensionAPI) {
       return;
     }
     const choice = choices.find(choice => choice.name === name);
-    if (!choice) throw new Error("Usage: /permissions manual|auto|yolo|jev-shadow");
+    if (!choice) throw new Error("Usage: /permissions manual|auto|yolo|auto-jev|auto-clef");
     const config = await readConfig();
     const next = { ...config, yoloMode: name === "yolo", authorizerChain: choice.chain };
     const path = configPath();
