@@ -16,17 +16,34 @@
     },
     "path_write": {
       "*pi-permission-system/config.json": "ask",
-      "*pi-permission-classifier/config.json": "ask",
-      "*jev-reviewer/config.json": "ask"
+      "*pi-permission-classifier/config.json": "ask"
     },
     "external_directory": "ask",
     "read": "allow",
     "grep": "allow",
     "find": "allow",
     "ls": "allow",
+    "symbol_search": "allow",
+    "module_report": "allow",
+    "project_report": "allow",
+    "read_symbol": "allow",
+    "read_enclosing": "allow",
+    "lens_diagnostics": "allow",
+    "effective_config": "allow",
+    "pi_lens_activate_tools": "allow",
+    "resolve-library-id": "allow",
+    "query-docs": "allow",
+    "web_enable": "allow",
+    "web_search": "allow",
+    "fetch_content": "allow",
+    "get_search_content": "allow",
     "write": "ask",
     "edit": "ask",
-    "bash": "ask",
+    "bash": {
+      "*": "ask",
+      "git status *": "allow"
+    },
+    "skill": "allow",
     "plan_mode_question": "allow",
     "plan_mode_complete": "allow"
   }

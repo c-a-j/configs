@@ -13,7 +13,12 @@ const choices = [
 const configPath = () => join(getAgentDir(), "extensions/pi-permission-system/config.json");
 
 async function readConfig(): Promise<Record<string, unknown>> {
-  const config = JSON.parse(await readFile(configPath(), "utf8"));
+  let config: Record<string, unknown>;
+  try {
+    config = JSON.parse(await readFile(configPath(), "utf8"));
+  } catch (error) {
+    throw new Error(`Cannot read permission policy at ${configPath()}: ${String(error)}`);
+  }
   if (!config || typeof config !== "object" || Array.isArray(config) ||
       !config.permission || typeof config.permission !== "object" || Array.isArray(config.permission)) {
     throw new Error("Permission policy missing or invalid. Run user/pi/setup.sh first.");
@@ -28,7 +33,6 @@ function currentMode(config: Record<string, unknown>): string {
 }
 
 export default function (pi: ExtensionAPI) {
-  const jevInstalled = () => pi.getCommands().some(command => command.name === "jev-status");
   const busyMessage = "Mode unchanged: interrupt the current run, switch modes, then ask the agent to continue. Live switching is not supported by this integration.";
 
   async function changeMode(name: string, ctx: ExtensionCommandContext) {
@@ -40,9 +44,6 @@ export default function (pi: ExtensionAPI) {
     }
     const choice = choices.find(choice => choice.name === name);
     if (!choice) throw new Error("Usage: /permissions manual|auto|yolo|jev-shadow");
-    if (name === "jev-shadow" && !jevInstalled()) {
-      throw new Error("Jev is optional. Install it with: bash user/pi/setup.sh --with-jev");
-    }
     const config = await readConfig();
     const next = { ...config, yoloMode: name === "yolo", authorizerChain: choice.chain };
     const path = configPath();
@@ -73,9 +74,8 @@ export default function (pi: ExtensionAPI) {
       try {
         if (args.trim()) { await changeMode(args.trim().toLowerCase(), ctx); return; }
         if (!ctx.isIdle()) { ctx.ui.notify(busyMessage, "warning"); return; }
-        const available = choices.filter(choice => choice.name !== "jev-shadow" || jevInstalled());
-        const selected = await ctx.ui.select(`GLOBAL permissions: ${currentMode(await readConfig())}`, available.map(choice => choice.label));
-        const choice = available.find(choice => choice.label === selected);
+        const selected = await ctx.ui.select(`GLOBAL permissions: ${currentMode(await readConfig())}`, choices.map(choice => choice.label));
+        const choice = choices.find(choice => choice.label === selected);
         if (choice) await changeMode(choice.name, ctx);
       } catch (error) { ctx.ui.notify(String(error), "error"); }
     },

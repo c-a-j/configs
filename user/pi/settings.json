@@ -1,0 +1,31 @@
+{
+  "defaultProvider": "openai",
+  "defaultModel": "gpt-6.1-sol",
+  "defaultThinkingLevel": "high",
+  "enabledModels": [
+    "openai/gpt-6.1-sol",
+    "openai/gpt-6-astra",
+    "openai/gpt-6-luna",
+    "openai/gpt-6-sol"
+  ],
+  "theme": "system",
+  "tuiMode": "fullscreen",
+  "fullscreenCopyOnSelect": false,
+  "defaultTools": [
+    "+grep",
+    "+find",
+    "+ls"
+  ],
+  "packages": [
+    "npm:pi-vim@0.14.2",
+    "npm:@signalridge/pi-plan-mode@1.4.2",
+    "npm:@ar-llm/pi-handoff@0.5.0",
+    "npm:pi-permission-classifier@0.5.2",
+    "npm:@gotgenes/pi-permission-system@36.2.1",
+    "npm:@gotgenes/pi-subagents@21.9.1",
+    "npm:pi-hermes-memory@0.9.9",
+    "npm:pi-web-access@0.35.0",
+    "npm:@upstash/context7-pi@0.1.2",
+    "npm:pi-lens@4.3.0"
+  ]
+}

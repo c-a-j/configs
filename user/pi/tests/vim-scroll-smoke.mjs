@@ -8,8 +8,10 @@ import { pathToFileURL } from "node:url";
 import { execFileSync } from "node:child_process";
 
 const sourceAgent = process.env.PI_CODING_AGENT_DIR || path.join(os.homedir(), ".pi/agent");
-const host = process.env.PI_TEST_HOST_DIR || path.join(os.homedir(),
-  ".pi/agent/install/releases/1.0.1/node_modules/@earendil-works/pi-coding-agent");
+const installed = path.join(os.homedir(), ".pi/agent/install");
+const host = process.env.PI_TEST_HOST_DIR || path.join(installed, "releases",
+  (await fs.readFile(path.join(installed, "current-version"), "utf8")).trim(),
+  "node_modules/@earendil-works/pi-coding-agent");
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), "pi-vim-scroll-test-"));
 const previous = new Map(["PI_CODING_AGENT_DIR", "PI_OFFLINE"].map(key => [key, process.env[key]]));
 process.env.PI_CODING_AGENT_DIR = path.join(temp, "agent");
@@ -29,10 +31,8 @@ try {
   await fs.mkdir(setupAgent);
   await fs.mkdir(bin);
   await fs.writeFile(path.join(bin, "pi"), "#!/bin/sh\nexit 0\n", { mode: 0o700 });
-  const savedSettings = { theme: "system", defaultTools: ["+grep", "+find", "+ls"], packages: ["preserve-me"] };
-  const savedKeys = '{"tui.select.down":["down","ctrl+j"]}\n';
-  await fs.writeFile(path.join(setupAgent, "settings.json"), JSON.stringify(savedSettings));
-  await fs.writeFile(path.join(setupAgent, "keybindings.json"), savedKeys);
+  await fs.writeFile(path.join(setupAgent, "settings.json"), JSON.stringify({ deviceId: "preserve-me" }));
+  await fs.writeFile(path.join(setupAgent, "keybindings.json"), "outdated bindings");
   const setup = () => execFileSync("bash", [path.resolve("user/pi/setup.sh")], {
     env: { ...process.env, PI_CODING_AGENT_DIR: setupAgent, PATH: `${bin}:${process.env.PATH}` },
   });
@@ -40,13 +40,13 @@ try {
   const expectedScroll = await fs.readFile(path.resolve("user/pi/extensions/vim-scroll.ts"));
   setup();
   assert.deepEqual(await fs.readFile(copiedScroll), expectedScroll);
+  await fs.rm(copiedScroll);  // Never write through a hard link to the repository file.
   await fs.writeFile(copiedScroll, "outdated extension");
-  await fs.chmod(copiedScroll, 0o644);
   setup();
   assert.deepEqual(await fs.readFile(copiedScroll), expectedScroll);
-  assert.equal((await fs.stat(copiedScroll)).mode & 0o777, 0o600);
-  assert.deepEqual(JSON.parse(await fs.readFile(path.join(setupAgent, "settings.json"), "utf8")), savedSettings);
-  assert.equal(await fs.readFile(path.join(setupAgent, "keybindings.json"), "utf8"), savedKeys);
+  assert.equal(JSON.parse(await fs.readFile(path.join(setupAgent, "settings.json"), "utf8")).deviceId, "preserve-me");
+  assert.deepEqual(await fs.readFile(path.join(setupAgent, "keybindings.json")),
+    await fs.readFile(path.resolve("user/pi/keybindings.json")));
 
   const agent = process.env.PI_CODING_AGENT_DIR;
   const cwd = path.join(temp, "workspace");

@@ -1,6 +1,0 @@
-{
-  "provider": "vercel-ai-gateway",
-  "model": "typesafe-ai/jev",
-  "timeoutMs": 10000,
-  "contextBudgetBytes": 8192
-}
