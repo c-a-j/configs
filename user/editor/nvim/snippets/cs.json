@@ -1,0 +1,16 @@
+ {
+   "Guard against nonpositive values": {
+     "prefix": "guardpos",
+     "body": [
+       "ArgumentOutOfRangeException.ThrowIfNegativeOrZero(${1:value});$0"
+     ],
+     "description": "Throw when value is negative or zero"
+   },
+   "Guard against null": {
+     "prefix": "guardnull",
+     "body": [
+       "ArgumentNullException.ThrowIfNull(${1:value});$0"
+     ],
+     "description": "Throw when value is null"
+   }
+ }

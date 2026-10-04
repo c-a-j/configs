@@ -8,8 +8,18 @@ return {
   ---@type blink.cmp.Config
   opts = {
     -- super-tab: <Tab> accepts the suggestion (Copilot-style ghost text),
-    -- <C-space> opens/toggles the menu, <C-e> dismisses, <C-k> signature.
-    keymap = { preset = "super-tab" },
+    -- <C-space> opens/toggles the menu and <C-e> dismisses it.
+    -- <C-j>/<C-k> navigate suggestions; <C-k> toggles signature help otherwise.
+    keymap = {
+      preset = "super-tab",
+      ["<C-j>"] = { "select_next", "fallback" },
+      ["<C-k>"] = {
+        "select_prev",
+        "show_signature",
+        "hide_signature",
+        "fallback",
+      },
+    },
 
     appearance = { nerd_font_variant = "mono" },
 
@@ -18,7 +28,7 @@ return {
       ghost_text = { enabled = false },
 
       -- Menu is toggle-only: it never auto-pops. Summon the full list with
-      -- <C-space>, then <C-n>/<C-p> (or arrows) to move through it.
+      -- <C-space>, then <C-j>/<C-k>, <C-n>/<C-p>, or arrows to navigate.
       menu = { auto_show = false },
 
       -- Nothing pre-highlighted or auto-inserted until you explicitly accept.

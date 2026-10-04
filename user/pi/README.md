@@ -1,13 +1,58 @@
 # Pi configuration
 
-Install Pi first, then run:
+This directory contains the repository-managed Pi setup. [`setup.sh`](setup.sh)
+is the source of truth for package pins, copied resources, and initial defaults.
+The installed agent directory is separate: `PI_CODING_AGENT_DIR`, or
+`~/.pi/agent` when unset. Existing runtime settings can differ because setup
+preserves them. The feature sections below describe the repository setup;
+they do not imply that every resource has already been deployed.
+
+## Current installation
+
+The on-disk installation checked on **2026-10-03** uses Pi **1.0.1**. Its ten
+configured packages and installed versions match the pins listed below.
+The following are local runtime settings, not defaults imposed by this repository:
+
+- `settings.json` selects `openai/gpt-6.1-sol` with `high` thinking. Its model
+  scope is `openai/gpt-6.1-sol`, `openai/gpt-6-astra`, `openai/gpt-6-luna`, and
+  `openai/gpt-6-sol`.
+- The theme is `system`, the TUI is `fullscreen`, and `defaultTools` is
+  `["+grep", "+find", "+ls"]`, retaining Pi's default read/bash/edit/write tools.
+- The permission policy is currently **YOLO** (`yoloMode: true`,
+  `authorizerChain: []`), not the fresh setup's Auto mode. The classifier is
+  configured as `openai/gpt-4.1-mini`, but YOLO does not call it.
+- Subagent settings, memory settings, the reviewer, `/review`, `/grill-me`,
+  permission-mode controls, and footer colors match the repository copies.
+  The optional Jev extension and its initial configuration are also present.
+- `/handoff` is installed. `extensions/chain.ts` and `prompts/sensei.md` are
+  **not installed**, so `/chain` and `/sensei` are not supplied by this setup
+  in the current agent directory. The exact retired `/teach` prompt remains.
+  Running setup would install `/chain` and `/sensei` and remove that legacy copy.
+- The installed global `AGENTS.md` contains only the Caveman default-style
+  instructions. The repository's broader agent guidelines have not been merged;
+  setup deliberately preserves an existing global file.
+- Local resources outside this setup include `extensions/workmux-status.ts`,
+  Workmux workflow skills, and native list navigation bindings: Up/Ctrl+k and
+  Down/Ctrl+j. `settings.json` explicitly includes the footer extension and the
+  local `open-pr` skill. No user or project pi-lens config file was found at
+  `~/.pi-lens/config.json` or `.pi-lens.json` in this checkout.
+
+This is a snapshot of files, not a guarantee about every running session.
+Project overrides, CLI flags, and later local changes can alter behavior. This
+README update does not deploy resources or change the live settings above.
+
+## Installation
+
+Install Pi first, then run from the repository root:
 
 ```sh
 bash user/pi/setup.sh            # Pinned packages, workflow prompts, and local defaults
 bash user/pi/setup.sh --with-jev # Also install the optional Jev experiment
 ```
 
-`just update-pi` from `playbooks/` runs the normal setup. Restart Pi or `/reload`
+`just update-pi` uses the repository-root [`justfile`](../../justfile) and runs
+the normal setup. It does not run the Ansible playbooks or update other dotfiles.
+Setup installs extension packages, not the Pi host itself. Restart Pi or `/reload`
 after installation. `PI_CODING_AGENT_DIR` is respected.
 
 Packages are pinned: `pi-vim@0.14.2`, `@signalridge/pi-plan-mode@1.4.2`,
@@ -24,9 +69,39 @@ Initial policies in `permissions/`, `subagents.json`,
 `hermes-memory-config.json`, and global `AGENTS.md` instructions are copied
 **only if absent**. Runtime customizations
 stay local and are not overwritten by setup. Templates, the reviewer definition,
-local extensions, and the vendored Caveman and Grill Me skills are refreshed each run.
+core local extensions, and the vendored Caveman and Grill Me skills are refreshed
+each run. Existing Jev extension sources are refreshed only with `--with-jev`.
+Setup preserves model selection, thinking levels, keybindings, custom resources,
+and personal web settings; it merges only the native search-tool selection.
 Credentials, sessions, device IDs, learned memory, databases, and logs must not
 be committed.
+
+### Configuration files
+
+Paths on the right are relative to the installed agent directory:
+
+| Repository source | Installed destination | Setup behavior |
+| --- | --- | --- |
+| [`permissions/config.json`](permissions/config.json) | `extensions/pi-permission-system/config.json` | Copy only if absent |
+| [`permissions/classifier.json`](permissions/classifier.json) | `extensions/pi-permission-classifier/config.json` | Copy only if absent |
+| [`permissions/jev.json`](permissions/jev.json) | `extensions/jev-reviewer/config.json` | Copy only if absent, with `--with-jev` |
+| [`subagents.json`](subagents.json), [`hermes-memory-config.json`](hermes-memory-config.json), [`AGENTS.md`](AGENTS.md) | Same filenames | Copy only if absent |
+| [`agents/reviewer.md`](agents/reviewer.md) | `agents/reviewer.md` | Refresh each run |
+| [`prompts/`](prompts/) | `prompts/{review,sensei,grill-me}.md` | Refresh each run |
+| [`extensions/`](extensions/) core `.ts` files | `extensions/{permission-modes,footer-colors,chain,vim-scroll}.ts` | Refresh each run |
+| [`extensions/jev-reviewer/`](extensions/jev-reviewer/) sources | `extensions/jev-reviewer/{index.ts,core.mjs,package.json}` | Refresh with `--with-jev` |
+| [`skills/`](skills/) | `skills/{caveman,grill-me}/` | Refresh each run |
+
+There is no repository `settings.json` or `keybindings.json` to deploy. Pi manages
+package declarations in the installed `settings.json`; setup merges its
+`defaultTools`. New memory roots are created privately, but learned files are
+not seeded from this checkout.
+
+Fresh global instructions also require user authorization before implementation
+or deployment, scoped delegation, preservation of local configuration and learned
+memory, and no agent attribution or signature trailers in commits. These are
+conversational instructions, not enforced permission rules. Existing global
+instructions require a deliberate manual merge to adopt these changes.
 
 ## Native search and workflow commands
 
@@ -199,10 +274,10 @@ disables automatic rewriting and related-test execution for one Pi invocation.
 Some project settings can override global mutation defaults, but explicit
 disabling CLI flags take precedence.
 
-The isolated smoke test below checks real Pi 1.0.0 command/tool registration and
-TypeScript symbol parsing without model calls, tool downloads, or live settings
-changes. It does not validate the complete LSP fleet, automatic fixers, or
-interactive rendering. The package's standalone self-test checks grammars in a
+The isolated smoke test below checks command/tool registration using the Pi
+executable on `PATH` and TypeScript symbol parsing without model calls, tool
+downloads, or live settings changes. It does not validate the complete LSP fleet,
+automatic fixers, or interactive rendering. The package's standalone self-test checks grammars in a
 dependency directory rather than the bundled `grammars/` directory, so its
 missing-grammar result alone does not establish a runtime parsing failure.
 
@@ -284,6 +359,23 @@ Use `hjkl`, `w/b/e`, `gg/G`, `dw`, `ciw`, `v/V`, `u`, `Ctrl+r`, and `.` as usual
 An additional `Esc` in NORMAL passes through to Pi. This is not full Vim:
 search/macros/named registers are absent and visual selections are not highlighted.
 
+The local [`extensions/vim-scroll.ts`](extensions/vim-scroll.ts) extension adds
+**Ctrl+k** (a quarter page up) and **Ctrl+j** (a quarter page down) in NORMAL
+mode when Pi uses the fullscreen TUI. Each step uses one quarter of the current
+terminal height, rounded down to at least one line. INSERT mode keeps native Ctrl+j newline
+and Ctrl+k delete-to-line-end. Existing list-navigation bindings are unchanged;
+focused dialogs and overlays retain their keys. VISUAL mode is not remapped.
+In regular TUI mode, the terminal owns scrollback and these shortcuts are unchanged.
+
+The extension decorates the installed pi-vim editor in place after all
+`session_start` handlers, using `resources_discover` as the post-start lifecycle
+hook. It calls Pi's public fullscreen `scrollBy()` method, without changing
+`keybindings.json` or patching packages. Pi's stable renderer reference also
+supports switching between regular and fullscreen modes. Pi-vim currently reports
+its `:` EX mini-mode as NORMAL, so these shortcuts also scroll during EX input.
+Do not bind native `tui.altScreen.lineUp`/`lineDown` directly to Ctrl+k/j: native
+fullscreen bindings run before the editor and would override INSERT behavior.
+
 ## Planning
 
 `/plan` opens the planning menu. `/plan start` enters directly; `/plan <prompt>`
@@ -298,8 +390,9 @@ The menu also supports fresh-session implementation. An approved plan stays acti
 through compaction until cleared. Planning is an independent guardrail even in
 YOLO, not an OS sandbox. Explicit plan export is a user-requested file mutation.
 
-The pinned planning package declares Pi 0.x peers. It loads on Pi 1.0.0, but the
-full interactive approval/handoff workflow has not been verified end to end.
+The pinned planning package declares Pi 0.x peers. The installed host is Pi
+1.0.1; the full interactive approval/handoff workflow has not been verified end
+to end.
 
 ## Sensei
 
@@ -337,15 +430,11 @@ behavior, not permissions: it is **not** an enforced read-only mode. It does not
 change global settings, but its instructions remain part of the conversation
 when you resume it. `/sensei off` explicitly ends teaching.
 
-Sensei includes self-contained engineering principles: understand conventions
-before shortcuts, solve the actual problem simply, favor predictable behavior,
-debug with evidence, maintain existing code, and build the learner's independence.
-They also favor gradual abstraction, readable expressions, small safe refactors,
-risk-based testing, useful observability, measured optimization, and justified
-concurrency or dependencies. Simpler scope is proposed openly, never substituted
-without approval. These are contextual preferences rather than blanket bans on
-specific tools or methods. They require no external reading or lookup and do not
-relax the teaching restrictions.
+The current Sensei template is self-contained and defines guide/show behavior,
+learner-owned execution, small steps, and preservation of active teaching
+instructions in conversation summaries. It does not contain an engineering
+principles section. The permission smoke test still expects that section; see
+[Checks and footer colors](#checks-and-footer-colors) for the known mismatch.
 
 Sensei replaces the old `/teach` command; the teaching restrictions are unchanged. Setup
 removes `prompts/teach.md` only when it exactly matches the former repository
@@ -478,17 +567,31 @@ live judgments and their quality have not yet been validated.
 
 ## Checks and footer colors
 
+Run these checks from the repository root after installing the pinned packages:
+
 ```sh
+bash -n user/pi/setup.sh
 node --test user/pi/tests/jev-reviewer.test.mjs
 python3 user/pi/tests/permissions-smoke.py
 python3 user/pi/tests/features-smoke.py
 node user/pi/tests/handoff-smoke.mjs
 node user/pi/tests/chain-smoke.mjs
+node user/pi/tests/vim-scroll-smoke.mjs
 python3 user/pi/tests/lens-smoke.py
+git diff --check
 ```
 
-These tests make no model calls or live policy changes. They cover shadow safety,
-real gate approval/denial, reviewer-failure fallback, mode naming, busy-mode
+**Current check status:** `bash -n user/pi/setup.sh` and
+`python3 user/pi/tests/features-smoke.py` pass on the installed Pi 1.0.1 host.
+`python3 user/pi/tests/permissions-smoke.py` fails at line 94 with
+`AssertionError: Keep principles directly in the prompt`: it requires a
+`## Engineering principles` section that is absent from `prompts/sensei.md`.
+The failure occurs before the runtime gate checks. The template and test need
+to be reconciled before claiming those permission checks pass.
+
+These tests make no model calls or live policy changes. Their intended coverage
+includes shadow safety, real gate approval/denial, reviewer-failure fallback,
+mode naming, busy-mode
 rejection, settings preservation, feature discovery (including Web Access and Context7
 registration without network calls), parsed reviewer restrictions,
 isolated Markdown/SQLite memory storage and search, and real Pi session

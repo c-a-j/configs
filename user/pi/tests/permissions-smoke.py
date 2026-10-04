@@ -73,6 +73,12 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     assert chain.stat().st_mode & 0o777 == 0o600, "The chain extension copy must be private"
     chain.write_text("outdated extension")
     chain.chmod(0o644)
+    vim_scroll = agent / "extensions/vim-scroll.ts"
+    assert vim_scroll.is_file() and not vim_scroll.is_symlink()
+    assert vim_scroll.read_bytes() == (ROOT / "extensions/vim-scroll.ts").read_bytes()
+    assert vim_scroll.stat().st_mode & 0o777 == 0o600
+    vim_scroll.write_text("outdated extension")
+    vim_scroll.chmod(0o644)
     teaching = agent / "prompts/sensei.md"
     teaching_source = (ROOT / "prompts/sensei.md").read_bytes()
     legacy_teach = agent / "prompts/teach.md"
@@ -128,6 +134,8 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     assert chain.is_file() and not chain.is_symlink(), "Setup must keep chain as a regular file"
     assert chain.read_bytes() == (ROOT / "extensions/chain.ts").read_bytes(), "Setup must refresh the chain extension"
     assert chain.stat().st_mode & 0o777 == 0o600, "Setup must restore the private chain extension mode"
+    assert vim_scroll.read_bytes() == (ROOT / "extensions/vim-scroll.ts").read_bytes(), "Setup must refresh Vim scrolling"
+    assert vim_scroll.stat().st_mode & 0o777 == 0o600
     assert not legacy_handoff.exists(), "Setup must remove the exact legacy handoff prompt"
     legacy_handoff.write_text("Locally customized handoff prompt\n")
     assert not legacy_teach.exists(), "Setup must remove the exact legacy teach prompt"

@@ -32,7 +32,7 @@ for spec in 'config:pi-permission-system' 'classifier:pi-permission-classifier';
     cp "$config_dir/permissions/$source_name.json" "$target"
   fi
 done
-for file in permission-modes.ts footer-colors.ts chain.ts; do
+for file in permission-modes.ts footer-colors.ts chain.ts vim-scroll.ts; do
   target="$agent_dir/extensions/$file"
   # Replace old symlinks, including dangling links to removed worktrees.
   if [[ -L "$target" ]]; then

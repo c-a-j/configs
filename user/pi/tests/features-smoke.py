@@ -25,7 +25,8 @@ with tempfile.TemporaryDirectory(prefix="pi-features-test-") as directory:
     agent = temp / "agent"
     agent.mkdir()
     (agent / "extensions").mkdir()
-    shutil.copyfile(ROOT / "extensions/chain.ts", agent / "extensions/chain.ts")
+    for name in ("chain.ts", "vim-scroll.ts"):
+        shutil.copyfile(ROOT / "extensions" / name, agent / "extensions" / name)
     (agent / "npm").symlink_to(AGENT / "npm", target_is_directory=True)
     shutil.copyfile(ROOT / "AGENTS.md", agent / "AGENTS.md")
     shutil.copytree(ROOT / "prompts", agent / "prompts")
