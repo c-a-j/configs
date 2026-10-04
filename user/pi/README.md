@@ -17,8 +17,8 @@ every machine through `git pull` and `just update-pi`.
 
 | To change | Edit here | Not here |
 | --- | --- | --- |
-| Model, thinking level, theme, tools, package pins | `user/pi/settings.json` | `~/.pi/agent/settings.json`, `pi install` |
-| Permission policy or classifier | `user/pi/permissions/` | `~/.pi/agent/extensions/pi-permission-*/config.json` |
+| Theme, tools, package pins | `user/pi/settings.json` | `~/.pi/agent/settings.json`, `pi install` |
+| Permission policy | `user/pi/permissions/config.json` | `~/.pi/agent/extensions/pi-permission-system/config.json` |
 | Extensions, prompts, skills, agents | `user/pi/{extensions,prompts,skills,agents}/` | The same directories under `~/.pi/agent` |
 | Global instructions, key bindings, subagent and memory settings | The files in `user/pi/` | The same filenames under `~/.pi/agent` |
 
@@ -38,6 +38,25 @@ The only things that legitimately live in `~/.pi/agent` alone are private or
 machine-local state: credentials, sessions, learned memory, logs, caches,
 installed package files, and the temporary permission mode selected with
 `/manual`, `/auto`, or `/yolo`. None of that is committed.
+
+## Exception: model choices are per machine
+
+Machines use different model providers (a personal subscription at home, a
+company gateway at work), so which models Pi uses is **not** shared. The
+repository supplies first-install defaults only, and setup never overwrites a
+machine's own choice:
+
+| What | Repository default | Change it on a machine with |
+| --- | --- | --- |
+| Startup provider, model, thinking level, model cycle | [`model-defaults.json`](model-defaults.json) | `/model`, `/thinking`, `/scoped-models` (Ctrl+S saves) |
+| Model that reviews asks in `/auto` | [`permissions/classifier.json`](permissions/classifier.json) | `/permission-model` |
+| Custom endpoints, such as a company gateway | None; never tracked | `models.json` in the agent directory |
+| Credentials | None; never tracked | `/login` |
+
+Setup never reads or writes the agent directory's `models.json` or `auth.json`.
+On a new machine, set these once after the first `just update-pi`; later runs
+leave them alone. `/auto-jev` and `/auto-clef` need Cloudflare Workers AI and
+are simply unused where that is not available.
 
 ## Installation
 
@@ -84,8 +103,9 @@ Paths on the right are relative to the agent directory:
 | [`AGENTS.md`](AGENTS.md), [`keybindings.json`](keybindings.json), [`subagents.json`](subagents.json), [`hermes-memory-config.json`](hermes-memory-config.json) | Same filenames |
 | [`agents/`](agents/), [`prompts/`](prompts/), [`skills/`](skills/), [`extensions/`](extensions/) | Same paths; every file is linked |
 | [`permissions/config.json`](permissions/config.json) | `extensions/pi-permission-system/config.json` |
-| [`permissions/classifier.json`](permissions/classifier.json) | `extensions/pi-permission-classifier/config.json` |
-| [`settings.json`](settings.json) | `settings.json` (merged, not linked) |
+| [`settings.json`](settings.json) | `settings.json` (merged, not linked; repository wins) |
+| [`model-defaults.json`](model-defaults.json) | `settings.json` (merged; the machine's own values win) |
+| [`permissions/classifier.json`](permissions/classifier.json) | `extensions/pi-permission-classifier/config.json` (copied only if absent) |
 
 To add a prompt, skill, agent, or extension, put it in the matching directory
 and rerun setup. To change a package, edit its pin in `settings.json` and rerun

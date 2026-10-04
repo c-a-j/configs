@@ -38,7 +38,7 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
         subprocess.run(["bash", str(ROOT / "setup.sh"), *args], env=setup_env, check=True, capture_output=True)
 
     def managed_pairs():
-        pairs = [(ROOT / "permissions/config.json", gate), (ROOT / "permissions/classifier.json", judge)]
+        pairs = [(ROOT / "permissions/config.json", gate)]
         for file in ["subagents.json", "hermes-memory-config.json", "AGENTS.md", "keybindings.json"]:
             pairs.append((ROOT / file, agent / file))
         for folder in ["extensions", "prompts", "agents", "skills"]:
@@ -61,6 +61,7 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     (agent / "extensions/footer-colors.ts").symlink_to(temp / "deleted-worktree/footer-colors.ts")
     settings_path = agent / "settings.json"
     settings_path.write_text(json.dumps({"deviceId": "local", "theme": "dark", "custom": {"preserve": True},
+                                         "defaultModel": "work-model",
                                          "packages": ["npm:pi-vim@0.0.1"]}))
     setup()
     for relative, content in preserved.items():
@@ -72,11 +73,17 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
         assert (agent / name).stat().st_mode & 0o777 == 0o700, "New memory stores must be private"
     for source_path, target_path in managed_pairs():
         assert_linked(target_path, source_path)
-    # Repository settings win; machine-local keys survive the merge.
+    # Repository settings win; machine-local keys survive the merge. Model
+    # choices are the reverse: the repository fills only what the machine lacks.
     repository_settings = json.loads((ROOT / "settings.json").read_text())
+    model_defaults = json.loads((ROOT / "model-defaults.json").read_text())
+    assert model_defaults["defaultModel"] != "work-model" and not set(model_defaults) & set(repository_settings)
     settings = json.loads(settings_path.read_text())
-    assert settings == {"deviceId": "local", "custom": {"preserve": True}, **repository_settings}
+    assert settings == {"deviceId": "local", "custom": {"preserve": True}, **model_defaults,
+                        "defaultModel": "work-model", **repository_settings}
     assert not settings_path.samefile(ROOT / "settings.json")
+    assert judge.read_bytes() == (ROOT / "permissions/classifier.json").read_bytes() and not judge.samefile(ROOT / "permissions/classifier.json")
+    judge.write_text('{"provider": "work", "model": "work-judge"}')
     policy = json.loads(gate.read_text())
     assert policy["yoloMode"] is False and policy["authorizerChain"] == ["classifier"], "Fresh setup must default to Auto"
 
@@ -113,6 +120,7 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     for source_path, target_path in managed_pairs():
         assert_linked(target_path, source_path)
     assert json.loads(settings_path.read_text()) == settings
+    assert json.loads(judge.read_text())["model"] == "work-judge", "Setup must keep a machine's own classifier model"
     assert set(installs.read_text().splitlines()) == {f"install {package}" for package in repository_settings["packages"]}
     assert repository_settings["packages"] and all(
         package.startswith("npm:") and package.rsplit("@", 1)[1][0].isdigit() for package in repository_settings["packages"]
@@ -128,7 +136,7 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     assert installs.read_text().splitlines() == ["install npm:pi-lens@4.3.0"]
     shutil.rmtree(agent / "npm")
     (agent / "prompts/handoff.md").unlink()  # Remove the custom test prompt before runtime discovery.
-    print("Setup: hard links, merged settings, Auto default, pinned packages")
+    print("Setup: hard links, merged settings, machine-local model choices, Auto default, pinned packages")
     # The subagent memory exclusion must match the pinned package string exactly.
     excluded = json.loads((ROOT / "subagents.json").read_text())["excludedExtensionPackages"]
     assert set(excluded) <= set(repository_settings["packages"]), "Update subagents.json with the memory pin"

@@ -24,16 +24,24 @@ while IFS= read -r -d '' file; do
 done < <(find AGENTS.md keybindings.json subagents.json hermes-memory-config.json \
   agents prompts skills extensions -type f -print0)
 link permissions/config.json "$agent_dir/extensions/pi-permission-system/config.json"
-link permissions/classifier.json "$agent_dir/extensions/pi-permission-classifier/config.json"
+
+# Model choices differ per machine (home and work use different providers), so
+# the repository only supplies first-install defaults and local values win.
+classifier="$agent_dir/extensions/pi-permission-classifier/config.json"
+if [[ ! -e "$classifier" ]]; then
+  mkdir -p "${classifier%/*}"
+  cp permissions/classifier.json "$classifier"
+fi
 
 # Files deleted from the repository stay installed until removed here.
 rm -f -- "$agent_dir/extensions/chain.ts" "$agent_dir"/extensions/jev-reviewer/{config.json,core.mjs}
 
-# Pi rewrites settings.json and stores machine-local keys there, so merge the
-# repository keys into it instead of linking. Repository values win.
+# Pi rewrites settings.json and stores machine-local keys there, so merge into
+# it instead of linking. Precedence, lowest first: model-defaults.json, the
+# installed file, settings.json.
 settings="$agent_dir/settings.json"
 [[ -s "$settings" ]] || printf '{}\n' > "$settings"
-jq -s '.[0] * .[1]' "$settings" settings.json > "$settings.tmp"
+jq -s '.[1] * .[0] * .[2]' "$settings" model-defaults.json settings.json > "$settings.tmp"
 mv -- "$settings.tmp" "$settings"
 
 # Install only the pinned packages that are missing or at another version.

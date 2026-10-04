@@ -28,7 +28,10 @@ overwritten by the next setup run.
   agents under `user/pi/`. `just update-pi` hard links these into place and is
   needed only after adding a file or changing `settings.json`.
 - Only private or machine-local state belongs in the installed location alone:
-  credentials, sessions, learned memory, logs, caches, and installed packages.
+  credentials, sessions, learned memory, logs, caches, installed packages, and
+  Pi model choices. Machines use different model providers, so
+  `user/pi/model-defaults.json` and `user/pi/permissions/classifier.json` are
+  first-install defaults that setup never applies over a machine's own values.
 
 ## General rules
 
