@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { MODELS, review } from "../extensions/jev-reviewer/core.ts";
+import { MODELS, review } from "../extensions/model-review/core.ts";
 
 const details = (value = "pwd", surface = "bash") => ({
   requestId: "test", payload: {
@@ -14,7 +14,7 @@ async function run(overrides = {}, expect = "defer") {
   let outcome;
   const verdict = await review({
     details: details(), cwd: "/project", model: MODELS["auto-clef"], classify: async () => result("risky"),
-    log: { review(event, value) { assert.equal(event, "jev-reviewer.decision"); outcome = value; } },
+    log: { review(event, value) { assert.equal(event, "model-review.decision"); outcome = value; } },
     ...overrides,
   });
   assert.deepEqual(verdict, { kind: expect });
@@ -53,11 +53,9 @@ test("the log records metadata, never the command or provider messages", async (
   assert.ok(!JSON.stringify(allowed).includes("secret-marker"));
   const thrown = await run({ classify: async () => { throw new Error("secret-token-123"); } });
   assert.equal(thrown.reason, "review-failed");
-  const billing = await run({ classify: async () => ({ stopReason: "error", errorMessage: "403 customer_verification_required echoed-secret" }) });
-  assert.equal(billing.reason, "billing-verification-required");
   const credits = await run({ classify: async () => ({ stopReason: "error", errorMessage: "402 Insufficient balance echoed-secret" }) });
   assert.equal(credits.reason, "paid-credits-required");
-  assert.ok(!JSON.stringify([thrown, billing, credits]).includes("secret"));
+  assert.ok(!JSON.stringify([thrown, credits]).includes("secret"));
 });
 test("provider errors and malformed answers ask the human", async () => {
   assert.equal((await run({ classify: async () => ({ stopReason: "error" }) })).reason, "provider-error");

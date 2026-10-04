@@ -34,7 +34,7 @@ if [[ ! -e "$classifier" ]]; then
 fi
 
 # Files deleted from the repository stay installed until removed here.
-rm -f -- "$agent_dir/extensions/chain.ts" "$agent_dir"/extensions/jev-reviewer/{config.json,core.mjs}
+rm -rf -- "$agent_dir/extensions/chain.ts" "$agent_dir/extensions/jev-reviewer"
 
 # Pi rewrites settings.json and stores machine-local keys there, so merge into
 # it instead of linking. Precedence, lowest first: model-defaults.json, the

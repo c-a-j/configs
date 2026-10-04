@@ -124,7 +124,7 @@ this setup adds or chooses.
 
 | Feature | Source | Use |
 | --- | --- | --- |
-| Global instructions, Caveman default style | [`AGENTS.md`](AGENTS.md), [`skills/caveman/`](skills/caveman/) | Automatic; `/skill:caveman off` for normal prose |
+| Global instructions, terse reply style | [`AGENTS.md`](AGENTS.md); [`skills/caveman/`](skills/caveman/) for other levels | Automatic; "normal mode" for full prose; `/skill:caveman lite` or `ultra` to change level |
 | Permission modes | [`extensions/permission-modes.ts`](extensions/permission-modes.ts), [`permissions/`](permissions/), `pi-permission-system`, `pi-permission-classifier` | `/manual`, `/auto`, `/yolo`, `/permissions`, `/permission-model` |
 | Review | [`prompts/review.md`](prompts/review.md), [`agents/reviewer.md`](agents/reviewer.md), `pi-subagents` | `/review [focus]`; read-only background agent |
 | Teaching | [`prompts/sensei.md`](prompts/sensei.md) | `/sensei [guide\|show] [topic]`, `/sensei off` |
@@ -138,7 +138,7 @@ this setup adds or chooses.
 | Subagents | `pi-subagents`, [`subagents.json`](subagents.json) | Automatic; `/subagents:settings` |
 | Web and library docs | `pi-web-access`, `context7-pi` | Automatic; `/websearch`, `/c7-docs` |
 | Diagnostics | `pi-lens` | Automatic; `/lens-health` |
-| Classifier-model permission review | [`extensions/jev-reviewer/`](extensions/jev-reviewer/) | `/auto-jev`, `/auto-clef`, `/jev-test`, `/clef-test` |
+| Classifier-model permission review | [`extensions/model-review/`](extensions/model-review/) | `/auto-jev`, `/auto-clef`, `/jev-test`, `/clef-test` |
 
 ## Things to know
 
@@ -171,10 +171,10 @@ this setup adds or chooses.
   failure, asks you. The model never denies. Sensitive-path and outside-project
   asks always go to you. The two modes differ only in the model: Jev draws on
   prepaid Cloudflare credits, clef runs within the free daily Workers AI
-  allowance. Each review is a `jev-reviewer.decision` entry in the permission
+  allowance. Each review is a `model-review.decision` entry in the permission
   review log, whose `reviewer` field names the model and whose `requestId`
   matches the package's own entries for the same ask. The models, threshold,
-  timeout, and rubric are constants in `extensions/jev-reviewer/core.ts`. Both
+  timeout, and rubric are constants in `extensions/model-review/core.ts`. Both
   need `/login` for Cloudflare Workers AI on each machine; `/jev-test` and
   `/clef-test` each make one real call to check access.
 - **Vendored skills are pinned copies.** Each `UPSTREAM.md` records the source
@@ -183,13 +183,11 @@ this setup adds or chooses.
 ## Checks
 
 Run from the repository root. The tests use temporary directories and never
-touch the live agent directory. The vim test needs the pinned packages
-installed.
+touch the live agent directory.
 
 ```sh
 bash -n user/pi/setup.sh
 python3 user/pi/tests/setup-smoke.py
-node user/pi/tests/vim-scroll-smoke.mjs
-node --test user/pi/tests/jev-reviewer.test.mjs
+node --test user/pi/tests/model-review.test.mjs
 git diff --check
 ```

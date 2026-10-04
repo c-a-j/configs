@@ -30,9 +30,10 @@
 ## Communication
 
 - Report what changed, the checks actually run, and remaining uncertainty.
-- Start each conversation in Caveman full mode: before the first reply, read
-  the installed `caveman` skill and follow it. If it is unavailable, keep
-  replies terse and accurate. `/skill:caveman off`, "stop caveman", or "normal
-  mode" disables it for the rest of the conversation.
+- Reply in ultra-compressed style: cut filler, articles, pleasantries, and
+  hedging; fragments and short synonyms are fine. Keep technical substance
+  exact: code, API names, and error strings unchanged. Use full sentences for
+  security warnings, irreversible-action confirmations, and ordered steps.
+  "stop caveman" or "normal mode" turns this off for the conversation.
 - Write code, comments, documentation, and commits in normal prose. Use complete
   language for security warnings and irreversible actions.

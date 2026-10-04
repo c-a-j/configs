@@ -58,6 +58,8 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
         (agent / relative).write_text(content)
     (agent / "AGENTS.md").write_text("outdated instructions")
     (agent / "extensions/chain.ts").write_text("outdated extension")
+    (agent / "extensions/jev-reviewer").mkdir()
+    (agent / "extensions/jev-reviewer/index.ts").write_text("outdated extension")
     (agent / "extensions/footer-colors.ts").symlink_to(temp / "deleted-worktree/footer-colors.ts")
     settings_path = agent / "settings.json"
     settings_path.write_text(json.dumps({"deviceId": "local", "theme": "dark", "custom": {"preserve": True},
@@ -66,8 +68,8 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     setup()
     for relative, content in preserved.items():
         assert (agent / relative).read_text() == content, relative
-    # extensions/chain.ts is a retired file that setup removes.
-    for relative in ("setup.sh", "README.md", "tests", "permissions", "extensions/chain.ts"):
+    # extensions/chain.ts and extensions/jev-reviewer are retired; setup removes them.
+    for relative in ("setup.sh", "README.md", "tests", "permissions", "extensions/chain.ts", "extensions/jev-reviewer"):
         assert not (agent / relative).exists(), relative
     for name in ("pi-hermes-memory", "projects-memory"):
         assert (agent / name).stat().st_mode & 0o777 == 0o700, "New memory stores must be private"

@@ -6,7 +6,7 @@ import { getAgentDir, type ExtensionAPI, type ExtensionCommandContext } from "@e
 
 const choices = [
   { name: "manual", label: "Manual — approval prompts", chain: [] },
-  { name: "auto", label: "Auto — GPT risk assessment", chain: ["classifier"] },
+  { name: "auto", label: "Auto — model risk assessment", chain: ["classifier"] },
   { name: "yolo", label: "YOLO — no permission prompts", chain: [] },
   { name: "auto-jev", label: "Auto (Jev) — approves what it judges benign; asks you otherwise", chain: ["auto-jev"] },
   { name: "auto-clef", label: "Auto (Clef) — approves what it judges benign; asks you otherwise", chain: ["auto-clef"] },

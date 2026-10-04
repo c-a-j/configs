@@ -16,7 +16,7 @@ const LABELS = ["benign", "risky", "unknown"];
 const DEFER = { kind: "defer" };
 // Only these reasons are logged: provider messages can echo input or secrets.
 const REASONS = ["timeout", "aborted", "provider-error", "invalid-answer", "missing-facts",
-  "context-over-budget", "model-unavailable", "billing-verification-required", "paid-credits-required"];
+  "context-over-budget", "model-unavailable", "paid-credits-required"];
 
 export function buildContext(details, cwd) {
   const { request, evidence } = details?.payload ?? {};
@@ -43,11 +43,9 @@ export function buildContext(details, cwd) {
 
 export function parseAnswer(result) {
   if (result?.stopReason !== "stop") {
-    // Name the known account blocks; never log the message itself.
-    const message = String(result?.errorMessage);
-    if (message.includes("customer_verification_required")) throw new Error("billing-verification-required");
-    if (/Free tier users do not have access|Insufficient balance/.test(message)) throw new Error("paid-credits-required");
-    throw new Error("provider-error");
+    // Name an empty credit balance; never log the provider's message itself.
+    const unpaid = String(result?.errorMessage).includes("Insufficient balance");
+    throw new Error(unpaid ? "paid-credits-required" : "provider-error");
   }
   const answer = result.answers?.risk;
   if (!LABELS.includes(answer?.choice) || !(answer.confidence >= 0 && answer.confidence <= 1)) {
@@ -86,7 +84,7 @@ export async function review({ details, cwd, model, classify, log, onOutcome, si
   }
   outcome.latencyMs = Date.now() - started;
   // Recording the result must never change the decision.
-  try { log?.review("jev-reviewer.decision", outcome); } catch {}
+  try { log?.review("model-review.decision", outcome); } catch {}
   try { onOutcome?.(outcome); } catch {}
   return outcome.verdict === "allow" ? { kind: "allow" } : DEFER;
 }

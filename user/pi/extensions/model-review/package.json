@@ -1,5 +1,5 @@
 {
-  "name": "configs-jev-reviewer",
+  "name": "configs-model-review",
   "private": true,
   "type": "module",
   "pi": { "extensions": ["./index.ts"] }
