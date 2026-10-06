@@ -1,6 +1,7 @@
 {
   "memoryMode": "policy-only",
-  "memoryPolicyStyle": "compact",
+  "memoryPolicyStyle": "custom",
+  "memoryPolicyCustomText": "Memory is not preloaded. Search it when durable context from earlier sessions could affect the task, not for generic questions. Treat results as possibly stale context; current user instructions and repository evidence win. Use project to filter project-scoped memories and category only for categorized lessons. Follow the memory and skill tools' guidance for deliberate saves and reusable procedures.",
   "reviewEnabled": true,
   "reviewTransport": "direct",
   "nudgeInterval": 20,
@@ -8,6 +9,7 @@
   "reviewRecentMessages": 20,
   "correctionDetection": true,
   "flushOnCompact": true,
+  "flushRecentMessages": 20,
   "flushOnShutdown": false,
   "standingInstructionsEnabled": false,
   "sessionRetentionDays": 30

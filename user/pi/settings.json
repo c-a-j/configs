@@ -16,7 +16,10 @@
     "npm:@gotgenes/pi-subagents@21.9.1",
     "npm:pi-hermes-memory@0.9.9",
     "npm:pi-web-access@0.35.0",
-    "npm:@upstash/context7-pi@0.1.2",
+    {
+      "source": "npm:@upstash/context7-pi@0.1.2",
+      "skills": []
+    },
     "npm:pi-lens@4.3.0"
   ]
 }

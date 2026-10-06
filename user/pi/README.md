@@ -136,9 +136,31 @@ this setup adds or chooses.
 | Planning | `pi-plan-mode` | `/plan` |
 | Memory | `pi-hermes-memory`, [`hermes-memory-config.json`](hermes-memory-config.json) | Automatic; `/memory-insights` |
 | Subagents | `pi-subagents`, [`subagents.json`](subagents.json) | Automatic; `/subagents:settings` |
-| Web and library docs | `pi-web-access`, `context7-pi` | Automatic; `/websearch`, `/c7-docs` |
+| Web and library docs | `pi-web-access`, `context7-pi`, [`skills/context7-docs/`](skills/context7-docs/) | Targeted lookups when evidence is insufficient; explicit `/websearch`, `/c7-docs` |
 | Diagnostics | `pi-lens` | Automatic; `/lens-health` |
 | Classifier-model permission review | [`extensions/model-review/`](extensions/model-review/) | `/auto-jev`, `/auto-clef`, `/jev-test`, `/clef-test` |
+
+## Token-budget choices
+
+- Memory uses a short custom policy instead of repeating the tool descriptions
+  and tool inventory. Memory tools, deliberate saves, searches, and correction
+  detection remain enabled; upstream tool descriptions are unchanged.
+- Automatic background memory reviews run every 20 agent turns or 30 tool calls,
+  using the 20 most recent textual message excerpts. Pre-compaction memory capture
+  also uses 20 excerpts. This does not change Pi's own compaction summary or its
+  context budget. Shutdown memory flushing remains disabled.
+- Context7's package entry uses `skills: []` to exclude its broad automatic-lookup
+  skill. The repository supplies a targeted replacement under
+  [`skills/context7-docs/`](skills/context7-docs/). Context7's tools and explicit
+  `/c7-docs` prompt still load from the pinned package. The replacement retains
+  verification for uncertain APIs, migrations, and version-sensitive behavior,
+  while allowing reliable local evidence and relevant prior results to suffice.
+- Thinking levels, model choices, coding tools, and permission rules are unchanged.
+  These choices reduce redundant context and maintenance calls, not coding effort.
+
+After changing package resource filters or adding the replacement skill, run
+`just update-pi` when ready to deploy, then `/reload` or restart Pi. Setup accepts
+both pinned package strings and objects with a pinned `source` and resource filters.
 
 ## Things to know
 
@@ -158,8 +180,9 @@ this setup adds or chooses.
   `excludedExtensionPackages`, which keeps subagents from learning on their own.
   It must match the pin in `settings.json` exactly; the setup test fails if it
   does not.
-- **Memory, web search, subagents, and the classifier make extra model calls**
-  and send conversation content to the model provider. Learned memory lives in
+- **Memory reviews, correction capture and compaction flushing, web search,
+  subagents, and the classifier can make extra model calls** and send conversation content
+  to the model provider. Learned memory lives in
   `pi-hermes-memory/` and `projects-memory/` under the agent directory and is
   never committed.
 - **`footer-colors.ts` wraps Pi's built-in footer renderer** because Pi has no

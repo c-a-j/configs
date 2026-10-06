@@ -45,7 +45,7 @@ jq -s '.[1] * .[0] * .[2]' "$settings" model-defaults.json settings.json > "$set
 mv -- "$settings.tmp" "$settings"
 
 # Install only the pinned packages that are missing or at another version.
-mapfile -t packages < <(jq -r '.packages[]' settings.json)
+mapfile -t packages < <(jq -r '.packages[] | if type == "string" then . else .source end' settings.json)
 for package in "${packages[@]}"; do
   spec="${package#npm:}"
   manifest="$agent_dir/npm/node_modules/${spec%@*}/package.json"

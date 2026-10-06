@@ -78,6 +78,20 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     # Repository settings win; machine-local keys survive the merge. Model
     # choices are the reverse: the repository fills only what the machine lacks.
     repository_settings = json.loads((ROOT / "settings.json").read_text())
+    package_sources = [package if isinstance(package, str) else package["source"]
+                       for package in repository_settings["packages"]]
+    context7 = next(package for package in repository_settings["packages"]
+                    if isinstance(package, dict) and package["source"].startswith("npm:@upstash/context7-pi@"))
+    assert context7["skills"] == [], "Exclude the package's broad lookup skill, not its tools or prompts"
+    assert "extensions" not in context7 and "prompts" not in context7
+    assert (agent / "skills/context7-docs/SKILL.md").is_file(), "Install the targeted lookup skill"
+    memory = json.loads((agent / "hermes-memory-config.json").read_text())
+    assert memory["memoryMode"] == "policy-only" and memory["memoryPolicyStyle"] == "custom"
+    assert memory["memoryPolicyCustomText"].strip(), "Retain concise recall and trust guidance"
+    assert memory["reviewEnabled"] is True
+    assert (memory["nudgeInterval"], memory["nudgeToolCalls"], memory["reviewRecentMessages"]) == (20, 30, 20)
+    assert memory["flushOnCompact"] is True and memory["flushRecentMessages"] == 20
+    assert memory["correctionDetection"] is True and memory["flushOnShutdown"] is False
     model_defaults = json.loads((ROOT / "model-defaults.json").read_text())
     assert model_defaults["defaultModel"] != "work-model" and not set(model_defaults) & set(repository_settings)
     settings = json.loads(settings_path.read_text())
@@ -125,13 +139,13 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
         assert_linked(target_path, source_path)
     assert json.loads(settings_path.read_text()) == settings
     assert json.loads(judge.read_text())["model"] == "work-judge", "Setup must keep a machine's own classifier model"
-    assert set(installs.read_text().splitlines()) == {f"install {package}" for package in repository_settings["packages"]}
-    assert repository_settings["packages"] and all(
-        package.startswith("npm:") and package.rsplit("@", 1)[1][0].isdigit() for package in repository_settings["packages"]
+    assert set(installs.read_text().splitlines()) == {f"install {package}" for package in package_sources}
+    assert package_sources and all(
+        package.startswith("npm:") and package.rsplit("@", 1)[1][0].isdigit() for package in package_sources
     ), "Packages must be pinned"
     # Installed pinned packages are not reinstalled.
     installs.write_text("")
-    for package in repository_settings["packages"]:
+    for package in package_sources:
         name, version = package.removeprefix("npm:").rsplit("@", 1)
         manifest = agent / "npm/node_modules" / name / "package.json"
         manifest.parent.mkdir(parents=True)
@@ -143,10 +157,44 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     print("Setup: hard links, merged settings, machine-local model choices, Auto default, pinned packages")
     # The subagent memory exclusion must match the pinned package string exactly.
     excluded = json.loads((ROOT / "subagents.json").read_text())["excludedExtensionPackages"]
-    assert set(excluded) <= set(repository_settings["packages"]), "Update subagents.json with the memory pin"
+    assert set(excluded) <= set(package_sources), "Update subagents.json with the memory pin"
 
-    # Drive the local mode commands through a real, isolated Pi over RPC.
-    settings_path.write_text("{}")
+    # Exercise native package resource filtering without a download or model call.
+    # The fixture mimics Context7's manifest; only its bundled skill is excluded.
+    package_name, package_version = context7["source"].removeprefix("npm:").rsplit("@", 1)
+    package_root = agent / "npm/node_modules" / package_name
+    (package_root / "skills/bundled-lookup").mkdir(parents=True)
+    (package_root / "prompts").mkdir()
+    (package_root / "package.json").write_text(json.dumps({
+        "name": package_name, "version": package_version, "type": "module",
+        "pi": {"extensions": ["index.js"], "skills": ["skills"], "prompts": ["prompts"]},
+    }))
+    (package_root / "skills/bundled-lookup/SKILL.md").write_text(
+        "---\nname: bundled-lookup\ndescription: BUNDLED_LOOKUP_MUST_NOT_LOAD\n---\nAlways look up everything.\n")
+    (package_root / "prompts/c7-docs.md").write_text(
+        "---\ndescription: Explicit documentation lookup fixture\n---\nLook up $1.\n")
+    (package_root / "index.js").write_text('''
+export default function (pi) {
+  pi.registerTool({
+    name: "fixture_docs", label: "Documentation fixture", description: "Fixture tool",
+    parameters: { type: "object", properties: {} },
+    async execute() { return { content: [{ type: "text", text: "fixture" }], details: undefined }; },
+  });
+  pi.registerCommand("token-config-check", {
+    description: "Check native resource filtering without contacting a provider",
+    handler: async (_args, ctx) => {
+      const prompt = ctx.getSystemPrompt();
+      if (prompt.includes("BUNDLED_LOOKUP_MUST_NOT_LOAD")) throw new Error("Bundled skill was not excluded");
+      if (!prompt.includes("Verify uncertain or version-sensitive library APIs")) throw new Error("Local skill missing");
+      if (!pi.getAllTools().some(tool => tool.name === "fixture_docs")) throw new Error("Package tools missing");
+      if (!pi.getCommands().some(command => command.name === "c7-docs")) throw new Error("Explicit prompt missing");
+    },
+  });
+}
+''')
+
+    # Drive the fixture and local mode commands through a real, isolated Pi over RPC.
+    settings_path.write_text(json.dumps({"packages": [context7]}))
     source_policy = (ROOT / "permissions/config.json").read_bytes()
     process = subprocess.Popen(
         ["pi", "--offline", "--mode", "rpc", "--no-session"], cwd=temp, text=True,
@@ -167,6 +215,8 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
                 return json.loads(gate.read_text())
         raise AssertionError(process.stderr.read())
     try:
+        assert command("/token-config-check") == policy, "Resource inspection must not change permissions"
+        print("Resources: targeted documentation skill, excluded bundled skill, retained tools and explicit prompt")
         assert command("/permissions invalid-mode") == policy, "An invalid mode must not change policy"
         for mode, yolo, chain in (("/yolo", True, []), ("/auto-jev", False, ["auto-jev"]), ("/auto-clef", False, ["auto-clef"]),
                                  ("/manual", False, []), ("/permissions auto", False, ["classifier"])):
