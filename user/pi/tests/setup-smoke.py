@@ -88,6 +88,8 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     judge.write_text('{"provider": "work", "model": "work-judge"}')
     policy = json.loads(gate.read_text())
     assert policy["yoloMode"] is False and policy["authorizerChain"] == ["classifier"], "Fresh setup must default to Auto"
+    assert policy["permission"]["memory_search"] == "allow", "Memory searches must not require approval"
+    assert policy["permission"]["*"] == "ask", "Unlisted tools must still require review"
 
     # Mode-specific teaching changes must preserve the shared safety boundaries.
     teaching_source = (ROOT / "prompts/sensei.md").read_bytes()
@@ -151,7 +153,10 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
         env={**os.environ, "PI_CODING_AGENT_DIR": str(agent)},
         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
+    assert process.stdin is not None and process.stdout is not None and process.stderr is not None
+
     def command(message):
+        assert process.stdin is not None and process.stdout is not None and process.stderr is not None
         process.stdin.write(json.dumps({"id": message, "type": "prompt", "message": message}) + "\n")
         process.stdin.flush()
         for line in process.stdout:

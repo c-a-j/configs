@@ -23,6 +23,7 @@
     "grep": "allow",
     "find": "allow",
     "ls": "allow",
+    "memory_search": "allow",
     "symbol_search": "allow",
     "module_report": "allow",
     "project_report": "allow",
