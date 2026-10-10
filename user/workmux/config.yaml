@@ -4,17 +4,25 @@ agents:
   pi:
     type: pi
     command: run-pi
+  claude:
+    type: claude
+    command: run-claude
+  claude-opus:
+    type: claude
+    command: run-claude --model claude-opus-5-5
 merge_strategy: rebase
 worktree_naming: basename
 worktree_dir: ~/.worktrees/{project}__wt
 window_placement: rightmost
 
 panes:
-  - command: <agent>
-    focus: true
+  - focus: true
 
 layouts:
-  edit:
+  term:
+    panes:
+      - focus: true
+  nvim:
     panes:
       - command: nvim
         focus: true
@@ -22,12 +30,6 @@ layouts:
     panes:
       - command: <agent>
         focus: true
-  both:
-    panes:
-      - command: <agent>
-        focus: true
-      - command: nvim
-        split: horizontal
 
 sidebar:
   group_by: project
