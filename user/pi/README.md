@@ -104,6 +104,7 @@ Paths on the right are relative to the agent directory:
 | [`agents/`](agents/), [`prompts/`](prompts/), [`skills/`](skills/), [`extensions/`](extensions/) | Same paths; every file is linked |
 | [`permissions/config.json`](permissions/config.json) | `extensions/pi-permission-system/config.json` |
 | [`settings.json`](settings.json) | `settings.json` (merged, not linked; repository wins) |
+| [`pi-lens.json`](pi-lens.json) | `~/.pi-lens/config.json`, or `PI_LENS_CONFIG_PATH` when set (hard linked) |
 | [`model-defaults.json`](model-defaults.json) | `settings.json` (merged; the machine's own values win) |
 | [`permissions/classifier.json`](permissions/classifier.json) | `extensions/pi-permission-classifier/config.json` (copied only if absent) |
 
@@ -137,7 +138,7 @@ this setup adds or chooses.
 | Memory | `pi-hermes-memory`, [`hermes-memory-config.json`](hermes-memory-config.json) | Automatic; `/memory-insights` |
 | Subagents | `pi-subagents`, [`subagents.json`](subagents.json) | Automatic; `/subagents:settings` |
 | Web and library docs | `pi-web-access`, `context7-pi`, [`skills/context7-docs/`](skills/context7-docs/) | Targeted lookups when evidence is insufficient; explicit `/websearch`, `/c7-docs` |
-| Diagnostics | `pi-lens` | Automatic; `/lens-health` |
+| Diagnostics | `pi-lens`, [`pi-lens.json`](pi-lens.json) | Automatic diagnostics; automatic formatting and fixes disabled; `/lens-health` |
 | Classifier-model permission review | [`extensions/model-review/`](extensions/model-review/) | `/auto-jev`, `/auto-clef`, `/jev-test`, `/clef-test` |
 
 ## Token-budget choices
@@ -163,6 +164,13 @@ After changing package resource filters or adding the replacement skill, run
 both pinned package strings and objects with a pinned `source` and resource filters.
 
 ## Things to know
+
+- **Pi-lens must not automatically rewrite files.** `pi-lens.json` disables
+  immediate/deferred formatting, pipeline autofixes, and automatic LSP fixes
+  while retaining diagnostics. Project `.pi-lens.json` files can override these
+  defaults; launch Pi with `--no-autoformat --no-autofix` for stronger protection
+  against project overrides. Edits to the linked config reach the installed
+  file immediately; reload or restart Pi to refresh session-cached switches.
 
 - **Permission modes are global and persistent, and switch only while idle.**
   Manual asks for edits, writes, and bash. Auto sends eligible asks to the

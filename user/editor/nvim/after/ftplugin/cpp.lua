@@ -1,7 +1,7 @@
 vim.bo.expandtab = true
-vim.bo.tabstop = 2
-vim.bo.softtabstop = 2
-vim.bo.shiftwidth = 2
+vim.bo.tabstop = 4
+vim.bo.softtabstop = 4
+vim.bo.shiftwidth = 4
 -- (s: continuation after an unclosed "(" indents one shiftwidth.
 -- u0: do not add another shiftwidth for each extra paren opened on the same line.
 -- U1: honor that indent even when the line starts with "(".

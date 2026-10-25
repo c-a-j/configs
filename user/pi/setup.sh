@@ -24,6 +24,8 @@ while IFS= read -r -d '' file; do
 done < <(find AGENTS.md keybindings.json subagents.json hermes-memory-config.json \
   agents prompts skills extensions -type f -print0)
 link permissions/config.json "$agent_dir/extensions/pi-permission-system/config.json"
+# Pi-lens reads its own global config, independently of Pi's settings.json.
+link pi-lens.json "${PI_LENS_CONFIG_PATH:-$HOME/.pi-lens/config.json}"
 
 # Model choices differ per machine (home and work use different providers), so
 # the repository only supplies first-install defaults and local values win.

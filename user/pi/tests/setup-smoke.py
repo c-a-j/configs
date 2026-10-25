@@ -32,13 +32,16 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
     installs = temp / "installs.txt"
     fake_pi.write_text('#!/bin/sh\nprintf "%s\\n" "$*" >> "$PI_INSTALL_TRACE"\n')
     fake_pi.chmod(0o700)
+    lens_config = temp / "pi-lens/config.json"
     setup_env = {**os.environ, "PATH": f"{fake_bin}:{os.environ['PATH']}",
-                 "PI_CODING_AGENT_DIR": str(agent), "PI_INSTALL_TRACE": str(installs)}
+                 "PI_CODING_AGENT_DIR": str(agent), "PI_INSTALL_TRACE": str(installs),
+                 "PI_LENS_CONFIG_PATH": str(lens_config)}
     def setup(*args):
         subprocess.run(["bash", str(ROOT / "setup.sh"), *args], env=setup_env, check=True, capture_output=True)
 
     def managed_pairs():
-        pairs = [(ROOT / "permissions/config.json", gate)]
+        pairs = [(ROOT / "permissions/config.json", gate),
+                 (ROOT / "pi-lens.json", lens_config)]
         for file in ["subagents.json", "hermes-memory-config.json", "AGENTS.md", "keybindings.json"]:
             pairs.append((ROOT / file, agent / file))
         for folder in ["extensions", "prompts", "agents", "skills"]:
@@ -75,6 +78,11 @@ with tempfile.TemporaryDirectory(prefix="pi-permissions-test-") as directory:
         assert (agent / name).stat().st_mode & 0o777 == 0o700, "New memory stores must be private"
     for source_path, target_path in managed_pairs():
         assert_linked(target_path, source_path)
+    lens = json.loads(lens_config.read_text())
+    assert lens["format"]["enabled"] is False
+    assert lens["autofix"]["enabled"] is False
+    assert lens["actionableWarnings"]["autoFix"]["enabled"] is False
+    assert "lsp" not in lens, "Keep diagnostics enabled by default"
     # Repository settings win; machine-local keys survive the merge. Model
     # choices are the reverse: the repository fills only what the machine lacks.
     repository_settings = json.loads((ROOT / "settings.json").read_text())
