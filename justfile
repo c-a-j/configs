@@ -1,5 +1,5 @@
 update-all:
-  ansible-playbook main.yml -K
+  ansible-playbook playbooks/main.yml -K
 
 update-pi:
   bash user/pi/setup.sh
